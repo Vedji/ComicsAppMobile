@@ -1,4 +1,4 @@
-package com.example.comicsapp.ui.components.button
+package com.example.comicsapp.ui.view.components.button
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

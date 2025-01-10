@@ -1,4 +1,4 @@
-package com.example.comicsapp.ui.components.text
+package com.example.comicsapp.ui.view.components.text
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.CornerBasedShape

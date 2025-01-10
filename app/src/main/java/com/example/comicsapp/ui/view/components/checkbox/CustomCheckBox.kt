@@ -1,4 +1,4 @@
-package com.example.comicsapp.ui.components.checkbox
+package com.example.comicsapp.ui.view.components.checkbox
 
 import android.util.Log
 import androidx.compose.foundation.background

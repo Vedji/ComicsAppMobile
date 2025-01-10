@@ -24,8 +24,8 @@ import androidx.navigation.NavHostController
 import com.example.comicsapp.BuildConfig
 import com.example.comicsapp.R
 import com.example.comicsapp.data.model.api.books.BookModel
-import com.example.comicsapp.ui.components.LoadImageWithCacheCheck
-import com.example.comicsapp.ui.components.RatingBar
+import com.example.comicsapp.ui.view.components.LoadImageWithCacheCheck
+import com.example.comicsapp.ui.view.components.RatingBar
 import com.example.comicsapp.ui.viewmodel.AppViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 

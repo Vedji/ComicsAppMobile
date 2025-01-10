@@ -1,4 +1,4 @@
-package com.example.comicsapp.ui.components
+package com.example.comicsapp.ui.view.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row

@@ -31,7 +31,7 @@ import androidx.navigation.NavHostController
 import coil.ImageLoader
 import coil.memory.MemoryCache
 import com.example.comicsapp.data.repository.BookRepository
-import com.example.comicsapp.ui.components.ApiErrorDialog
+import com.example.comicsapp.ui.view.components.ApiErrorDialog
 import com.example.comicsapp.ui.navigation.Screen
 import com.example.comicsapp.ui.view.theme.ComicsAppTheme
 import com.example.comicsapp.ui.viewmodel.AppViewModelFactory

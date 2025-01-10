@@ -1,4 +1,4 @@
-package com.example.comicsapp.ui.components.expandedlist
+package com.example.comicsapp.ui.view.components.expandedlist
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

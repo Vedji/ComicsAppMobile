@@ -1,4 +1,4 @@
-package com.example.comicsapp.ui.components
+package com.example.comicsapp.ui.view.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -19,14 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.comicsapp.ui.components.button.CustomButtonStyle
-import com.example.comicsapp.ui.components.checkbox.PreviewTestCustomCheckBoxes
-import com.example.comicsapp.ui.components.expandedlist.ExpandedList
-import com.example.comicsapp.ui.components.expandedlist.ExpandedListStyle
-import com.example.comicsapp.ui.components.text.ThemedText
-import com.example.comicsapp.ui.components.text.ThemedTextStyle
-import com.example.comicsapp.ui.components.textfield.ThemedTextField
-import com.example.comicsapp.ui.components.textfield.ThemedTextFieldStyle
+import com.example.comicsapp.ui.view.components.button.CustomButtonStyle
+import com.example.comicsapp.ui.view.components.checkbox.PreviewTestCustomCheckBoxes
+import com.example.comicsapp.ui.view.components.expandedlist.ExpandedList
+import com.example.comicsapp.ui.view.components.expandedlist.ExpandedListStyle
+import com.example.comicsapp.ui.view.components.text.ThemedText
+import com.example.comicsapp.ui.view.components.text.ThemedTextStyle
+import com.example.comicsapp.ui.view.components.textfield.ThemedTextField
+import com.example.comicsapp.ui.view.components.textfield.ThemedTextFieldStyle
 
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.comicsapp.ui.components.text
+package com.example.comicsapp.ui.view.components.text
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,7 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.comicsapp.ui.components.text.ThemedTextStyle.Companion.default
+import com.example.comicsapp.ui.view.components.text.ThemedTextStyle.Companion.default
 
 @Composable
 fun ThemedText(

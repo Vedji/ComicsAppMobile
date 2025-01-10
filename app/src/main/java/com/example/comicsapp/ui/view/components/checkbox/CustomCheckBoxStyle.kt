@@ -1,4 +1,4 @@
-package com.example.comicsapp.ui.components.checkbox
+package com.example.comicsapp.ui.view.components.checkbox
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.CornerBasedShape

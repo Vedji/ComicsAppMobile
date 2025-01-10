@@ -1,4 +1,4 @@
-package com.example.comicsapp.ui.components
+package com.example.comicsapp.ui.view.components
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

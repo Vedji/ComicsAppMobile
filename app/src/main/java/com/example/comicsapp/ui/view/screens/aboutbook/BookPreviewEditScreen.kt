@@ -19,10 +19,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.comicsapp.ui.components.PreviewTestCustomComponents
-import com.example.comicsapp.ui.components.button.CustomButton
-import com.example.comicsapp.ui.components.button.TestSmallButton
-import com.example.comicsapp.ui.components.button.TestSmallButtonFactory
+import com.example.comicsapp.ui.view.components.PreviewTestCustomComponents
+import com.example.comicsapp.ui.view.components.button.CustomButton
+import com.example.comicsapp.ui.view.components.button.TestSmallButton
+import com.example.comicsapp.ui.view.components.button.TestSmallButtonFactory
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable

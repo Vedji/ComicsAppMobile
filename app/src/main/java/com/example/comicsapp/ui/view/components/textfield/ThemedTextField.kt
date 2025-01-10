@@ -1,4 +1,4 @@
-package com.example.comicsapp.ui.components.textfield
+package com.example.comicsapp.ui.view.components.textfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,7 +44,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.comicsapp.ui.components.button.CustomButtonStyle
+import com.example.comicsapp.ui.view.components.button.CustomButtonStyle
 import com.example.comicsapp.ui.view.theme.ComicsAppTheme
 import androidx.compose.foundation.layout.PaddingValues as PaddingValues1
 

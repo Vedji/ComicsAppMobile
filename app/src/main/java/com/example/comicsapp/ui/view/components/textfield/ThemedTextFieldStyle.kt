@@ -1,4 +1,4 @@
-package com.example.comicsapp.ui.components.textfield
+package com.example.comicsapp.ui.view.components.textfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

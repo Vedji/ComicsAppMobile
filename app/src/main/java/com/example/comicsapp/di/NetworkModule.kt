@@ -2,6 +2,7 @@ package com.example.comicsapp.di
 
 import com.example.comicsapp.BuildConfig
 import com.example.comicsapp.data.api.BookEndpoints
+import com.example.comicsapp.utils.network.ResponseAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +27,6 @@ object NetworkModule {
         val authInterceptor = Interceptor { chain ->
             val originalRequest: Request = chain.request()
             val requestBuilder = originalRequest.newBuilder()
-            // Добавьте токен, если необходимо
             requestBuilder.addHeader("Authorization", "Bearer your_token_here")
             chain.proceed(requestBuilder.build())
         }
@@ -48,6 +48,7 @@ object NetworkModule {
             .baseUrl(BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(ResponseAdapterFactory()) // Используем нашу фабрику
             .build()
     }
 

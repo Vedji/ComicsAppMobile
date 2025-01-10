@@ -11,8 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.comicsapp.ui.components.text.ThemedText
-import com.example.comicsapp.ui.components.text.ThemedTextStyle
+import com.example.comicsapp.ui.view.components.text.ThemedText
+import com.example.comicsapp.ui.view.components.text.ThemedTextStyle
 import com.example.comicsapp.ui.viewmodel.AppViewModel
 
 @Composable

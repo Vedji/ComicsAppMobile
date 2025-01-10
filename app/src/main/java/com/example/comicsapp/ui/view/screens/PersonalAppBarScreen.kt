@@ -40,7 +40,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.comicsapp.ProfileScreen
 import com.example.comicsapp.R
 import com.example.comicsapp.SettingsScreen
-import com.example.comicsapp.ui.components.text.TextFieldAppBar
+import com.example.comicsapp.ui.view.components.text.TextFieldAppBar
 import com.example.comicsapp.ui.view.screens.aboutbook.BookPreviewEditScreen
 import com.example.comicsapp.ui.view.screens.readbook.BookPreviewReadScreen
 import com.example.comicsapp.ui.view.screens.aboutbook.BookPreviewScreen

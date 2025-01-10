@@ -62,9 +62,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import com.example.comicsapp.BuildConfig
-import com.example.comicsapp.ui.components.LoadImageWithCacheCheck
-import com.example.comicsapp.ui.components.expandedlist.ExpandedList
-import com.example.comicsapp.ui.components.expandedlist.ExpandedListStyle
+import com.example.comicsapp.ui.view.components.LoadImageWithCacheCheck
+import com.example.comicsapp.ui.view.components.expandedlist.ExpandedList
+import com.example.comicsapp.ui.view.components.expandedlist.ExpandedListStyle
 import com.example.comicsapp.ui.view.screens.aboutbook.components.AboutBookTable
 import com.example.comicsapp.ui.view.screens.aboutbook.components.TableBookChapters
 import com.example.comicsapp.ui.view.screens.aboutbook.components.TableBookComments

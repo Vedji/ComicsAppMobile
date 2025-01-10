@@ -22,12 +22,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsapp.ui.viewmodel.AppViewModel
-import com.example.comicsapp.ui.components.button.CustomButton
-import com.example.comicsapp.ui.components.button.CustomButtonStyle
-import com.example.comicsapp.ui.components.checkbox.CustomCheckBox
-import com.example.comicsapp.ui.components.checkbox.CustomCheckBoxStyle
-import com.example.comicsapp.ui.components.textfield.ThemedTextField
-import com.example.comicsapp.ui.components.textfield.ThemedTextFieldStyle
+import com.example.comicsapp.ui.view.components.button.CustomButton
+import com.example.comicsapp.ui.view.components.button.CustomButtonStyle
+import com.example.comicsapp.ui.view.components.checkbox.CustomCheckBox
+import com.example.comicsapp.ui.view.components.checkbox.CustomCheckBoxStyle
+import com.example.comicsapp.ui.view.components.textfield.ThemedTextField
+import com.example.comicsapp.ui.view.components.textfield.ThemedTextFieldStyle
 
 
 @OptIn(ExperimentalLayoutApi::class)
