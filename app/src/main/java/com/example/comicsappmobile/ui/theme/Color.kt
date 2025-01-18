@@ -1,0 +1,83 @@
+package com.example.comicsappmobile.ui.theme
+
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.ui.graphics.Color
+
+
+val lightScheme = lightColorScheme(
+    primary = Color(0xFF4B5426),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFF707947),
+    onPrimaryContainer = Color(0xFFFFFFFF),
+    secondary = Color(0xFF5A6240),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFCED6AD),
+    onSecondaryContainer = Color(0xFF3A4122),
+    tertiary = Color(0xFF5B614D),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFE9EFD5),
+    onTertiaryContainer = Color(0xFF4A503D),
+    error = Color(0xFF735855),
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFFFDFDB),
+    onErrorContainer = Color(0xFF5D4441),
+    background = Color(0xFFFCF9F2),
+    onBackground = Color(0xFF1C1C18),
+    surface = Color(0xFFFCF9F5),
+    onSurface = Color(0xFF1C1C1A),
+    surfaceVariant = Color(0xFFE4E3D4),
+    onSurfaceVariant = Color(0xFF46483C),
+    outline = Color(0xFF77786B),
+    outlineVariant = Color(0xFFC7C7B9),
+    scrim = Color(0xFF000000),
+    inverseSurface = Color(0xFF31302E),
+    inverseOnSurface = Color(0xFFF3F0ED),
+    inversePrimary = Color(0xFFC2CC92),
+    surfaceDim = Color(0xFFDCD9D6),
+    surfaceBright = Color(0xFFFCF9F5),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFF6F3F0),
+    surfaceContainer = Color(0xFFF0EDEA),
+    surfaceContainerHigh = Color(0xFFEBE8E4),
+    surfaceContainerHighest = Color(0xFFE5E2DF)
+)
+
+val darkScheme = darkColorScheme(
+    primary = Color(0xFFC2CC92),
+    onPrimary = Color(0xFF2C3408),
+    primaryContainer = Color(0xFF707947),
+    onPrimaryContainer = Color(0xFFFFFFFF),
+    secondary = Color(0xFFEDF5CA),
+    onSecondary = Color(0xFF2C3316),
+    secondaryContainer = Color(0xFFC2CAA2),
+    onSecondaryContainer = Color(0xFF32391B),
+    tertiary = Color(0xFFFFFFFF),
+    onTertiary = Color(0xFF2D3321),
+    tertiaryContainer = Color(0xFFD1D7BE),
+    onTertiaryContainer = Color(0xFF3C422F),
+    error = Color(0xFFFFFFFF),
+    onError = Color(0xFF412B28),
+    errorContainer = Color(0xFFF0CCC8),
+    onErrorContainer = Color(0xFF523937),
+    background = Color(0xFF131410),
+    onBackground = Color(0xFFE5E2DB),
+    surface = Color(0xFF131312),
+    onSurface = Color(0xFFE5E2DF),
+    surfaceVariant = Color(0xFF46483C),
+    onSurfaceVariant = Color(0xFFC7C7B9),
+    outline = Color(0xFF919284),
+    outlineVariant = Color(0xFF46483C),
+    scrim = Color(0xFF000000),
+    inverseSurface = Color(0xFFE5E2DF),
+    inverseOnSurface = Color(0xFF31302E),
+    inversePrimary = Color(0xFF596333),
+    surfaceDim = Color(0xFF131312),
+    surfaceBright = Color(0xFF3A3937),
+    surfaceContainerLowest = Color(0xFF0E0E0D),
+    surfaceContainerLow = Color(0xFF1C1C1A),
+    surfaceContainer = Color(0xFF20201E),
+    surfaceContainerHigh = Color(0xFF2A2A28),
+    surfaceContainerHighest = Color(0xFF353533)
+)
+
