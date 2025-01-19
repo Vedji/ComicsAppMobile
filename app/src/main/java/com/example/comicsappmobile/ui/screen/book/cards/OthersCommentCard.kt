@@ -1,4 +1,4 @@
-package com.example.comicsappmobile.ui.screen.book.about
+package com.example.comicsappmobile.ui.screen.book.cards
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,26 +12,17 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,77 +32,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.comicsappmobile.ui.components.ImageByID
-import com.example.comicsappmobile.utils.Logger
-import com.example.comicsappmobile.ui.presentation.viewmodel.BookViewModel
-import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.ui.presentation.model.CommentUiModel
-import kotlinx.coroutines.launch
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CommentsBookTab(bookViewModel: BookViewModel) {
-    val commentsUiState by bookViewModel.commentsUiState.collectAsState()
-    val authUser by bookViewModel.globalState.authUser.collectAsState()
-
-    val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-
-    // Отслеживание прокрутки
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo }
-            .collect { visibleItems ->
-                if (visibleItems.isNotEmpty()) {
-                    // Проверяем, достигнут ли конец списка
-                    val lastVisibleItem = visibleItems.last()
-                    val totalItems = listState.layoutInfo.totalItemsCount
-                    if (lastVisibleItem.index == totalItems - 1) {
-                        coroutineScope.launch {
-                            Logger.debug("LaunchedEffect", "lastVisibleItem.index = ${lastVisibleItem.index}")
-                            bookViewModel.loadComments()
-                        }
-                    }
-                }
-            }
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 24.dp, end = 24.dp)
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth(),
-            state = listState,
-            verticalArrangement = Arrangement.spacedBy(36.dp)
-        ) {
-            if (commentsUiState.data != null && commentsUiState.data is List<CommentUiModel>)
-                items(commentsUiState.data!!.count()) {
-                    val comment = commentsUiState.data!![it]
-                    if (authUser.userId != comment.aboutUser.userId)
-                    CommentCard(comment, bookViewModel)
-                }
-            if (commentsUiState is UiState.Loading)
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterVertically))
-                    }
-                }
-            item {
-                Spacer(modifier = Modifier.height(36.dp))
-            }
-        }
-    }
-}
+import com.example.comicsappmobile.ui.presentation.viewmodel.BookViewModel
 
 
 @Composable
-fun CommentCard(commentUiModel: CommentUiModel, bookViewModel: BookViewModel){
+fun OthersCommentCard(commentUiModel: CommentUiModel, bookViewModel: BookViewModel){
     val currentUser = bookViewModel.sharedViewModel.currentAuthorizingUser.value
     Box{
 
@@ -119,10 +45,8 @@ fun CommentCard(commentUiModel: CommentUiModel, bookViewModel: BookViewModel){
             modifier = Modifier
                 .fillMaxWidth(),
             colors = CardDefaults.outlinedCardColors().copy(
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                contentColor = MaterialTheme.colorScheme.tertiary,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContentColor = MaterialTheme.colorScheme.secondary
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             )
         ) {
             Column(
@@ -150,7 +74,8 @@ fun CommentCard(commentUiModel: CommentUiModel, bookViewModel: BookViewModel){
                         Text(
                             text = commentUiModel.aboutUser.username,
                             style = MaterialTheme.typography.bodyLarge.copy(
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
                             ),
                             textAlign = TextAlign.Justify,
                             modifier = Modifier
@@ -167,7 +92,7 @@ fun CommentCard(commentUiModel: CommentUiModel, bookViewModel: BookViewModel){
                                 textAlign = TextAlign.Justify,
                                 text = "${commentUiModel.rating}",
                                 style = MaterialTheme.typography.bodyLarge.copy(
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
                             )
                             Icon(
@@ -221,5 +146,3 @@ fun CommentCard(commentUiModel: CommentUiModel, bookViewModel: BookViewModel){
         }
     }
 }
-
-

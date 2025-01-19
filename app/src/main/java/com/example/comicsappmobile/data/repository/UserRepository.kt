@@ -49,7 +49,7 @@ class UserRepository (
                     RetrofitInstance.refreshToken = data.tokens.refreshToken
                 }
                 data?.let {
-                    globalState.saveUserAccessToken(it.tokens.accessToken ?: "")
+                    globalState.saveUserAccessToken(it.tokens.accessToken)
                     sharedViewModel.updateCurrentAuthorizingUser(it.aboutUser)
                     globalState.setAuthUser(it.aboutUser)
 

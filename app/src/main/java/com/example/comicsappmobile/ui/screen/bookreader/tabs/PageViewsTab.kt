@@ -201,7 +201,7 @@ fun PageViewsTab(
                                         if (it.x.dp < (screenWidthPx * 0.33).dp) {
                                             if (pagerState.currentPage > 0)
                                                 coroutineScope.launch {
-                                                    pagerState.scrollToPage(page = pagerState.currentPage - 1)
+                                                    pagerState.animateScrollToPage(page = pagerState.currentPage - 1)
                                                 }
                                             else {
                                                 if (previousChapterIdState is UiState.Success) {
@@ -220,7 +220,7 @@ fun PageViewsTab(
                                         } else if (it.x.dp > (screenWidthPx * 0.66).dp) {
                                             if (pagerState.currentPage + 1 < pages.size)
                                                 coroutineScope.launch {
-                                                    pagerState.scrollToPage(page = pagerState.currentPage + 1)
+                                                    pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
                                                 }
                                             else {
                                                 if (followingChapterIdState is UiState.Success) {

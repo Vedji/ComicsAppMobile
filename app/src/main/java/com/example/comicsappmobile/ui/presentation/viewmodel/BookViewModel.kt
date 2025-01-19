@@ -44,6 +44,9 @@ class BookViewModel(
     private val _bookInFavorite = MutableStateFlow<UiState<FavoriteUiModel>>(UiState.Loading())
     val bookInFavorite: StateFlow<UiState<FavoriteUiModel>> = _bookInFavorite
 
+    private val _userComment = MutableStateFlow<UiState<CommentUiModel>>(UiState.Loading())
+    val userComment: StateFlow<UiState<CommentUiModel>> = _userComment
+
     private val commentsLimit = 2
     private var commentsOffset = 0
     private var commentsHasNext = true
@@ -58,6 +61,10 @@ class BookViewModel(
         loadComments(true)
         viewModelScope.launch {
             fetchHasBookInFavorite()
+            loadUserComment()
+            delay(200)
+            // setUserComment(4, "Spnsor about this app is Flash energy and monser energy))))")
+            // deleteUserComment()
         }
     }
 
@@ -249,6 +256,95 @@ class BookViewModel(
             }
             else setBookToFavorite()
             Logger.debug("StarSwitch", "uiModel = ${_bookInFavorite.value.data}")
+        }
+    }
+
+    suspend fun loadUserComment(bookId: Int = this.bookId) {
+        _userComment.value = UiState.Loading()
+        try {
+            val response = loadWithState({ commentsRepository.loadUserCommentForBook(bookId = bookId) })
+            _userComment.value = response
+            Logger.debug("BookViewModel -> loadUserComment", "response = $response")
+        } catch (e: IllegalArgumentException) {
+            _userComment.value = UiState.Error(
+                message = e.localizedMessage,
+                typeError = "Network",
+                statusCode = 500
+            )
+        } catch (e: Exception){
+            _userComment.value = UiState.Error(
+                message = e.localizedMessage,
+                typeError = e.message,
+                statusCode = -1
+            )
+        }
+    }
+
+    suspend fun setUserComment(rating: Int, comment: String, bookId: Int = this.bookId) {
+        if (_userComment.value is UiState.Success){
+            try {
+                _userComment.value = UiState.Loading()
+                val response = loadWithState {
+                    commentsRepository.setUserCommentForBook(
+                        bookId = bookId,
+                        rating = rating,
+                        comment = comment) }
+                _userComment.value = response
+                Logger.debug("BookViewModel -> setUserComment", "response = $response")
+            } catch (e: IllegalArgumentException) {
+                _userComment.value = UiState.Error(
+                    message = e.localizedMessage,
+                    typeError = "Network",
+                    statusCode = 500
+                )
+            } catch (e: Exception){
+                _userComment.value = UiState.Error(
+                    message = e.localizedMessage,
+                    typeError = e.message,
+                    statusCode = -1
+                )
+            }
+        }
+    }
+
+    suspend fun deleteUserComment() {
+        if (_userComment.value is UiState.Success){
+            try {
+                val commentId: Int = _userComment.value.data?.commentId ?: -1
+                if (commentId < 0){
+                    _userComment.value = UiState.Error(message = "Comment id in deleteUserComment is null", typeError = "InvalidValue")
+                    return
+                }
+                _userComment.value = UiState.Loading()
+                val response = loadWithState{ commentsRepository.deleteUserCommentForBook(commentId = commentId) }
+                _userComment.value = response
+                Logger.debug("BookViewModel -> deleteUserComment", "response = $response")
+            } catch (e: IllegalArgumentException) {
+                _userComment.value = UiState.Error(
+                    message = e.localizedMessage,
+                    typeError = "Network",
+                    statusCode = 500
+                )
+            } catch (e: Exception){
+                _userComment.value = UiState.Error(
+                    message = e.localizedMessage,
+                    typeError = e.message,
+                    statusCode = -1
+                )
+            }
+        }
+    }
+
+    fun launchSetUserComment(rating: Int, comment: String, bookId: Int = this.bookId){
+        viewModelScope.launch {
+            setUserComment(rating, comment, bookId)
+        }
+    }
+
+    fun launchDeleteUserComment(){
+        viewModelScope.launch {
+            deleteUserComment()
+            loadUserComment()
         }
     }
 }

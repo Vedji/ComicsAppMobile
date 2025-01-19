@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsappmobile.R
 import com.example.comicsappmobile.navigation.Screen
+import com.example.comicsappmobile.ui.components.ThemedInputField
 import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.viewmodel.LoginFormViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
@@ -131,12 +132,12 @@ fun LoginFormScreen (
                     ThemedInputField(
                         textFieldValue =  loginInput,
                         placeholder = "Логин",
-                        modifier = Modifier
+                        modifier = Modifier.height(36.dp)
                     )
                     ThemedInputField(
                         textFieldValue =  passwordInput,
                         placeholder = "Пароль",
-                        modifier = Modifier
+                        modifier = Modifier.height(36.dp)
                     )
                     Button(
                         onClick = {
@@ -151,6 +152,10 @@ fun LoginFormScreen (
                                     username = loginInput.value,
                                     password = passwordInput.value
                                 )
+                                delay(500)
+                                if (userLoginV2.value is UiState.Success){
+                                    navController.navigate(Screen.ProfileUserScreen.route)
+                                }
                                 // TODO: Go to profile screen
                             } },
                         modifier = Modifier.fillMaxWidth()
@@ -172,61 +177,3 @@ fun LoginFormScreen (
 
 
 
-// TODO: Move to components
-@Composable
-fun ThemedInputField(
-    textFieldValue: MutableState<String> = rememberSaveable { mutableStateOf("") },
-    placeholder: String = "Simple ThemedInputField",
-    modifier: Modifier = Modifier,
-    textStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(
-        color = MaterialTheme.colorScheme.onSecondaryContainer
-    ),
-    placeholderStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(
-        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f)
-    ),
-    containerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
-    cursorColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
-    rightIcon: @Composable (() -> Unit)? = null
-) {
-
-    BasicTextField(
-        value = textFieldValue.value,
-        onValueChange = { textFieldValue.value = it },
-        textStyle = textStyle,
-        cursorBrush = SolidColor(cursorColor),
-        singleLine = true,
-        modifier = modifier
-            .height(36.dp)
-            .clip(MaterialTheme.shapes.large)
-            .background(containerColor),
-        decorationBox = { innerTextField ->
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = if (rightIcon != null) 8.dp else 0.dp),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    if (textFieldValue.value.isEmpty()) {
-                        Text(
-                            text = placeholder,
-                            style = placeholderStyle,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    innerTextField()
-                }
-
-                rightIcon?.let {
-                    it()
-                }
-            }
-        }
-    )
-}

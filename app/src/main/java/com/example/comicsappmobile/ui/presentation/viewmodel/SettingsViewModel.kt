@@ -9,6 +9,7 @@ import com.example.comicsappmobile.data.dto.entities.user.UserDto
 import com.example.comicsappmobile.data.mapper.UserMapper
 import com.example.comicsappmobile.data.repository.UserRepository
 import com.example.comicsappmobile.di.GlobalState
+import com.example.comicsappmobile.di.RetrofitInstance
 import com.example.comicsappmobile.di.SharedViewModel
 import com.example.comicsappmobile.ui.presentation.model.UserUiModel
 import com.example.comicsappmobile.ui.theme.darkScheme
@@ -32,7 +33,6 @@ class SettingsViewModel(
     private val _userLogin = MutableStateFlow<UiState<UserUiModel>>(UiState.Loading())
     val userLogin: StateFlow<UiState<UserUiModel>> = _userLogin
 
-
     init {
         val user = globalState.authUser.value
         if (user.userId > 0)
@@ -51,14 +51,11 @@ class SettingsViewModel(
         viewModelScope.launch {
             globalState.getUserAccessToken().collect{
                 Logger.debug("outFromUserLogin","token = $it")
+                RetrofitInstance.accessToken = null
                 globalState.saveUserAccessToken("None")
                 globalState.setAuthUser(null)
                 _userLogin.value = UiState.Loading()
             }
         }
-
     }
-
-
-
 }

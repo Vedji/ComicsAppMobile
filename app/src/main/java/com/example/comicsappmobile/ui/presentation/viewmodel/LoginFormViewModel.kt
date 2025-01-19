@@ -42,7 +42,6 @@ class LoginFormViewModel(
             val response = userRepository.responseUserAuthorization(
                 username = username, password = password
             )
-            delay(100)
             Logger.debug("loginFromUsername Test", response.message.toString())
             _userLogin.value = if (response is UiState.Success && globalState.authUser.value.userId > 0) response else UiState.Error(message = response.message)
             Logger.debug(

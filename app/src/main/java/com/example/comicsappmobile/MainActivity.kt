@@ -43,10 +43,12 @@ class MainActivity : ComponentActivity() {
             if (!globalState.firstUserAuth){
                 LaunchedEffect(Unit) {
                     globalState.getUserAccessToken().collect {
-                        if (it == null)
+                        if (it == null || globalState.firstUserAuth)
                             return@collect  // TODO Replace to fetch
                         RetrofitInstance.accessToken = it
                         Logger.debug("LoginFormViewModel -> onCreate", "globalState.getUserAccessToken().collect = '$it'")
+                        val repo = UserRepository(RetrofitInstance.userApi, sharedViewModel = SharedViewModel(), globalState = globalState)
+                        repo.responseRefreshUserAuthorization(it)
                         globalState.firstUserAuth = true
                     }.toString()
                 }
