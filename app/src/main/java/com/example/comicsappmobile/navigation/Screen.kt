@@ -23,4 +23,8 @@ sealed class Screen(val route: String) {
     data object ProfileUserScreen: Screen("ProfileUserScreen")
 
     data object SettingsScreen: Screen("SettingScreen")
+
+    data object EditedBookScreen : Screen("EditedBookScreen/{bookId}") {
+        fun createRoute(bookId: Int) = "EditedBookScreen/$bookId"
+    }
 }

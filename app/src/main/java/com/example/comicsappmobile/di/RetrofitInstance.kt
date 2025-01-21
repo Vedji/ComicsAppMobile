@@ -6,6 +6,7 @@ import com.example.comicsappmobile.data.api.BooksApi
 import com.example.comicsappmobile.data.api.ChaptersApi
 import com.example.comicsappmobile.data.api.CommentsApi
 import com.example.comicsappmobile.data.api.FavoriteApi
+import com.example.comicsappmobile.data.api.FilesApi
 import com.example.comicsappmobile.data.api.GenresApi
 import com.example.comicsappmobile.data.api.PagesApi
 import com.example.comicsappmobile.data.api.UsersApi
@@ -23,7 +24,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
-    private const val BASE_URL = BuildConfig.API_BASE_URL // Укажите ваш URL
+    private const val BASE_URL = BuildConfig.API_BASE_URL // URL
+    // private const val BASE_URL = "http://10.8.1.2:5000" // URL Local server
 
     // Переменная для хранения токена
     var accessToken: String? = null
@@ -173,6 +175,15 @@ object RetrofitInstance {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(FavoriteApi::class.java)
+    }
+
+    val filesApi: FilesApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(FilesApi::class.java)
     }
 
 

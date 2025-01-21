@@ -2,14 +2,17 @@ package com.example.comicsappmobile.di
 
 import com.example.comicsappmobile.data.api.BooksApi
 import com.example.comicsappmobile.data.api.CommentsApi
+import com.example.comicsappmobile.data.api.FilesApi
 import com.example.comicsappmobile.data.api.GenresApi
 import com.example.comicsappmobile.data.repository.BooksRepository
 import com.example.comicsappmobile.data.repository.ChaptersRepository
 import com.example.comicsappmobile.data.repository.CommentsRepository
 import com.example.comicsappmobile.data.repository.FavoriteRepository
+import com.example.comicsappmobile.data.repository.FilesRepository
 import com.example.comicsappmobile.data.repository.GenresRepository
 import com.example.comicsappmobile.data.repository.PagesRepository
 import com.example.comicsappmobile.data.repository.UserRepository
+import com.example.comicsappmobile.ui.presentation.viewmodel.BookEditorViewModel
 import com.example.comicsappmobile.utils.remote.provideBookApiService
 import com.example.comicsappmobile.utils.remote.provideGenresApiService
 import com.example.comicsappmobile.utils.remote.provideMoshi
@@ -38,12 +41,14 @@ val appModule = module {
     single { provideOkHttpClient() }
     single { provideRetrofit(get(), get()) }
 
+    // Apis
     single<GenresApi> { provideGenresApiService(get()) }
     single<BooksApi> { provideBookApiService(get()) }
     single<CommentsApi> { RetrofitInstance.commentsApi }
+    single<FilesApi> { RetrofitInstance.filesApi }
 
 
-
+    // Repositories
     single { BooksRepository(booksApi = RetrofitInstance.bookApi) }
     single { GenresRepository(genreApi = RetrofitInstance.genresApi) }
     single { ChaptersRepository(chaptersApi = RetrofitInstance.chaptersApi) }
@@ -51,6 +56,7 @@ val appModule = module {
     single { PagesRepository(pagesApi = RetrofitInstance.pagesApi) }
     single { UserRepository(userApi = RetrofitInstance.userApi, sharedViewModel = get(), globalState = get()) }
     single { FavoriteRepository(favoriteApi = RetrofitInstance.favoriteApi, globalState = get()) }
+    single { FilesRepository(filesApi = RetrofitInstance.filesApi, globalState = get()) }
 
 
 
@@ -97,6 +103,15 @@ val appModule = module {
     factory { SettingsViewModel(
             userRepository = get(),
             globalState = get()
+    ) }
+
+    factory { (bookId: Int) -> BookEditorViewModel(
+        bookId = bookId,
+        booksRepository = get(),
+        genresRepository = get(),
+        chaptersRepository = get(),
+        filesRepository = get(),
+        globalState = get()
     ) }
 
 }

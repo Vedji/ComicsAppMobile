@@ -9,6 +9,8 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.comicsappmobile.data.dto.entities.user.UserDto
+import com.example.comicsappmobile.ui.theme.DarkMediumContrastColorScheme
+import com.example.comicsappmobile.ui.theme.darkGreenColorScheme
 import com.example.comicsappmobile.ui.theme.darkScheme
 import com.example.comicsappmobile.ui.theme.lightScheme
 import com.example.comicsappmobile.utils.Logger
@@ -26,7 +28,9 @@ data class GlobalState(
         0 to ("Светлая тема" to lightScheme),
         1 to ("Темная тема" to darkScheme),
         2 to ("Динамичная светлая тема" to dynamicLightColorScheme(appContext)),
-        3 to ("Динамичная темная тема" to dynamicDarkColorScheme(appContext))
+        3 to ("Динамичная темная тема" to dynamicDarkColorScheme(appContext)),
+        4 to ("Токсичная тема" to darkGreenColorScheme),
+        5 to ("Material3 dark" to DarkMediumContrastColorScheme)
     )
     var currentThemeId = 0
 

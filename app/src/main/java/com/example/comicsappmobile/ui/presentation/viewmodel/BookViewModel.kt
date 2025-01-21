@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class BookViewModel(
-    private val bookId: Int = -1,
+    val bookId: Int = -1,
     private val booksRepository: BooksRepository,
     private val genresRepository: GenresRepository,
     private val chaptersRepository: ChaptersRepository,

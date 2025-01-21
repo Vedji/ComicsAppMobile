@@ -34,13 +34,13 @@ fun ThemedSearchBar(
     placeholder: String,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(
-        color = MaterialTheme.colorScheme.onSecondaryContainer,
+        color = MaterialTheme.colorScheme.primary,
     ),
     placeholderStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(
-        color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f)
+        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f)
     ),
-    containerColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
-    cursorColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    containerColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    cursorColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     onClickSearch: (String) -> Unit = {}
 ) {
     BasicTextField(
@@ -69,7 +69,7 @@ fun ThemedSearchBar(
 
                     Box(
                         contentAlignment = Alignment.CenterStart,
-                        modifier = Modifier.widthIn(max = 256.dp)
+                        modifier = Modifier.widthIn(max = 256.dp).weight(0.8f, false)
                     ) {
                         if (text.isEmpty()) {
                             Text(
@@ -83,7 +83,7 @@ fun ThemedSearchBar(
                     }
                     IconButton(
                         onClick = { onClickSearch(text) },
-                        modifier = Modifier
+                        modifier = Modifier.weight(0.2f, false)
                     ) {
                         Icon(
                             Icons.Outlined.Search,"Search button",

@@ -31,6 +31,7 @@ class ThemedInputField {
 @Composable
 fun ThemedInputField(
     textFieldValue: MutableState<String> = rememberSaveable { mutableStateOf("") },
+    onValueChange: (String) -> Unit = {},
     placeholder: String = "Simple ThemedInputField",
     modifier: Modifier = Modifier.height(36.dp),
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge.copy(
@@ -48,7 +49,9 @@ fun ThemedInputField(
 
     BasicTextField(
         value = textFieldValue.value,
-        onValueChange = { textFieldValue.value = it },
+        onValueChange = {
+            textFieldValue.value = it
+            onValueChange(it) },
         textStyle = textStyle,
         cursorBrush = SolidColor(cursorColor),
         singleLine = oneLine,

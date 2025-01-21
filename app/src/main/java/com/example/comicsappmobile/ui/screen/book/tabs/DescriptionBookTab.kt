@@ -27,6 +27,28 @@ fun DescriptionBookTab(bookViewModel: BookViewModel) {
     Column(
         modifier = Modifier.padding(start = 24.dp, end = 24.dp, )
     ) {
+
+        Text(
+            text = "Название",
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold
+            )
+        )
+        ThemedStateView(
+            uiState = bookAboutUi,
+            {
+                if (bookAboutUi is UiState.Success){
+                    Text(
+                        text = bookAboutUi.data?.rusTitle ?: "Названия нет",
+                        color = MaterialTheme.colorScheme.secondary,
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Justify
+                    )
+                }
+            }
+        )
+        Spacer(modifier = Modifier.padding(top = 24.dp))
         Text(
             text = "Жанры",
             color = MaterialTheme.colorScheme.primary,
@@ -139,26 +161,26 @@ fun DescriptionBookTab(bookViewModel: BookViewModel) {
         )
         // Date of publication a book
         Spacer(modifier = Modifier.padding(top = 24.dp))
-        Text(
-            text = "ISBN",
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold
-            )
-        )
-        ThemedStateView(
-            uiState = bookAboutUi,
-            {
-                if (bookAboutUi is UiState.Success){
-                    Text(
-                        text = bookAboutUi.data?.bookISBN ?: "ISBN отсутствует",
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Start
-                    )
-                }
-            }
-        )
+        // Text(
+        //     text = "ISBN",
+        //     color = MaterialTheme.colorScheme.primary,
+        //     style = MaterialTheme.typography.titleLarge.copy(
+        //         fontWeight = FontWeight.Bold
+        //     )
+        // )
+        // ThemedStateView(
+        //     uiState = bookAboutUi,
+        //     {
+        //         if (bookAboutUi is UiState.Success){
+        //             Text(
+        //                 text = bookAboutUi.data?.bookISBN ?: "ISBN отсутствует",
+        //                 color = MaterialTheme.colorScheme.secondary,
+        //                 style = MaterialTheme.typography.bodyLarge,
+        //                 textAlign = TextAlign.Start
+        //             )
+        //         }
+        //     }
+        // )
 
     }
 }

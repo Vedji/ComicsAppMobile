@@ -125,10 +125,15 @@ fun DrawerContent(navController: NavHostController) {
             Text("Go to DragAndDropExample examples") // TODO: Remove from release
         }
 
+        TextButton(onClick = { navController.navigate(Screen.EditedBookScreen.createRoute(-1)) }) {
+            Text("Go to Example edit book") // TODO: Remove from release
+        }
+
         TextButton(onClick = { navController.navigate(Screen.SettingsScreen.route) }) {
             Text("Settings")
-
         }
+
+
     }
 }
 

@@ -75,7 +75,7 @@ fun OthersCommentCard(commentUiModel: CommentUiModel, bookViewModel: BookViewMod
                             text = commentUiModel.aboutUser.username,
                             style = MaterialTheme.typography.bodyLarge.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             ),
                             textAlign = TextAlign.Justify,
                             modifier = Modifier
@@ -108,7 +108,7 @@ fun OthersCommentCard(commentUiModel: CommentUiModel, bookViewModel: BookViewMod
                 if (commentUiModel.comment.isNotEmpty()) {
                     Text(
                         text = commentUiModel.comment,
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Justify
                     )

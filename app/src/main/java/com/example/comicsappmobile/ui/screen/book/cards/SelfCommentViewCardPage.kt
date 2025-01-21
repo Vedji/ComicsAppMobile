@@ -98,7 +98,8 @@ fun SelfCommentViewCardPage(commentUiModel: CommentUiModel, moveToAddReview: (In
                     Text(
                         text = commentUiModel.comment,
                         style = MaterialTheme.typography.bodyLarge.copy(
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            textAlign = TextAlign.Justify
                         ),
                         modifier = Modifier.padding(12.dp).wrapContentSize()
                     )

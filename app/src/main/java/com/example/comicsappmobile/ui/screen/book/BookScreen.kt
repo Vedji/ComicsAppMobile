@@ -19,15 +19,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
@@ -88,6 +93,7 @@ fun BookScreen(
     val bookInUserFavorite = bookViewModel.bookInFavorite.collectAsState()
     val bookChapters = bookViewModel.chaptersUiState.collectAsState()
     val bookAboutUi by bookViewModel.bookUiState.collectAsState()
+    val authUser by bookViewModel.globalState.authUser.collectAsState()
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current.applicationContext
@@ -139,6 +145,9 @@ fun BookScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         scaffoldState = scaffoldState,
         sheetDragHandle = {
+
+
+
             SecondaryScrollableTabRow(
                 containerColor = MaterialTheme.colorScheme.surface,
                 selectedTabIndex = state,
@@ -175,6 +184,51 @@ fun BookScreen(
         },
         sheetPeekHeight = (screenHeightFloat * 0.4).dp,
     ) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.background,      // Цвет в верхней части
+                            MaterialTheme.colorScheme.background.copy(alpha = 0.7f), // Полупрозрачный
+                            Color.Transparent  // Полностью прозрачный
+                        )
+                    )
+                ),
+            horizontalArrangement =
+            if (authUser.userId > 0) Arrangement.SpaceBetween
+            else Arrangement.Start
+        ) {
+            IconButton(
+                colors = IconButtonDefaults.iconButtonColors().copy(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                onClick = {
+                navController.navigate(Screen.Catalog.route)
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Home,
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.primary
+                ) }
+            if (authUser.userId > 0) {
+                IconButton(
+                    colors = IconButtonDefaults.iconButtonColors().copy(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    onClick = {
+                    navController.navigate(Screen.EditedBookScreen.createRoute(bookId = bookViewModel.bookId))
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Edit,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
         ImageByID(
             bookAboutUi.data?.bookTitleImageId ?: -1,
             modifier = Modifier
@@ -210,21 +264,21 @@ fun BookScreen(
                 ImageByID(
                     imageId = bookAboutUi.data?.bookTitleImageId ?: -1,
                     modifier = Modifier
-                        .padding(top = 24.dp)
+                        .padding(top = 64.dp)
                         .width(167.dp)
                         .height(245.dp)
                         .clip(RoundedCornerShape(16.dp)),
                     contentScale =  ContentScale.Crop
                 )
-                Text(
-                    text = bookAboutUi.data?.rusTitle ?: "Название отсутствует",
-                    modifier = Modifier
-                        .padding(start = 32.dp, end = 32.dp)
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                    )
-                )
+                // Text(
+                //     text = bookAboutUi.data?.rusTitle ?: "Название отсутствует",
+                //     modifier = Modifier
+                //         .padding(start = 32.dp, end = 32.dp)
+                //         .fillMaxWidth(),
+                //     textAlign = TextAlign.Center,
+                //     style = MaterialTheme.typography.headlineMedium.copy(
+                //     )
+                // )
 
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
