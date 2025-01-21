@@ -5,12 +5,15 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,6 +33,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -63,6 +67,7 @@ import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
@@ -111,7 +116,10 @@ fun BookScreen(
             "Главы",
             "Отзывы"
         )
-    Logger.debug("BottomSheetScaffold", (scaffoldState.bottomSheetState.currentValue.name == "Expanded").toString())
+    Logger.debug(
+        "BottomSheetScaffold",
+        (scaffoldState.bottomSheetState.currentValue.name == "Expanded").toString()
+    )
     BottomSheetScaffold(
         /*
         sheetSwipeEnabled = false,
@@ -145,33 +153,40 @@ fun BookScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         scaffoldState = scaffoldState,
         sheetDragHandle = {
-
-
-
             SecondaryScrollableTabRow(
                 containerColor = MaterialTheme.colorScheme.surface,
                 selectedTabIndex = state,
                 indicator = { FancyAnimatedIndicatorWithModifier(state) }
             ) {
                 titles.forEachIndexed { index, title ->
-                    Tab(selected = state == index, onClick = { state = index }, text = { Text(title) })
+                    Tab(
+                        selected = state == index,
+                        onClick = { state = index },
+                        text = {
+                            Text(text = title,
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ))
+                        }
+                    )
                 }
             }
         },
-        sheetContainerColor  = MaterialTheme.colorScheme.surface,
+        sheetContainerColor = MaterialTheme.colorScheme.surface,
         sheetShape =
-            if (scaffoldState.bottomSheetState.currentValue.name == "Expanded") RoundedCornerShape(0.dp)
-            else  MaterialTheme.shapes.extraLarge,
+        if (scaffoldState.bottomSheetState.currentValue.name == "Expanded") RoundedCornerShape(0.dp)
+        else MaterialTheme.shapes.extraLarge,
         sheetContent = {
             Spacer(modifier = Modifier.height(24.dp))
-            when (state){
+            when (state) {
                 0 -> { DescriptionBookTab(bookViewModel) }
                 1 -> { ChaptersBookTab(bookViewModel, navController) }
                 2 -> { CommentsBookTab(bookViewModel) }
                 else -> {
                     Box(
                         modifier = Modifier.fillMaxWidth(),
-                    ){
+                    ) {
                         Text(
                             modifier = Modifier,
                             text = "No Tab",
@@ -182,58 +197,65 @@ fun BookScreen(
             }
             Spacer(modifier = Modifier.height(screenHeightDp))
         },
-        sheetPeekHeight = (screenHeightFloat * 0.4).dp,
+        sheetPeekHeight = (screenHeightFloat * 0.46).dp,
     ) {
-
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.background,      // Цвет в верхней части
-                            MaterialTheme.colorScheme.background.copy(alpha = 0.7f), // Полупрозрачный
-                            Color.Transparent  // Полностью прозрачный
-                        )
-                    )
-                ),
-            horizontalArrangement =
-            if (authUser.userId > 0) Arrangement.SpaceBetween
-            else Arrangement.Start
+                .height(54.dp)
         ) {
-            IconButton(
-                colors = IconButtonDefaults.iconButtonColors().copy(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                onClick = {
-                navController.navigate(Screen.Catalog.route)
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Home,
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.primary
-                ) }
-            if (authUser.userId > 0) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.background,      // Цвет в верхней части
+                                MaterialTheme.colorScheme.background.copy(alpha = 0.7f), // Полупрозрачный
+                                Color.Transparent  // Полностью прозрачный
+                            )
+                        )
+                    ),
+                horizontalArrangement =
+                if (authUser.userId > 0) Arrangement.SpaceBetween else Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 IconButton(
                     colors = IconButtonDefaults.iconButtonColors().copy(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
                     onClick = {
-                    navController.navigate(Screen.EditedBookScreen.createRoute(bookId = bookViewModel.bookId))
-                }) {
+                        navController.navigate(Screen.Catalog.route)
+                    }) {
                     Icon(
-                        imageVector = Icons.Filled.Edit,
+                        imageVector = Icons.Filled.Home,
                         contentDescription = "",
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
+                if (authUser.userId > 0) {
+                    IconButton(
+                        colors = IconButtonDefaults.iconButtonColors().copy(
+                            containerColor = MaterialTheme.colorScheme.surface
+                        ),
+                        onClick = {
+                            navController.navigate(Screen.EditedBookScreen.createRoute(bookId = bookViewModel.bookId))
+                        }) {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = "",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
             }
+            HorizontalDivider()
         }
         ImageByID(
             bookAboutUi.data?.bookTitleImageId ?: -1,
             modifier = Modifier
                 .alpha(0.3f)
-                .offset(y = -64.dp)
+                .offset(y = (-64).dp)
                 .fillMaxSize(),
             contentScale = ContentScale.Crop
         )
@@ -243,73 +265,108 @@ fun BookScreen(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color.White.copy(alpha = 0f), // Эквивалент rgba(255, 255, 255, 0)
-                            MaterialTheme.colorScheme.surface // Эквивалент rgb(255, 255, 255)
+                            Color.White.copy(alpha = 0f),
+                            MaterialTheme.colorScheme.surface
                         ),
                         startY = (screenHeightFloat * 0.4).toFloat(),
-                        endY = (screenHeightFloat * 1.4).toFloat() // Настройка в зависимости от нужной высоты градиента
+                        endY = (screenHeightFloat * 1.4).toFloat()
                     )
                 )
-                .alpha(0.25f) // Устанавливаем общую прозрачность
+                .alpha(0.75f)
         )
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
-        ){
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ImageByID(
-                    imageId = bookAboutUi.data?.bookTitleImageId ?: -1,
+                Box(
                     modifier = Modifier
-                        .padding(top = 64.dp)
-                        .width(167.dp)
+                        .padding(top = 96.dp)
                         .height(245.dp)
-                        .clip(RoundedCornerShape(16.dp)),
-                    contentScale =  ContentScale.Crop
-                )
-                // Text(
-                //     text = bookAboutUi.data?.rusTitle ?: "Название отсутствует",
-                //     modifier = Modifier
-                //         .padding(start = 32.dp, end = 32.dp)
-                //         .fillMaxWidth(),
-                //     textAlign = TextAlign.Center,
-                //     style = MaterialTheme.typography.headlineMedium.copy(
-                //     )
-                // )
-
+                        .aspectRatio(0.65f)
+                        .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.large)
+                ){
+                    ImageByID(
+                        imageId = bookAboutUi.data?.bookTitleImageId ?: -1,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(16.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                    Row(
+                        modifier = Modifier
+                            .offset(y = (-4).dp)
+                            .background(MaterialTheme.colorScheme.background, MaterialTheme.shapes.medium)
+                            .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium)
+                            .padding(6.dp)
+                            .height(18.dp)
+                            .align(Alignment.BottomCenter),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .wrapContentSize(),
+                            textAlign = TextAlign.Justify,
+                            text = "${bookAboutUi.data?.bookRating ?: 0f}",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Star",
+                            tint = Color(0xFFFFD700),
+                            modifier = Modifier
+                                .size(18.dp)
+                        )
+                    }
+                }
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp)
+                        .padding(top = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
-                    if (bookChapters.value is UiState.Success){
+                    if (bookChapters.value is UiState.Success) {
                         val chapters = bookChapters.value.data ?: emptyList()
-                        if (bookChapters.value.data?.any { it.chapterLength > 0 } == true){
-                            val inUserFavorite: Boolean = bookChapters.value is UiState.Success && bookChapters.value.data?.any { it.chapterLength > 0 } == true && bookInUserFavorite.value is UiState.Success &&
-                                    bookInUserFavorite.value.data != null &&
-                                    bookInUserFavorite.value.data!!.favoriteId > 0 &&
-                                    bookInUserFavorite.value.data!!.chapterId > 0
+                        if (bookChapters.value.data?.any { it.chapterLength > 0 } == true) {
+                            val inUserFavorite: Boolean =
+                                bookChapters.value is UiState.Success && bookChapters.value.data?.any { it.chapterLength > 0 } == true && bookInUserFavorite.value is UiState.Success &&
+                                        bookInUserFavorite.value.data != null &&
+                                        bookInUserFavorite.value.data!!.favoriteId > 0 &&
+                                        bookInUserFavorite.value.data!!.chapterId > 0
                             IconButton(
                                 onClick = {
-                                    if (bookChapters.value is UiState.Success && !bookChapters.value.data.isNullOrEmpty()){
-                                        if (!inUserFavorite){
-                                            val chapter = bookChapters.value.data!!.filter { it.chapterLength > 0 }.first()
+                                    if (bookChapters.value is UiState.Success && !bookChapters.value.data.isNullOrEmpty()) {
+                                        if (!inUserFavorite) {
+                                            val chapter =
+                                                bookChapters.value.data!!.filter { it.chapterLength > 0 }
+                                                    .first()
                                             navController.navigate(
-                                                Screen.BookReader.createRoute(chapter.bookId, chapter.chapterId))
+                                                Screen.BookReader.createRoute(
+                                                    chapter.bookId,
+                                                    chapter.chapterId
+                                                )
+                                            )
                                         } else if (bookInUserFavorite.value is UiState.Success &&
                                             bookInUserFavorite.value.data != null &&
                                             bookInUserFavorite.value.data!!.bookId > 0 &&
                                             bookInUserFavorite.value.data!!.chapterId > 0
                                         ) {
-                                            navController.navigate(Screen.BookReader.createRoute(
-                                                bookInUserFavorite.value.data!!.bookId,
-                                                bookInUserFavorite.value.data!!.chapterId))
+                                            navController.navigate(
+                                                Screen.BookReader.createRoute(
+                                                    bookInUserFavorite.value.data!!.bookId,
+                                                    bookInUserFavorite.value.data!!.chapterId
+                                                )
+                                            )
 
-                                        }else{
+                                        } else {
                                             vibrate(context)
                                         }
                                     }
@@ -318,47 +375,27 @@ fun BookScreen(
                             ) {
                                 Icon(
                                     painter = painterResource(
-                                        if (inUserFavorite) R.drawable.round_play_arrow_24 else R.drawable.sharp_resume_24),
+                                        if (inUserFavorite) R.drawable.round_play_arrow_24 else R.drawable.sharp_resume_24
+                                    ),
                                     contentDescription = "Go to read",
                                     modifier = Modifier.size(42.dp)
                                 )
                             }
-
-
                         }
                     }
-                    Row(modifier = Modifier.padding(6.dp)) {
-                        Text(
-                            modifier = Modifier
-                                .wrapContentSize(),
-                            textAlign = TextAlign.Justify,
-                            text = "${bookAboutUi.data?.bookRating ?: 0f}",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        )
+                    val inUserFavorite: Boolean = bookInUserFavorite.value is UiState.Success &&
+                            bookInUserFavorite.value.data != null &&
+                            bookInUserFavorite.value.data!!.favoriteId > 0
+                    IconButton(
+                        onClick = { bookViewModel.switchFavoriteBook() },
+                        modifier = Modifier.size(48.dp)
+                    ) {
                         Icon(
-                            imageVector =  Icons.Filled.Star,
-                            contentDescription = "Star",
-                            tint = Color(0xFFFFD700), // Цвет звезды
-                            modifier = Modifier
-                                .size(18.dp) // Размер звезды
+                            imageVector = if (inUserFavorite) Icons.Filled.Favorite else Icons.TwoTone.Favorite,
+                            "Book in favorite",
+                            modifier = Modifier.size(32.dp)
                         )
                     }
-                        val inUserFavorite: Boolean = bookInUserFavorite.value is UiState.Success &&
-                                bookInUserFavorite.value.data != null &&
-                                bookInUserFavorite.value.data!!.favoriteId > 0
-                        IconButton(
-                            onClick = { bookViewModel.switchFavoriteBook() },
-                            modifier = Modifier.size(48.dp)
-                        ) {
-                            Icon(
-                                imageVector = if (inUserFavorite) Icons.Filled.Favorite else Icons.TwoTone.Favorite,
-                                "Book in favorite",
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-
                 }
             }
         }
@@ -372,14 +409,13 @@ fun TabIndicatorScope.FancyAnimatedIndicatorWithModifier(index: Int) {
     val colors =
         listOf(
             MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.secondary,
-            MaterialTheme.colorScheme.tertiary,
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.primary,
         )
     var startAnimatable by remember { mutableStateOf<Animatable<Dp, AnimationVector1D>?>(null) }
     var endAnimatable by remember { mutableStateOf<Animatable<Dp, AnimationVector1D>?>(null) }
     val coroutineScope = rememberCoroutineScope()
     val indicatorColor: Color by animateColorAsState(colors[index % colors.size], label = "")
-
     Box(
         Modifier.tabIndicatorLayout {
                 measurable: Measurable,

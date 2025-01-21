@@ -72,7 +72,7 @@ fun ChaptersBookTab(bookViewModel: BookViewModel, navController: NavController) 
                         AssistChip(
                             onClick = { sortByAsc = !sortByAsc },
                             label = { Text(
-                                text = "Assist Chip",
+                                text = "Сортировка",
                                 style = MaterialTheme.typography.labelLarge.copy(
                                     color = MaterialTheme.colorScheme.onPrimary
                                 )
