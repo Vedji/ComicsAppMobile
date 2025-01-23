@@ -16,5 +16,9 @@ sealed class UiState<T>(
         message: String? = null,
         typeError: String? = null,
         statusCode: Int = 200
-    ) : UiState<T>(data, message, typeError, statusCode)
+    ) : UiState<T>(data, message, typeError, statusCode){
+        override fun toString(): String {
+            return "<UiState.Error(data = '${data.toString()}', message = '$message', typeError = '$typeError', statusCode = '$statusCode')>"
+        }
+    }
 }

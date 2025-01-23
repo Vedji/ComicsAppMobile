@@ -20,6 +20,7 @@ import com.example.comicsappmobile.ui.screen.catalog.CatalogScreen
 import com.example.comicsappmobile.ui.screen.book.BookScreen
 import com.example.comicsappmobile.ui.screen.bookeditor.BookEditorScreen
 import com.example.comicsappmobile.ui.screen.bookreader.BookReaderScreen
+import com.example.comicsappmobile.ui.screen.chaptereditor.ChapterEditorScreen
 import com.example.comicsappmobile.ui.screen.examples.DragAndDropExample
 import com.example.comicsappmobile.ui.screen.examples.FontDisplayExamplesScreen
 import com.example.comicsappmobile.ui.screen.profiles.ProfileScreen
@@ -116,6 +117,19 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
             val bookId: Int = backStackEntry.arguments?.getInt ("bookId") ?: -1
             BookEditorScreen(bookId = bookId, navController = navController)
         }
+
+        composable(
+            route = Screen.ChapterEditorScreen.route,
+            arguments = listOf(
+                navArgument("bookId") { type = NavType.IntType },
+                navArgument("chapterId") { type = NavType.IntType }
+            ),
+        ) { backStackEntry ->
+            val bookId: Int = backStackEntry.arguments?.getInt ("bookId") ?: -1
+            val chapterId: Int = backStackEntry.arguments?.getInt ("chapterId") ?: -1
+            ChapterEditorScreen(bookId = bookId, chapterId = chapterId, navController = navController)
+        }
+
     }
 }
 

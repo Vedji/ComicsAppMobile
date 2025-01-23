@@ -32,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,11 +41,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.comicsappmobile.navigation.Screen
+import com.example.comicsappmobile.ui.components.ThemedAlertDialog
 import com.example.comicsappmobile.ui.components.ThemedStateView
 import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.viewmodel.BookViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.ui.presentation.model.ChapterUiModel
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -98,7 +101,13 @@ fun ChaptersBookTab(bookViewModel: BookViewModel, navController: NavController) 
                                     hasAdmin = true
                                     ))) {
                             SmallFloatingActionButton(
-                                onClick = {},   // TODO: Add onClick to add newChapter
+                                onClick = {
+                                    navController.navigate(
+                                        Screen.ChapterEditorScreen.createRoute(
+                                            bookId = bookViewModel.bookId,
+                                            chapterId = -1)
+                                    )
+                                },
                                 modifier = Modifier
                                     .size(40.dp)
                                     .offset(x = (4).dp),
@@ -174,15 +183,45 @@ fun ChaptersBookTab(bookViewModel: BookViewModel, navController: NavController) 
 }
 
 @Composable
-fun ChapterCard(chapter: ChapterUiModel, navController: NavController, bookViewModel: BookViewModel){
+fun ChapterCard(chapter: ChapterUiModel, navController: NavController, bookViewModel: BookViewModel) {
+    val isOpenDeleted = remember { mutableStateOf(false) }
+    val isOpenDeletedError = remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
+    if (isOpenDeleted.value)
+        ThemedAlertDialog(
+            titleText = "Вы действительно хотите удалить главу?",
+            messageText = "",
+            onConfirm = {
+                coroutineScope.launch {
+                    val a = bookViewModel.deleteChapter(chapterId = chapter.chapterId)
+                    if (!a) isOpenDeletedError.value = true
+                    isOpenDeleted.value = false
+                } },
+            onDismiss = { isOpenDeleted.value = false },
+        )
+
+    if (isOpenDeletedError.value)
+        ThemedAlertDialog(
+            titleText = "Ошибка при удалении главы ${chapter.chapterId}",
+            messageText = "Какая то неизвесная оошибка(((",
+            onConfirm = { isOpenDeletedError.value = false },
+            onDismiss = { isOpenDeletedError.value = false }
+        )
+
     val hisCardEnabled = chapter.chapterLength > 0
     Box(
         modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
-    ){
+    ) {
         OutlinedCard(
             onClick = {
-                navController.navigate(Screen.BookReader.createRoute(bookId = chapter.bookId, chapterId = chapter.chapterId))
-                    },
+                navController.navigate(
+                    Screen.BookReader.createRoute(
+                        bookId = chapter.bookId,
+                        chapterId = chapter.chapterId
+                    )
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             colors = CardDefaults.outlinedCardColors().copy(
@@ -202,7 +241,7 @@ fun ChapterCard(chapter: ChapterUiModel, navController: NavController, bookViewM
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold,
-                            color = if(hisCardEnabled) MaterialTheme.colorScheme.onPrimaryContainer
+                            color = if (hisCardEnabled) MaterialTheme.colorScheme.onPrimaryContainer
                             else MaterialTheme.colorScheme.onSecondaryContainer,
                             textAlign = TextAlign.Justify
                         )
@@ -218,7 +257,7 @@ fun ChapterCard(chapter: ChapterUiModel, navController: NavController, bookViewM
                         text = "Страниц: ${chapter.chapterLength.toString()}",
                         textAlign = TextAlign.Start,
                         style = MaterialTheme.typography.labelLarge.copy(
-                            color = if(hisCardEnabled) MaterialTheme.colorScheme.onPrimaryContainer
+                            color = if (hisCardEnabled) MaterialTheme.colorScheme.onPrimaryContainer
                             else MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     )
@@ -226,7 +265,7 @@ fun ChapterCard(chapter: ChapterUiModel, navController: NavController, bookViewM
                         text = "Глава: ${chapter.chapterNumber}",
                         textAlign = TextAlign.Start,
                         style = MaterialTheme.typography.labelLarge.copy(
-                            color = if(hisCardEnabled) MaterialTheme.colorScheme.onPrimaryContainer
+                            color = if (hisCardEnabled) MaterialTheme.colorScheme.onPrimaryContainer
                             else MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     )
@@ -236,12 +275,13 @@ fun ChapterCard(chapter: ChapterUiModel, navController: NavController, bookViewM
             }
         }
         if ((
-            bookViewModel.sharedViewModel.isUserHasPermission(
-                addedUserId = chapter.addedBy,
-                hasEditor = true,
-                hasPublisher = true,
-                hasAdmin = true
-            ))) {
+                    bookViewModel.sharedViewModel.isUserHasPermission(
+                        addedUserId = chapter.addedBy,
+                        hasEditor = true,
+                        hasPublisher = true,
+                        hasAdmin = true
+                    ))
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -256,7 +296,12 @@ fun ChapterCard(chapter: ChapterUiModel, navController: NavController, bookViewM
                 )
                 SmallFloatingActionButton(
                     onClick = {
-                        // TODO: Add navigate to edit chapter page
+                        navController.navigate(
+                            Screen.ChapterEditorScreen.createRoute(
+                                bookId = chapter.bookId,
+                                chapterId = chapter.chapterId
+                            )
+                        )
                     },
                     modifier = Modifier
                         .size(32.dp),
@@ -272,9 +317,7 @@ fun ChapterCard(chapter: ChapterUiModel, navController: NavController, bookViewM
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 SmallFloatingActionButton(
-                    onClick = {
-                        // TODO: Delete chapter
-                    },
+                    onClick = { isOpenDeleted.value = true },
                     modifier = Modifier
                         .size(32.dp),
                     containerColor = MaterialTheme.colorScheme.errorContainer

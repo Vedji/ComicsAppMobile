@@ -14,6 +14,7 @@ fun ThemedAlertDialog(
     messageText: String = "",
     onConfirm: () -> Unit = {},
     onDismiss: () -> Unit = {},
+    onDismissRequest: () -> Unit = { onDismiss() }
 ) {
     val openDialog = remember { mutableStateOf(true) }
 
@@ -21,6 +22,7 @@ fun ThemedAlertDialog(
         AlertDialog(
             onDismissRequest = {
                 openDialog.value = false
+                onDismissRequest()
             },
             title = { Text(text = titleText) },
             text = { Text(text = messageText) },

@@ -44,6 +44,8 @@ import androidx.compose.material3.TabIndicatorScope
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -51,6 +53,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -83,6 +86,7 @@ import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.viewmodel.BookViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.utils.vibrate
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -105,6 +109,7 @@ fun BookScreen(
 
     val screenHeightDp = configuration.screenHeightDp.dp
     val screenHeightFloat = configuration.screenHeightDp.toFloat()
+    val coroutineScope = rememberCoroutineScope()
 
     val scaffoldState = rememberBottomSheetScaffoldState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -163,11 +168,13 @@ fun BookScreen(
                         selected = state == index,
                         onClick = { state = index },
                         text = {
-                            Text(text = title,
+                            Text(
+                                text = title,
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold
-                                ))
+                                )
+                            )
                         }
                     )
                 }
@@ -180,9 +187,18 @@ fun BookScreen(
         sheetContent = {
             Spacer(modifier = Modifier.height(24.dp))
             when (state) {
-                0 -> { DescriptionBookTab(bookViewModel) }
-                1 -> { ChaptersBookTab(bookViewModel, navController) }
-                2 -> { CommentsBookTab(bookViewModel) }
+                0 -> {
+                    DescriptionBookTab(bookViewModel)
+                }
+
+                1 -> {
+                    ChaptersBookTab(bookViewModel, navController)
+                }
+
+                2 -> {
+                    CommentsBookTab(bookViewModel)
+                }
+
                 else -> {
                     Box(
                         modifier = Modifier.fillMaxWidth(),
@@ -199,207 +215,220 @@ fun BookScreen(
         },
         sheetPeekHeight = (screenHeightFloat * 0.46).dp,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(54.dp)
-        ) {
-            Row(
+
+            Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.background,      // Цвет в верхней части
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.7f), // Полупрозрачный
-                                Color.Transparent  // Полностью прозрачный
-                            )
-                        )
-                    ),
-                horizontalArrangement =
-                if (authUser.userId > 0) Arrangement.SpaceBetween else Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth()
+                    .height(64.dp)
             ) {
-                IconButton(
-                    colors = IconButtonDefaults.iconButtonColors().copy(
-                        containerColor = MaterialTheme.colorScheme.surface
-                    ),
-                    onClick = {
-                        navController.navigate(Screen.Catalog.route)
-                    }) {
-                    Icon(
-                        imageVector = Icons.Filled.Home,
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-                if (authUser.userId > 0) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.background,      // Цвет в верхней части
+                                    MaterialTheme.colorScheme.background.copy(alpha = 0.7f), // Полупрозрачный
+                                    Color.Transparent  // Полностью прозрачный
+                                )
+                            )
+                        ),
+                    horizontalArrangement =
+                    if (authUser.userId > 0) Arrangement.SpaceBetween else Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     IconButton(
                         colors = IconButtonDefaults.iconButtonColors().copy(
                             containerColor = MaterialTheme.colorScheme.surface
                         ),
                         onClick = {
-                            navController.navigate(Screen.EditedBookScreen.createRoute(bookId = bookViewModel.bookId))
+                            navController.navigate(Screen.Catalog.route)
                         }) {
                         Icon(
-                            imageVector = Icons.Filled.Edit,
+                            imageVector = Icons.Filled.Home,
                             contentDescription = "",
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                }
-            }
-            HorizontalDivider()
-        }
-        ImageByID(
-            bookAboutUi.data?.bookTitleImageId ?: -1,
-            modifier = Modifier
-                .alpha(0.3f)
-                .offset(y = (-64).dp)
-                .fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = 0f),
-                            MaterialTheme.colorScheme.surface
-                        ),
-                        startY = (screenHeightFloat * 0.4).toFloat(),
-                        endY = (screenHeightFloat * 1.4).toFloat()
-                    )
-                )
-                .alpha(0.75f)
-        )
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    modifier = Modifier
-                        .padding(top = 96.dp)
-                        .height(245.dp)
-                        .aspectRatio(0.65f)
-                        .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.large)
-                ){
-                    ImageByID(
-                        imageId = bookAboutUi.data?.bookTitleImageId ?: -1,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                    Row(
-                        modifier = Modifier
-                            .offset(y = (-4).dp)
-                            .background(MaterialTheme.colorScheme.background, MaterialTheme.shapes.medium)
-                            .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium)
-                            .padding(6.dp)
-                            .height(18.dp)
-                            .align(Alignment.BottomCenter),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .wrapContentSize(),
-                            textAlign = TextAlign.Justify,
-                            text = "${bookAboutUi.data?.bookRating ?: 0f}",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.colorScheme.onSurface
+                    if (authUser.userId > 0) {
+                        IconButton(
+                            colors = IconButtonDefaults.iconButtonColors().copy(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            ),
+                            onClick = {
+                                navController.navigate(Screen.EditedBookScreen.createRoute(bookId = bookViewModel.bookId))
+                            }) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.primary
                             )
-                        )
-                        Icon(
-                            imageVector = Icons.Filled.Star,
-                            contentDescription = "Star",
-                            tint = Color(0xFFFFD700),
-                            modifier = Modifier
-                                .size(18.dp)
-                        )
-                    }
-                }
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.dp)
-                        .padding(top = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (bookChapters.value is UiState.Success) {
-                        val chapters = bookChapters.value.data ?: emptyList()
-                        if (bookChapters.value.data?.any { it.chapterLength > 0 } == true) {
-                            val inUserFavorite: Boolean =
-                                bookChapters.value is UiState.Success && bookChapters.value.data?.any { it.chapterLength > 0 } == true && bookInUserFavorite.value is UiState.Success &&
-                                        bookInUserFavorite.value.data != null &&
-                                        bookInUserFavorite.value.data!!.favoriteId > 0 &&
-                                        bookInUserFavorite.value.data!!.chapterId > 0
-                            IconButton(
-                                onClick = {
-                                    if (bookChapters.value is UiState.Success && !bookChapters.value.data.isNullOrEmpty()) {
-                                        if (!inUserFavorite) {
-                                            val chapter =
-                                                bookChapters.value.data!!.filter { it.chapterLength > 0 }
-                                                    .first()
-                                            navController.navigate(
-                                                Screen.BookReader.createRoute(
-                                                    chapter.bookId,
-                                                    chapter.chapterId
-                                                )
-                                            )
-                                        } else if (bookInUserFavorite.value is UiState.Success &&
-                                            bookInUserFavorite.value.data != null &&
-                                            bookInUserFavorite.value.data!!.bookId > 0 &&
-                                            bookInUserFavorite.value.data!!.chapterId > 0
-                                        ) {
-                                            navController.navigate(
-                                                Screen.BookReader.createRoute(
-                                                    bookInUserFavorite.value.data!!.bookId,
-                                                    bookInUserFavorite.value.data!!.chapterId
-                                                )
-                                            )
-
-                                        } else {
-                                            vibrate(context)
-                                        }
-                                    }
-                                },
-                                modifier = Modifier.size(48.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(
-                                        if (inUserFavorite) R.drawable.round_play_arrow_24 else R.drawable.sharp_resume_24
-                                    ),
-                                    contentDescription = "Go to read",
-                                    modifier = Modifier.size(42.dp)
-                                )
-                            }
                         }
                     }
-                    val inUserFavorite: Boolean = bookInUserFavorite.value is UiState.Success &&
-                            bookInUserFavorite.value.data != null &&
-                            bookInUserFavorite.value.data!!.favoriteId > 0
-                    IconButton(
-                        onClick = { bookViewModel.switchFavoriteBook() },
-                        modifier = Modifier.size(48.dp)
-                    ) {
-                        Icon(
-                            imageVector = if (inUserFavorite) Icons.Filled.Favorite else Icons.TwoTone.Favorite,
-                            "Book in favorite",
-                            modifier = Modifier.size(32.dp)
+                }
+                HorizontalDivider()
+            }
+            ImageByID(
+                bookAboutUi.data?.bookTitleImageId ?: -1,
+                modifier = Modifier
+                    .alpha(0.3f)
+                    .offset(y = (-64).dp)
+                    .fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = 0f),
+                                MaterialTheme.colorScheme.surface
+                            ),
+                            startY = (screenHeightFloat * 0.4).toFloat(),
+                            endY = (screenHeightFloat * 1.4).toFloat()
                         )
+                    )
+                    .alpha(0.75f)
+            )
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 96.dp)
+                            .height(245.dp)
+                            .aspectRatio(0.65f)
+                            .border(
+                                1.dp,
+                                MaterialTheme.colorScheme.outline,
+                                MaterialTheme.shapes.large
+                            )
+                    ) {
+                        ImageByID(
+                            imageId = bookAboutUi.data?.bookTitleImageId ?: -1,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(16.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                        Row(
+                            modifier = Modifier
+                                .offset(y = (-4).dp)
+                                .background(
+                                    MaterialTheme.colorScheme.background,
+                                    MaterialTheme.shapes.medium
+                                )
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.outline,
+                                    MaterialTheme.shapes.medium
+                                )
+                                .padding(6.dp)
+                                .height(18.dp)
+                                .align(Alignment.BottomCenter),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .wrapContentSize(),
+                                textAlign = TextAlign.Justify,
+                                text = "${bookAboutUi.data?.bookRating ?: 0f}",
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            )
+                            Icon(
+                                imageVector = Icons.Filled.Star,
+                                contentDescription = "Star",
+                                tint = Color(0xFFFFD700),
+                                modifier = Modifier
+                                    .size(18.dp)
+                            )
+                        }
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp)
+                            .padding(top = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (bookChapters.value is UiState.Success) {
+                            val chapters = bookChapters.value.data ?: emptyList()
+                            if (bookChapters.value.data?.any { it.chapterLength > 0 } == true) {
+                                val inUserFavorite: Boolean =
+                                    bookChapters.value is UiState.Success && bookChapters.value.data?.any { it.chapterLength > 0 } == true && bookInUserFavorite.value is UiState.Success &&
+                                            bookInUserFavorite.value.data != null &&
+                                            bookInUserFavorite.value.data!!.favoriteId > 0 &&
+                                            bookInUserFavorite.value.data!!.chapterId > 0
+                                IconButton(
+                                    onClick = {
+                                        if (bookChapters.value is UiState.Success && !bookChapters.value.data.isNullOrEmpty()) {
+                                            if (!inUserFavorite) {
+                                                val chapter =
+                                                    bookChapters.value.data!!.filter { it.chapterLength > 0 }
+                                                        .first()
+                                                navController.navigate(
+                                                    Screen.BookReader.createRoute(
+                                                        chapter.bookId,
+                                                        chapter.chapterId
+                                                    )
+                                                )
+                                            } else if (bookInUserFavorite.value is UiState.Success &&
+                                                bookInUserFavorite.value.data != null &&
+                                                bookInUserFavorite.value.data!!.bookId > 0 &&
+                                                bookInUserFavorite.value.data!!.chapterId > 0
+                                            ) {
+                                                navController.navigate(
+                                                    Screen.BookReader.createRoute(
+                                                        bookInUserFavorite.value.data!!.bookId,
+                                                        bookInUserFavorite.value.data!!.chapterId
+                                                    )
+                                                )
+
+                                            } else {
+                                                vibrate(context)
+                                            }
+                                        }
+                                    },
+                                    modifier = Modifier.size(48.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(
+                                            if (inUserFavorite) R.drawable.round_play_arrow_24 else R.drawable.sharp_resume_24
+                                        ),
+                                        contentDescription = "Go to read",
+                                        modifier = Modifier.size(42.dp)
+                                    )
+                                }
+                            }
+                        }
+                        val inUserFavorite: Boolean = bookInUserFavorite.value is UiState.Success &&
+                                bookInUserFavorite.value.data != null &&
+                                bookInUserFavorite.value.data!!.favoriteId > 0
+                        IconButton(
+                            onClick = { bookViewModel.switchFavoriteBook() },
+                            modifier = Modifier.size(48.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (inUserFavorite) Icons.Filled.Favorite else Icons.TwoTone.Favorite,
+                                "Book in favorite",
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
                     }
                 }
             }
         }
-    }
+
 }
 
 

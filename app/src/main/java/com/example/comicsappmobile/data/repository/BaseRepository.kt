@@ -37,8 +37,8 @@ open class BaseRepository {
                     }
                 }
                 else -> {
-
                     val errorBody = result.body() as? ResponseDto<ErrorDataDto>
+                    Logger.debug("BaseRepository -> safeApiCall", errorBody.toString())
                     StateResponseDto.Error(data = errorBody?.data ?: ErrorDataDto("", result.code(), "Unknown error"))
                 }
             }

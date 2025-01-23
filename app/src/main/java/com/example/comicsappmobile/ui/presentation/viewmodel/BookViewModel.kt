@@ -53,7 +53,9 @@ class BookViewModel(
     private val _comments = MutableStateFlow<UiState<List<CommentUiModel>>>(UiState.Loading())
     val commentsUiState: StateFlow<UiState<List<CommentUiModel>>> = _comments
 
-    init {
+    init { refresh() }
+
+    fun refresh(){
         Logger.debug("return when(test)", bookId.toString())
         loadBook()
         loadGenres()
@@ -335,6 +337,17 @@ class BookViewModel(
         }
     }
 
+    suspend fun deleteChapter(chapterId: Int): Boolean{
+        if (_chapters.value !is UiState.Success)
+            return false
+        val response = loadWithState { chaptersRepository.deleteChapter(bookId = bookId, chapterId = chapterId) }
+        if (response is UiState.Success){
+            loadChapters()
+            return true
+        }
+        return false
+    }
+
     fun launchSetUserComment(rating: Int, comment: String, bookId: Int = this.bookId){
         viewModelScope.launch {
             setUserComment(rating, comment, bookId)
@@ -346,5 +359,13 @@ class BookViewModel(
             deleteUserComment()
             loadUserComment()
         }
+    }
+
+    fun launchDeleteChapter(chapterId: Int): Boolean{
+        var buffer = false
+        viewModelScope.launch {
+            buffer = deleteChapter(chapterId)
+        }
+        return buffer
     }
 }

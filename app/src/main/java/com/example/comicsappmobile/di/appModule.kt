@@ -20,6 +20,7 @@ import com.example.comicsappmobile.utils.remote.provideOkHttpClient
 import com.example.comicsappmobile.utils.remote.provideRetrofit
 import com.example.comicsappmobile.ui.presentation.viewmodel.BookViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.CatalogViewModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.ChapterEditorViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.LoginFormViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.PagesViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
@@ -110,6 +111,15 @@ val appModule = module {
         booksRepository = get(),
         genresRepository = get(),
         chaptersRepository = get(),
+        filesRepository = get(),
+        globalState = get()
+    ) }
+
+    factory { (bookId: Int, chapterId: Int) -> ChapterEditorViewModel(
+        bookId = bookId,
+        chapterId = chapterId,
+        chaptersRepository = get(),
+        pagesRepository = get(),
         filesRepository = get(),
         globalState = get()
     ) }
