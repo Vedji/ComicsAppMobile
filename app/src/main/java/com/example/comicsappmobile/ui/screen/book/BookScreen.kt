@@ -96,6 +96,7 @@ import org.koin.core.parameter.parametersOf
 fun BookScreen(
     navController: NavHostController,
     bookId: Int,
+    selectionTab: Int = 0,
     bookViewModel: BookViewModel = koinViewModel { parametersOf(bookId) }
 ) {
 
@@ -114,7 +115,7 @@ fun BookScreen(
     val scaffoldState = rememberBottomSheetScaffoldState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    var state by remember { mutableStateOf(0) }
+    var state by remember { mutableStateOf(selectionTab) }
     val titles =
         listOf(
             "Описание",
@@ -411,18 +412,20 @@ fun BookScreen(
                                 }
                             }
                         }
-                        val inUserFavorite: Boolean = bookInUserFavorite.value is UiState.Success &&
-                                bookInUserFavorite.value.data != null &&
-                                bookInUserFavorite.value.data!!.favoriteId > 0
-                        IconButton(
-                            onClick = { bookViewModel.switchFavoriteBook() },
-                            modifier = Modifier.size(48.dp)
-                        ) {
-                            Icon(
-                                imageVector = if (inUserFavorite) Icons.Filled.Favorite else Icons.TwoTone.Favorite,
-                                "Book in favorite",
-                                modifier = Modifier.size(32.dp)
-                            )
+                        if (authUser.userId > 0){
+                            val inUserFavorite: Boolean = bookInUserFavorite.value is UiState.Success &&
+                                    bookInUserFavorite.value.data != null &&
+                                    bookInUserFavorite.value.data!!.favoriteId > 0
+                            IconButton(
+                                onClick = { bookViewModel.switchFavoriteBook() },
+                                modifier = Modifier.size(48.dp)
+                            ) {
+                                Icon(
+                                    imageVector = if (inUserFavorite) Icons.Filled.Favorite else Icons.TwoTone.Favorite,
+                                    "Book in favorite",
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
                         }
                     }
                 }

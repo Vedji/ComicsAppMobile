@@ -60,7 +60,7 @@ fun ProfileCommentsCard(commentUiModel: CommentUiModel, navController: NavHostCo
         OutlinedCard(
             onClick = {
                 if (commentUiModel.bookId != null && commentUiModel.bookId > 0)
-                    navController.navigate(Screen.AboutBook.createRoute(commentUiModel.bookId.toString()))
+                    navController.navigate(Screen.AboutBook.createRoute(commentUiModel.bookId.toString(), selectionTab = 2))
                       },
             modifier = Modifier
                 .fillMaxWidth(),

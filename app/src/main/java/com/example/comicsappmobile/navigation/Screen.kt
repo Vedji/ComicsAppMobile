@@ -4,8 +4,8 @@ import com.example.comicsappmobile.utils.Logger
 
 sealed class Screen(val route: String) {
     data object Main : Screen("main")
-    data object AboutBook : Screen("aboutBook/{itemId}") {
-        fun createRoute(itemId: String) = "aboutBook/$itemId"
+    data object AboutBook : Screen("aboutBook/{itemId}/{selectionTab}") {
+        fun createRoute(itemId: String, selectionTab: Int = 0) = "aboutBook/$itemId/$selectionTab"
     }
     data object Catalog: Screen("catalog")
     data object BookReader: Screen("bookchapter/{bookId}/{chapterId}") {

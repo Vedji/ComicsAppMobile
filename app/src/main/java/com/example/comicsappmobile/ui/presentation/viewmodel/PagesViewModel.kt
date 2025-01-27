@@ -3,11 +3,14 @@ package com.example.comicsappmobile.ui.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.example.comicsappmobile.data.repository.BooksRepository
 import com.example.comicsappmobile.data.repository.ChaptersRepository
+import com.example.comicsappmobile.data.repository.FavoriteRepository
 import com.example.comicsappmobile.data.repository.PagesRepository
+import com.example.comicsappmobile.di.GlobalState
 import com.example.comicsappmobile.di.SharedViewModel
 import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.presentation.model.ChapterUiModel
+import com.example.comicsappmobile.ui.presentation.model.FavoriteUiModel
 import com.example.comicsappmobile.ui.presentation.model.PageUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +23,9 @@ class PagesViewModel(
     private val pagesRepository: PagesRepository,
     private val chaptersRepository: ChaptersRepository,
     private val booksRepository: BooksRepository,
-    val sharedViewModel: SharedViewModel
+    private val favoriteRepository: FavoriteRepository,
+    val sharedViewModel: SharedViewModel,
+    val globalState: GlobalState
 ): BaseViewModel() {
 
 
@@ -54,6 +59,10 @@ class PagesViewModel(
     private val _pagesUiState = MutableStateFlow<UiState<List<PageUiModel>>>(UiState.Loading())
     val pagesUiState: StateFlow<UiState<List<PageUiModel>>> = _pagesUiState
 
+    // В избранном ли книга
+    private val _bookInFavorite = MutableStateFlow<UiState<FavoriteUiModel>>(UiState.Loading())
+    val bookInFavorite: StateFlow<UiState<FavoriteUiModel>> = _bookInFavorite
+
 
     init {
         val book = sharedViewModel.selectedBookInfo.value
@@ -64,6 +73,7 @@ class PagesViewModel(
             fetchBook(fetchingBookId = bookId)
             fetchChapters(fetchBookId = bookId)
             setChapter(chapterId = chapterId)
+            fetchHasBookInFavorite()
             // if (chapters != null) setChapters(chapters)
             // else fetchChapters(fetchBookId = bookId)
             // if (book != null) setBook(book) else fetchBook(bookId)
@@ -85,6 +95,10 @@ class PagesViewModel(
         }
     }
 
+    fun getChapterId(): Int {
+        return chapterId
+    }
+
     fun goLast() {
         if (previousChapterId >= 0) {
             viewModelScope.launch {
@@ -92,6 +106,7 @@ class PagesViewModel(
                 fetchPages(fetchBookId = bookId, fetchChapterId = previousChapterId)
                 if (_pagesUiState.value is UiState.Success)
                     _startPage.value = _pagesUiState.value.data?.size ?: 0
+                fetchHasBookInFavorite()
             }
         }
     }
@@ -102,6 +117,7 @@ class PagesViewModel(
                 fetchChapter(followingChapterId)
                 fetchPages(fetchBookId = bookId, fetchChapterId = followingChapterId)
                 _startPage.value = 0
+                fetchHasBookInFavorite()
             }
         }
     }
@@ -114,7 +130,6 @@ class PagesViewModel(
         _chapters.value = UiState.Success(data = newChapters)
         fetchChapter(newChapterId)
     }
-
 
     private suspend fun fetchChapters(fetchBookId: Int) {
         _chapters.value = UiState.Loading()
@@ -183,5 +198,101 @@ class PagesViewModel(
         }
     }
 
+    private suspend fun fetchHasBookInFavorite(bookId: Int = this.bookId) {
+        try {
+            _bookInFavorite.value = UiState.Loading()
+            _bookInFavorite.value = favoriteRepository.fetchBookInFavorite(bookId = bookId)
+            if (_bookInFavorite.value is UiState.Success)
+                Logger.debug(
+                    "BookViewModel -> fetchHasBookInFavorite",
+                    "value = ${_bookInFavorite.value.data}"
+                )
+            if (_bookInFavorite.value is UiState.Error)
+                Logger.debug(
+                    "BookViewModel -> loadGenres",
+                    _bookInFavorite.value.message.toString()
+                )
+        } catch (e: IllegalArgumentException) {
+            _bookInFavorite.value = UiState.Error(
+                message = e.localizedMessage,
+                typeError = "Network",
+                statusCode = 500
+            ) // Устанавливаем ошибочное состояние
+        }
+
+    }
+
+    private suspend fun setBookToFavorite(bookId: Int = this.bookId, chapterId: Int = this.chapterId) {
+        if (_bookInFavorite.value !is UiState.Success)
+            return
+        try {
+            _bookInFavorite.value = UiState.Loading()
+            _bookInFavorite.value = favoriteRepository.setBookFavorite(bookId = bookId, chapterId = chapterId)
+            if (_bookInFavorite.value is UiState.Success)
+                Logger.debug(
+                    "BookViewModel -> fetchHasBookInFavorite",
+                    "value = ${_bookInFavorite.value.data}"
+                )
+            if (_bookInFavorite.value is UiState.Error)
+                Logger.debug(
+                    "BookViewModel -> loadGenres",
+                    _bookInFavorite.value.message.toString()
+                )
+        } catch (e: IllegalArgumentException) {
+            _bookInFavorite.value = UiState.Error(
+                message = e.localizedMessage,
+                typeError = "Network",
+                statusCode = 500
+            ) // Устанавливаем ошибочное состояние
+        }
+
+    }
+
+    private suspend fun deleteBookFromFavorite() {  // FIXME Not return a FavoriteUiModel
+        if (_bookInFavorite.value !is UiState.Success)
+            return
+        if ((_bookInFavorite.value.data?.favoriteId ?: 0 ) < 1)
+            return
+        try {
+            val favoriteId = _bookInFavorite.value.data?.favoriteId ?: -1
+            _bookInFavorite.value = UiState.Loading()
+            _bookInFavorite.value = favoriteRepository.deleteBookFromFavorite(
+                favoriteId = favoriteId
+            )
+            if (_bookInFavorite.value is UiState.Success)
+                Logger.debug(
+                    "BookViewModel -> deleteBookFromFavorite",
+                    "value = ${_bookInFavorite.value.data}"
+                )
+            if (_bookInFavorite.value is UiState.Error)
+                Logger.debug(
+                    "BookViewModel -> deleteBookFromFavorite",
+                    _bookInFavorite.value.message.toString()
+                )
+        } catch (e: IllegalArgumentException) {
+            _bookInFavorite.value = UiState.Error(
+                message = e.localizedMessage,
+                typeError = "Network",
+                statusCode = 500
+            ) // Устанавливаем ошибочное состояние
+        }
+
+    }
+
+    fun switchFavoriteBook(){
+        if (_bookInFavorite.value !is UiState.Success)
+            return
+        viewModelScope.launch {
+            val favoriteId = _bookInFavorite.value.data?.favoriteId ?: -1
+            val favoriteChapterId = _bookInFavorite.value.data?.chapterId ?: -1
+
+            if (favoriteId > 0){
+                if (favoriteChapterId == chapterId) deleteBookFromFavorite()
+                else setBookToFavorite()
+            }else setBookToFavorite()
+            fetchHasBookInFavorite()
+            Logger.debug("StarSwitch", "uiModel = ${_bookInFavorite.value.data}")
+        }
+    }
 }
 

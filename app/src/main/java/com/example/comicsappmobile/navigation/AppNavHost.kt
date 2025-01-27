@@ -50,7 +50,10 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         // About book screen
         composable(
             route = Screen.AboutBook.route,
-            arguments = listOf(navArgument("itemId") { type = NavType.StringType }),
+            arguments = listOf(
+                navArgument("itemId") { type = NavType.StringType },
+                navArgument("selectionTab") { type = NavType.IntType },
+            ),
             // enterTransition = {  ->
             //     slideInHorizontally(initialOffsetX = { it / 2 }) + fadeIn()
             // },
@@ -66,7 +69,8 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         ) { backStackEntry ->
             val itemId: String = backStackEntry.arguments?.getString ("itemId") ?: ""
             val intItemId = itemId.toIntOrNull() ?: -1
-            BookScreen(navController, intItemId)
+            val selectionTab = backStackEntry.arguments?.getInt ("selectionTab") ?: 0
+            BookScreen(navController = navController, bookId = intItemId, selectionTab = selectionTab)
         }
 
         // Catalog Screen

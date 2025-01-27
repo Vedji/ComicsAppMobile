@@ -81,12 +81,14 @@ val appModule = module {
     ) }
 
     factory { (bookId: Int, chapterId: Int) -> PagesViewModel(
-            bookId = bookId,
-            chapterId = chapterId,
-            pagesRepository = get(),
-            chaptersRepository = get(),
-            booksRepository = get(),
-            sharedViewModel = get()
+        bookId = bookId,
+        chapterId = chapterId,
+        pagesRepository = get(),
+        chaptersRepository = get(),
+        booksRepository = get(),
+        favoriteRepository = get(),
+        sharedViewModel = get(),
+        globalState = get()
     ) }
 
     factory { LoginFormViewModel(

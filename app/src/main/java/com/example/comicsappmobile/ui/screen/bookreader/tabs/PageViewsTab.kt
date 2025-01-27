@@ -26,6 +26,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -84,6 +85,9 @@ fun PageViewsTab(
         })
     val previousChapterIdState by pagesViewModel.previousChapterIdState.collectAsState()
     val followingChapterIdState by pagesViewModel.followingChapterIdState.collectAsState()
+
+    val userAuth by pagesViewModel.globalState.authUser.collectAsState()
+    val bookInFavorite by pagesViewModel.bookInFavorite.collectAsState()
 
     val pages: List<PageUiModel> =
         if (pagesUiState is UiState.Success && pagesUiState.data is List<PageUiModel>)
@@ -296,24 +300,30 @@ fun PageViewsTab(
                         )
                     )
                 }
-                VerticalDivider(
-                    color = MaterialTheme.colorScheme.secondary
-                )
-                if ((pagesViewModel.sharedViewModel.isUserHasPermission(hasUser = true))) {
+                if (userAuth.userId > 0) {
+                    VerticalDivider(
+                        color = MaterialTheme.colorScheme.secondary
+                    )
                     Box(
                         modifier = Modifier.fillMaxSize().weight(1f)
                     ) {
                         IconButton(
-                            onClick = {},
+                            onClick = { pagesViewModel.switchFavoriteBook() },
                             modifier = Modifier.align(Alignment.Center)
                         ) {
                             Icon(
-                                Icons.Filled.Favorite,
+                                if ((bookInFavorite.data?.favoriteId ?: 0) > 0 &&
+                                    (bookInFavorite.data?.chapterId ?: -2) == pagesViewModel.getChapterId()
+                                )
+                                    Icons.Filled.Favorite
+                                else
+                                    Icons.TwoTone.Favorite,
                                 "Go to favorite list user"
                             )
                         }
                     }
                 }
+
                 VerticalDivider(color = MaterialTheme.colorScheme.secondary)
                 Box(
                     modifier = Modifier.fillMaxSize().weight(1f)) {

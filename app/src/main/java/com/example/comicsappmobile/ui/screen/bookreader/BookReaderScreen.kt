@@ -86,7 +86,8 @@ fun BookReaderScreen(
                                 onClick = {
                                     navController.navigate(
                                         Screen.AboutBook.createRoute(
-                                            pagesViewModel.getBookId().toString()
+                                            pagesViewModel.getBookId().toString(),
+                                            selectionTab = 1
                                         )) },
                             ) {
                                 Icon(
