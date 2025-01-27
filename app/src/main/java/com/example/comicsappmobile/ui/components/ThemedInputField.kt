@@ -44,7 +44,8 @@ fun ThemedInputField(
     cursorColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
     rightIcon: @Composable (() -> Unit)? = null,
     oneLine: Boolean = true,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    enabled: Boolean = true
 ) {
 
     BasicTextField(
@@ -55,6 +56,7 @@ fun ThemedInputField(
         textStyle = textStyle,
         cursorBrush = SolidColor(cursorColor),
         singleLine = oneLine,
+        enabled = enabled,
         visualTransformation = visualTransformation,
         modifier = modifier
             .border(1.dp, color = MaterialTheme.colorScheme.outline, shape = MaterialTheme.shapes.large)

@@ -3,7 +3,6 @@ package com.example.comicsappmobile.ui.screen.catalog.tabs
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,11 +22,16 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,6 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.comicsappmobile.ui.components.ThemedInputField
 import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.viewmodel.CatalogViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
@@ -52,7 +57,7 @@ import com.example.comicsappmobile.ui.presentation.model.GenreUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogFiltersTab(
     navController: NavHostController,
@@ -60,8 +65,9 @@ fun CatalogFiltersTab(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     comeBack: () -> Unit = { }
 ) {
-    var inputSorted = remember { MutableStateFlow("") }
-    var inputGenres = remember { MutableStateFlow(emptyList<Int>()) }
+    val sel = catalogViewModel.selectedSorted.collectAsState()
+    val inputSorted = remember { MutableStateFlow(sel.value) }
+    val inputGenres = remember { MutableStateFlow(emptyList<Int>()) }
     val inputGenresFromFilter = remember { MutableStateFlow(mutableListOf<Int>()) }
 
     Box(
@@ -118,8 +124,50 @@ fun CatalogFiltersTab(
                         fontWeight = FontWeight.Medium
                     )
                 )
-                RadioGroupSample(catalogViewModel, onItemSelect = { inputSorted.value = it })
-
+                val sortedVariablesList = remember { catalogViewModel.getSortedAccessValues() }
+                var expandedSortInput by remember { mutableStateOf(false) }
+                val textFieldStateSortInput = remember { mutableStateOf(gettingSortNameForView(inputSorted.value)) }
+                ExposedDropdownMenuBox(
+                    expanded = expandedSortInput,
+                    onExpandedChange = { expandedSortInput = it }
+                ) {
+                    ThemedInputField(
+                        textFieldValue = textFieldStateSortInput,
+                        onValueChange = {  },
+                        placeholder = "Введите тип сортировки",
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(
+                            color = MaterialTheme.colorScheme.secondary,
+                            textAlign = TextAlign.Start
+                        ),
+                        placeholderStyle = MaterialTheme.typography.bodyLarge.copy(
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                            textAlign = TextAlign.Start
+                        ),
+                        enabled = false,
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        cursorColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        rightIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedSortInput)
+                        },
+                        modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryEditable, true)
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expandedSortInput,
+                        onDismissRequest = { expandedSortInput = false }
+                    ) {
+                        for (item in sortedVariablesList) {
+                            DropdownMenuItem(
+                                text = { Text(gettingSortNameForView(item)) },
+                                onClick = {
+                                    textFieldStateSortInput.value = gettingSortNameForView(item)
+                                    inputSorted.value = item
+                                    expandedSortInput = false
+                                }
+                            )
+                        }
+                    }
+                }
+                // RadioGroupSample(catalogViewModel, onItemSelect = { inputSorted.value = it })
                 Text(
                     text = "Жанры",
                     modifier = Modifier.padding(vertical = 24.dp),
@@ -184,6 +232,20 @@ fun CatalogFiltersTab(
     }
 }
 
+fun gettingSortNameForView(item: String): String{
+    return when(item){
+        "addedASC" -> { "возрастанию даты добавления" }
+        "addedDESC" -> { "убыванию даты добавления" }
+        "ratingASC" -> { "возрастанию рейтинга" }
+        "ratingDESC" -> { "убыванию рейтинга" }
+        "titleASC" -> { "возрастанию названия" }
+        "titleDESC" -> { "убыванию названия" }
+        "publishedASC" -> { "возрастанию даты публикации" }
+        "publishedDESC" -> { "убыванию даты публикации" }
+        else -> { item }
+    }
+}
+
 
 @Composable
 fun RadioGroupSample(catalogViewModel: CatalogViewModel, onItemSelect: (text: String) -> Unit = {}) {
@@ -235,11 +297,8 @@ fun FilterByGenres(
         val genres = allGenresUi.data as List<GenreUiModel> ?: emptyList()
         Column (
             modifier = Modifier
-                .height(512.dp)
-                .verticalScroll(rememberScrollState())
                 .padding()
                 .fillMaxWidth()
-
         ) {
             repeat(genres.size){ it ->
                 if (genres[it].genreId !in inputGenres.value && genres[it].genreId in selectedGenres){

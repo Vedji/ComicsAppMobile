@@ -2,6 +2,7 @@ package com.example.comicsappmobile.ui.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.comicsappmobile.data.mapper.UserMapper
+import com.example.comicsappmobile.data.repository.BooksRepository
 import com.example.comicsappmobile.data.repository.UserRepository
 import com.example.comicsappmobile.di.GlobalState
 import com.example.comicsappmobile.di.RetrofitInstance
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val userRepository: UserRepository,
-    val sharedViewModel: SharedViewModel,
+    val booksRepository: BooksRepository,
     private val globalState: GlobalState
 ) : BaseViewModel() {
 
@@ -39,9 +40,28 @@ class ProfileViewModel(
 
     init{
         viewModelScope.launch {
+            delay(200)
             _userLogin.value = UiState.Success(data = UserMapper.map(globalState.authUser.value))
             loginFromUsername()
             loadStarsBooks()
+            fetchAddedBooks(userId = _userLogin.value.data?.userId ?: -1)
+        }
+    }
+
+    suspend fun fetchBookInfoById(bookId: Int): UiState<BookUiModel>{
+        try {
+            val response = booksRepository.getBook(bookId)
+            Logger.debug(
+                "LoginFormViewModel -> fetchBookInfoById",
+                "Stars info = '${response.data.toString()}'"
+            )
+            return response
+        } catch (e: IllegalArgumentException) {
+            return UiState.Error(
+                message = e.localizedMessage,
+                typeError = "Network",
+                statusCode = 500
+            ) // Устанавливаем ошибочное состояние
         }
     }
 
@@ -81,8 +101,18 @@ class ProfileViewModel(
         }
     }
 
-    private suspend fun loadAddedBooks(){
-
+    private suspend fun fetchAddedBooks(userId: Int) {
+        try {
+            _userAddedBooks.value = UiState.Loading()
+            val response = userRepository.fetchBooksWhichUserAdded(userId = userId)
+            _userAddedBooks.value = response
+        } catch (e: IllegalArgumentException) {
+            _userAddedBooks.value = UiState.Error(
+                message = e.localizedMessage,
+                typeError = "Network",
+                statusCode = 500
+            )
+        }
     }
 
     suspend fun refreshUserLogin(): Boolean {

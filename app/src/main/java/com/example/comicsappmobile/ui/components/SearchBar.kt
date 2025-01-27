@@ -52,6 +52,7 @@ fun ThemedSearchBar(
         modifier = modifier
             .size(128.dp, 36.dp)
             .clip(MaterialTheme.shapes.large)
+            .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.large)
             .background(containerColor),
         decorationBox = { innerTextField ->
             Box(

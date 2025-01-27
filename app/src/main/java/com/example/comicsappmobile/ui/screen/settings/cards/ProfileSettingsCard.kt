@@ -46,7 +46,7 @@ fun ProfileSettingsCard(
             ) {
 
                 TextButton(
-                    onClick = { settingsViewModel.outFromUserLogin() },
+                    onClick = { coroutineScope.launch { settingsViewModel.outFromUserLogin() } },
                     modifier = Modifier.fillMaxWidth()
                     ) { Text(text = "Выйти из профиля") }
             }

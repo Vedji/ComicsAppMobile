@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -119,7 +120,7 @@ fun ColorDisplayScreen() {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         colors.forEach { (name, color) ->
-            ColorItem(name = name, color = color)
+            ColorItem(name = name + "<Color(r = '${color.red * 255}', g = '${color.green * 255}', b = '${color.blue * 255}', a = '${color.alpha}')>", color = color)
         }
     }
 }
@@ -129,7 +130,7 @@ fun ColorItem(name: String, color: Color) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
+            .height(100.dp)
             .clip(MaterialTheme.shapes.medium)
             .background(color)
             .clipToBounds()
@@ -145,7 +146,7 @@ fun ColorItem(name: String, color: Color) {
         Text(
             text = name,
             color = if (color.luminance() > 0.5) Color.Black else Color.White,
-            modifier = Modifier.alignByBaseline().padding(8.dp)
+            modifier = Modifier.padding(8.dp).wrapContentHeight()
         )
     }
 }

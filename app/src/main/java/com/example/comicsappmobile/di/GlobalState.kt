@@ -11,7 +11,9 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.comicsappmobile.data.dto.entities.user.UserDto
 import com.example.comicsappmobile.ui.theme.DarkMediumContrastColorScheme
 import com.example.comicsappmobile.ui.theme.darkGreenColorScheme
+import com.example.comicsappmobile.ui.theme.darkPurpleColorScheme
 import com.example.comicsappmobile.ui.theme.darkScheme
+import com.example.comicsappmobile.ui.theme.lightPurpleColorScheme
 import com.example.comicsappmobile.ui.theme.lightScheme
 import com.example.comicsappmobile.utils.Logger
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +32,9 @@ data class GlobalState(
         2 to ("Динамичная светлая тема" to dynamicLightColorScheme(appContext)),
         3 to ("Динамичная темная тема" to dynamicDarkColorScheme(appContext)),
         4 to ("Токсичная тема" to darkGreenColorScheme),
-        5 to ("Material3 dark" to DarkMediumContrastColorScheme)
+        5 to ("Material3 dark" to DarkMediumContrastColorScheme),
+        6 to ("Material3 light Purple" to lightPurpleColorScheme),
+        7 to ("Material3 dark Purple" to darkPurpleColorScheme),
     )
     var currentThemeId = 0
 

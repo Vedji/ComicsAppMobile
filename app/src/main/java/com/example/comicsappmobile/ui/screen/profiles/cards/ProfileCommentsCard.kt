@@ -1,5 +1,6 @@
 package com.example.comicsappmobile.ui.screen.profiles.cards
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,12 +19,16 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,11 +37,26 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsappmobile.ui.presentation.model.CommentUiModel
 import com.example.comicsappmobile.navigation.Screen
+import com.example.comicsappmobile.ui.presentation.model.BookUiModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 
 @Composable
-fun ProfileCommentsCard(commentUiModel: CommentUiModel, navController: NavHostController) {
-    Box {
+fun ProfileCommentsCard(commentUiModel: CommentUiModel, navController: NavHostController, profileViewModel: ProfileViewModel) {
+    val bookTitleName = rememberSaveable() { mutableStateOf("") }
 
+    LaunchedEffect(commentUiModel){
+        val bookId: Int = commentUiModel.bookId
+        val bookToComment =
+            if (bookId > 0)
+                profileViewModel.fetchBookInfoById(bookId)
+            else
+                UiState.Error(message = "Книга не найдена")
+        bookTitleName.value =
+            if (bookToComment is UiState.Success) bookToComment.data?.rusTitle ?: "Пустое имя книги"
+            else "Книга не найдена"
+    }
+    Box {
         OutlinedCard(
             onClick = {
                 if (commentUiModel.bookId != null && commentUiModel.bookId > 0)
@@ -45,12 +65,23 @@ fun ProfileCommentsCard(commentUiModel: CommentUiModel, navController: NavHostCo
             modifier = Modifier
                 .fillMaxWidth(),
             colors = CardDefaults.outlinedCardColors().copy(
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                contentColor = MaterialTheme.colorScheme.tertiary,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContentColor = MaterialTheme.colorScheme.secondary
-            )
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.secondary,
+                disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                disabledContentColor = MaterialTheme.colorScheme.tertiary
+            ),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
         ) {
+            Text(
+                text = bookTitleName.value,
+                modifier = Modifier.padding(12.dp),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Start
+                )
+            )
+            HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outline)
+            Spacer(modifier = Modifier.height(16.dp))
             Column(
                 modifier = Modifier.padding(12.dp)
             ) {
@@ -72,8 +103,7 @@ fun ProfileCommentsCard(commentUiModel: CommentUiModel, navController: NavHostCo
                     Row(
                         modifier = Modifier
                             .weight(1f)
-                            .fillMaxWidth()
-                            .border(1.dp, Color.Red),
+                            .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Start
                     ) {
                         Text(
@@ -99,8 +129,7 @@ fun ProfileCommentsCard(commentUiModel: CommentUiModel, navController: NavHostCo
                     Row(
                         modifier = Modifier
                             .weight(1f)
-                            .fillMaxWidth()
-                            .border(1.dp, Color.Red),
+                            .fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
                         Text(
@@ -118,6 +147,7 @@ fun ProfileCommentsCard(commentUiModel: CommentUiModel, navController: NavHostCo
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }
+        /*
         Row(
             Modifier
                 .fillMaxWidth()
@@ -156,6 +186,7 @@ fun ProfileCommentsCard(commentUiModel: CommentUiModel, navController: NavHostCo
                 )
             }
         }
+        */
 
     }
 }

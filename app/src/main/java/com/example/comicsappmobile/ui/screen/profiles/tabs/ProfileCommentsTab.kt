@@ -43,7 +43,7 @@ fun ProfileCommentsTab(
             ) {
                 if (userCommentsList.data != null){
                     for(comment in userCommentsList.data!!){
-                        ProfileCommentsCard(comment, navController)
+                        ProfileCommentsCard(comment, navController, profileViewModel)
                     }
                 }else{
                     ThemedErrorCard(message = "Комментарии = null в ProfileCommentsTab")

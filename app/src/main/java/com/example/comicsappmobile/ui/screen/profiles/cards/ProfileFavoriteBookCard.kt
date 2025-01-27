@@ -1,5 +1,6 @@
 package com.example.comicsappmobile.ui.screen.profiles.cards
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,15 +54,13 @@ fun ProfileFavoriteBookCard(
         modifier = Modifier
             .fillMaxWidth(),
         colors = CardDefaults.outlinedCardColors().copy(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            contentColor = MaterialTheme.colorScheme.tertiary,
-            disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            disabledContentColor = MaterialTheme.colorScheme.secondary
-        )
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.secondary,
+            disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            disabledContentColor = MaterialTheme.colorScheme.tertiary
+        ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
-
-
-
             Row {
                 Row(
                     modifier = Modifier
@@ -111,6 +110,7 @@ fun ProfileFavoriteBookCard(
                 }
             }
         }
+        /*
         Row(
             Modifier
                 .fillMaxWidth()
@@ -134,5 +134,6 @@ fun ProfileFavoriteBookCard(
                 )
             }
         }
+         */
     }
 }

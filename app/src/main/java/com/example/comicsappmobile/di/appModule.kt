@@ -96,9 +96,9 @@ val appModule = module {
     ) }
 
     factory { ProfileViewModel(
-            userRepository = get(),
-            sharedViewModel = get(),
-            globalState = get()
+        userRepository = get(),
+        booksRepository = get(),
+        globalState = get()
     ) }
 
     factory { SettingsViewModel(

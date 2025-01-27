@@ -5,6 +5,7 @@ import com.example.comicsappmobile.data.mapper.BookMapper
 import com.example.comicsappmobile.data.mapper.CommentMapper
 import com.example.comicsappmobile.data.mapper.UserMapper
 import com.example.comicsappmobile.data.dto.StateResponseDto
+import com.example.comicsappmobile.data.dto.entities.BookDto
 import com.example.comicsappmobile.data.dto.entities.metadata.Pagination
 import com.example.comicsappmobile.data.dto.entities.user.LoginUserDto
 import com.example.comicsappmobile.data.dto.entities.user.UserComment
@@ -38,24 +39,22 @@ class UserRepository (
         val test = safeApiCall { userApi.refreshUserAuthorization(token) }
         Logger.debug("UserRepository", "test = '$test'")
 
-        return when(test) {
+        return when (test) {
             is StateResponseDto.Success -> {
                 Logger.debug("UserRepository", "data = ${test.data}")
                 val data = (test.data as? LoginUserDto)
                 val user = data?.aboutUser ?: UserDto.createDefaultUser(-4, "Not created")
 
-                if (data?.tokens is UserTokensDto){
+                if (data?.tokens is UserTokensDto) {
                     RetrofitInstance.accessToken = data.tokens.accessToken
                     RetrofitInstance.refreshToken = data.tokens.refreshToken
+                    globalState.saveUserAccessToken(data.tokens.accessToken)
                 }
-                data?.let {
-                    globalState.saveUserAccessToken(it.tokens.accessToken)
-                    sharedViewModel.updateCurrentAuthorizingUser(it.aboutUser)
-                    globalState.setAuthUser(it.aboutUser)
-
-                }
+                sharedViewModel.updateCurrentAuthorizingUser(user)
+                globalState.setAuthUser(user)
                 UiState.Success(data = UserMapper.map(user))
             }
+
             is StateResponseDto.Error -> {
                 val data = (test.data as? ErrorDataDto)
                 Logger.debug("return when(test)", "data = '${test}'")
@@ -69,29 +68,41 @@ class UserRepository (
         }
     }
 
-    suspend fun responseUserAuthorization(username: String, password: String, email: String = ""): UiState<UserUiModel> {
+    suspend fun responseUserAuthorization(
+        username: String,
+        password: String,
+        email: String = ""
+    ): UiState<UserUiModel> {
         Logger.debug("UserRepository", "Run")
-        val test = safeApiCall { userApi.userAuthorization(
-            username = username, password =  password, email = email) }
+        val test = safeApiCall {
+            userApi.userAuthorization(
+                username = username, password = password, email = email
+            )
+        }
         Logger.debug("UserRepository", "test = '$test'")
 
-        return when(test) {
+        return when (test) {
             is StateResponseDto.Success -> {
                 Logger.debug("UserRepository", "data = ${test.data}")
                 val data = (test.data as? LoginUserDto)
                 val user = data?.aboutUser ?: UserDto.createDefaultUser(-4, "Not created")
-                if (data?.tokens is UserTokensDto){
+                if (data?.tokens is UserTokensDto) {
                     RetrofitInstance.accessToken = data.tokens.accessToken
                     RetrofitInstance.refreshToken = data.tokens.refreshToken
+                    globalState.saveUserAccessToken(data.tokens.accessToken ?: "")
                 }
+                globalState.setAuthUser(user)
                 data?.let {
                     sharedViewModel.updateCurrentAuthorizingUser(it.aboutUser)
-                    globalState.setAuthUser(it.aboutUser)
-                    globalState.saveUserAccessToken(it.tokens.accessToken ?: "")
+
                 }
-                Logger.debug("StateResponseDto.Success -> responseUserAuthorization", "globalStateUser = ${globalState.authUser.value}")
+                Logger.debug(
+                    "StateResponseDto.Success -> responseUserAuthorization",
+                    "globalStateUser = ${globalState.authUser.value}"
+                )
                 UiState.Success(data = UserMapper.map(user))
             }
+
             is StateResponseDto.Error -> {
                 val data = (test.data as? ErrorDataDto)
                 Logger.debug("return when(test)", "data = '${test}'")
@@ -105,13 +116,16 @@ class UserRepository (
         }
     }
 
-    suspend fun responseFetchUserComments(limit: Int = 10, offset: Int = 0): UiState<List<CommentUiModel>> {
+    suspend fun responseFetchUserComments(
+        limit: Int = 10,
+        offset: Int = 0
+    ): UiState<List<CommentUiModel>> {
         Logger.debug("UserRepository", "Run")
         val accessToken = RetrofitInstance.accessToken
         val test = safeApiCall { userApi.getUserComments(accessToken ?: "") }
         Logger.debug("responseFetchUserComments", "test = '$test'")
 
-        return when(test) {
+        return when (test) {
             is StateResponseDto.Success -> {
                 Logger.debug("responseFetchUserComments", "data = ${test.data}")
                 val data = (test.data as? List<UserComment>)
@@ -119,6 +133,7 @@ class UserRepository (
                 Logger.debug("responseFetchUserComments", "data = ${test.data}")
                 UiState.Success(data = CommentMapper.mapList(data ?: emptyList(), user))
             }
+
             is StateResponseDto.Error -> {
                 val data = (test.data as? ErrorDataDto)
                 Logger.debug("return when(test)", "data = '${test}'")
@@ -132,32 +147,38 @@ class UserRepository (
         }
     }
 
-
-    suspend fun responseFetchUserFavorites(limit: Int = 10, offset: Int = 0): UiState<List<Pair<BookUiModel, UserFavoriteUiModel>>> {
+    suspend fun responseFetchUserFavorites(
+        limit: Int = 10,
+        offset: Int = 0
+    ): UiState<List<Pair<BookUiModel, UserFavoriteUiModel>>> {
         Logger.debug("responseFetchUserFavorites", "Run")
-        val test = safeApiCall { userApi.getAuthUserFavoriteList(RetrofitInstance.accessToken ?: "") }
+        val test =
+            safeApiCall { userApi.getAuthUserFavoriteList(RetrofitInstance.accessToken ?: "") }
         Logger.debug("responseFetchUserFavorites", "test = '$test'")
 
-        return when(test) {
+        return when (test) {
             is StateResponseDto.Success -> {
                 val resp: MutableList<Pair<BookUiModel, UserFavoriteUiModel>> = mutableListOf()
-                val responseData: List<UserFavoriteListDto>? = test.data as? List<UserFavoriteListDto> ?: null
+                val responseData: List<UserFavoriteListDto>? =
+                    test.data as? List<UserFavoriteListDto> ?: null
 
                 responseData?.let {
-                    for (item in it){
+                    for (item in it) {
                         resp += (Pair(
                             BookMapper.map(item.aboutBook),
                             UserFavoriteUiModel(
                                 favoriteId = item.favoriteId,
                                 chapterId = item.chapterId,
                                 uploadAt = item.uploadAt
-                            )))
+                            )
+                        ))
                     }
                 }
                 Logger.debug("responseFetchUserFavorites", "debug = '$resp'")
                 // val meta: Pagination? = if (test.data.metadata is Pagination) test.data.let { it.metadata } ?: null else null
                 UiState.Success(data = resp, metadata = test.metadata as? Pagination)
             }
+
             is StateResponseDto.Error -> {
                 val data = (test.data as? ErrorDataDto)
                 Logger.debug("return when(test)", "data = '${test}'")
@@ -171,8 +192,26 @@ class UserRepository (
         }
     }
 
+    suspend fun fetchBooksWhichUserAdded(userId: Int): UiState<List<BookUiModel>> {
+        val response = safeApiCall { userApi.getBooksWhichUserAdded(userId = userId) }
 
+        return when (response) {
+            is StateResponseDto.Success -> {
+                val data = (response.data as? List<BookDto>) ?: emptyList()
+                val metadata = (response.metadata as? Pagination)
+                UiState.Success(data = BookMapper.mapList(data), metadata = metadata)
+            }
 
-
-
+            is StateResponseDto.Error -> {
+                val data = (response.data as? ErrorDataDto)
+                Logger.debug("return when(test)", "data = '${response}'")
+                UiState.Error(
+                    data = null,
+                    message = data?.message ?: "BooksRepository -> getBooks",
+                    typeError = data?.typeError ?: "BooksRepository -> getBooks",
+                    statusCode = -1
+                )
+            }
+        }
+    }
 }

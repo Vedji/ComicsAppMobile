@@ -43,19 +43,23 @@ class SettingsViewModel(
 
     }
 
-    suspend fun setAppTheme(themeId: Int){
+    suspend fun setAppTheme(themeId: Int) {
         globalState.saveSettingsAppTheme(themeId)
     }
 
-    fun outFromUserLogin(){
-        viewModelScope.launch {
-            globalState.getUserAccessToken().collect{
-                Logger.debug("outFromUserLogin","token = $it")
-                RetrofitInstance.accessToken = null
-                globalState.saveUserAccessToken("None")
-                globalState.setAuthUser(null)
-                _userLogin.value = UiState.Loading()
-            }
+    suspend fun outFromUserLogin() {
+        globalState.getUserAccessToken().collect {
+            Logger.debug("outFromUserLogin", "token = $it")
+            RetrofitInstance.accessToken = null
+            globalState.saveUserAccessToken("None")
+            globalState.setAuthUser(
+                UserDto.createDefaultUser(
+                    -1,
+                    "Не авторизированный пользователь"
+                )
+            )
+            _userLogin.value = UiState.Loading()
+
         }
     }
 }

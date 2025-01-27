@@ -31,28 +31,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.comicsappmobile.navigation.Screen
 import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.components.ImageByID
 
 
 @Composable
-fun ProfileAddedBooksCard(book: BookUiModel) {
+fun ProfileAddedBooksCard(book: BookUiModel, navController: NavController) {
 
     Box {
         OutlinedCard(
-            onClick = {},   // TODO: Add navigate to book
+            onClick = {
+                navController.navigate(Screen.AboutBook.createRoute(book.bookId.toString()))
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             colors = CardDefaults.outlinedCardColors().copy(
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                contentColor = MaterialTheme.colorScheme.tertiary,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContentColor = MaterialTheme.colorScheme.secondary
-            )
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.secondary,
+                disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                disabledContentColor = MaterialTheme.colorScheme.tertiary
+            ),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
         ) {
-
-
-
             Row {
                 Row(
                     modifier = Modifier
@@ -102,29 +104,34 @@ fun ProfileAddedBooksCard(book: BookUiModel) {
                 }
             }
         }
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .offset(y = (14).dp)
-                .padding(end = 8.dp)
-                .align(Alignment.BottomEnd),
-            horizontalArrangement = Arrangement.End
-        ) {
-            SmallFloatingActionButton(
-                onClick = {
-                    // TODO: Edit self added book
-                },
-                modifier = Modifier
-                    .size(32.dp)
-                    .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outline), MaterialTheme.shapes.small),
-                containerColor = MaterialTheme.colorScheme.onSecondary,
-                shape = MaterialTheme.shapes.small
+        if (book.bookId > 0) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .offset(y = (14).dp)
+                    .padding(end = 8.dp)
+                    .align(Alignment.BottomEnd),
+                horizontalArrangement = Arrangement.End
             ) {
-                Icon(
-                    Icons.Filled.Edit,
-                    contentDescription = "Edit book",
-                    modifier = Modifier.size(16.dp)
-                )
+                SmallFloatingActionButton(
+                    onClick = {
+                        navController.navigate(Screen.EditedBookScreen.createRoute(bookId = book.bookId))
+                    },
+                    modifier = Modifier
+                        .size(32.dp)
+                        .border(
+                            BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                            MaterialTheme.shapes.small
+                        ),
+                    containerColor = MaterialTheme.colorScheme.onSecondary,
+                    shape = MaterialTheme.shapes.small
+                ) {
+                    Icon(
+                        Icons.Filled.Edit,
+                        contentDescription = "Edit book",
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
         }
     }

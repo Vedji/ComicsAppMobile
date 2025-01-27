@@ -1,5 +1,6 @@
 package com.example.comicsappmobile.data.api
 
+import com.example.comicsappmobile.data.dto.entities.BookDto
 import com.example.comicsappmobile.data.dto.entities.user.LoginUserDto
 import com.example.comicsappmobile.data.dto.entities.user.UserComment
 import com.example.comicsappmobile.data.dto.entities.joined.UserFavoriteListDto
@@ -10,6 +11,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UsersApi {
@@ -38,4 +40,10 @@ interface UsersApi {
         @Query("limit") limit: Int? = null,
         @Query("offset") offset: Int? = null
     ): Response<ResponseDto<List<UserFavoriteListDto>>>
+
+    @GET("/api/v2/user/{userId}/addedBooks")
+    suspend fun getBooksWhichUserAdded(
+        // @Path("bookId") bookId: Int
+        @Path("userId") userId: Int,
+    ): Response<ResponseDto<List<BookDto>>>
 }

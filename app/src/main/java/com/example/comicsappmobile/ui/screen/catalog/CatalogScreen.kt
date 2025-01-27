@@ -146,14 +146,11 @@ fun CatalogScreen(
                     2 -> CatalogFiltersTab(
                         navController,
                         catalogViewModel,
-                        innerPadding,
-                        {
-                            coroutineScope.launch {
-                                scrollBehavior.state.contentOffset = 0f // Сброс смещения
-                            }
-                            selectedTab = 0
-                        }
-                    ) // Filter
+                        innerPadding
+                    ){
+                        coroutineScope.launch { scrollBehavior.state.heightOffset = 0f }
+                        selectedTab = 0
+                    }
                     else -> {
                         Text(text = "No Realize selectedTab = ${selectedTab}")
                     }
@@ -162,74 +159,4 @@ fun CatalogScreen(
             }
         )
     }
-}
-
-
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun test(){
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    var basicTextField = rememberTextFieldState()
-
-    Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        BasicTextField(
-                            state = basicTextField,
-                            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        )
-                        Row (
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ){
-                            Button(
-                                onClick = {},
-                                colors = ButtonDefaults.buttonColors().copy(
-                                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                                ),
-                                modifier = Modifier.size(128.dp, 36.dp)
-                            ) {
-                                Text( text = "Сортировка")
-                            }
-                            Button(
-                                onClick = {},
-                                colors = ButtonDefaults.buttonColors().copy(
-                                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                                ),
-                                modifier = Modifier.size(128.dp, 36.dp)
-                            ) {
-                                Text( text = "Фильтр")
-                            }
-                        }
-                    }
-                        },
-                scrollBehavior = scrollBehavior
-            )
-        },
-        content = { innerPadding ->
-            LazyColumn(
-                contentPadding = innerPadding,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                val list = (0..75).map { it.toString() }
-                items(count = list.size) {
-                    Text(
-                        text = list[it],
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-                    )
-                }
-            }
-        }
-    )
 }

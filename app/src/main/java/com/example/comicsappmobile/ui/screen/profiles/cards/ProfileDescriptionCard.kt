@@ -138,21 +138,6 @@ fun ProfileDescriptionCard(
                                 )
                             }
                         }
-                        SmallFloatingActionButton(
-                            onClick = {
-                                // TODO: Edit user profile information
-                            },
-                            modifier = Modifier
-                                .size(32.dp),
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer
-                        ) {
-                            Icon(
-                                Icons.Filled.Edit,
-                                contentDescription = "Edit user profile information",
-                                modifier = Modifier.size(16.dp),
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        }
                     }
                 }
 

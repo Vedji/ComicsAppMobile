@@ -65,14 +65,6 @@ fun LoginFormScreen (
 
 
 
-    LaunchedEffect(userLoginV2.value) {
-        delay(200)
-        if (loginFormViewModel.globalState.authUser.value.userId > 0){
-            navController.navigate(Screen.ProfileUserScreen.route)
-        }
-    }
-
-
     Scaffold(){ paddingValues ->
         Column(
             modifier = Modifier
