@@ -1,4 +1,4 @@
-package com.example.comicsappmobile.ui.screen.profiles.tabs
+package com.example.comicsappmobile.ui.screen.profiles.me.tabs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,7 @@ import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.presentation.model.UserFavoriteUiModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
-import com.example.comicsappmobile.ui.screen.profiles.cards.ProfileFavoriteBookCard
+import com.example.comicsappmobile.ui.screen.profiles.me.cards.ProfileFavoriteBookCard
 
 @Composable
 fun ProfileFavoriteBooksTab(

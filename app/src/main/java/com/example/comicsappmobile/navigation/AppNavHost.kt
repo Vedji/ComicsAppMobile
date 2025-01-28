@@ -23,7 +23,8 @@ import com.example.comicsappmobile.ui.screen.bookreader.BookReaderScreen
 import com.example.comicsappmobile.ui.screen.chaptereditor.ChapterEditorScreen
 import com.example.comicsappmobile.ui.screen.examples.DragAndDropExample
 import com.example.comicsappmobile.ui.screen.examples.FontDisplayExamplesScreen
-import com.example.comicsappmobile.ui.screen.profiles.ProfileScreen
+import com.example.comicsappmobile.ui.screen.profiles.editor.ProfileEditorScreen
+import com.example.comicsappmobile.ui.screen.profiles.me.ProfileScreen
 import com.example.comicsappmobile.ui.screen.settings.SettingScreen
 import com.example.comicsappmobile.utils.Logger
 
@@ -112,6 +113,9 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
 
         composable(route = Screen.ProfileUserScreen.route){
             ProfileScreen(navController = navController)
+        }
+        composable(route = Screen.ProfileEditorScreen.route){
+            ProfileEditorScreen(navController = navController)
         }
 
         composable(

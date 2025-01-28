@@ -23,6 +23,7 @@ import com.example.comicsappmobile.ui.presentation.viewmodel.CatalogViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.ChapterEditorViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.LoginFormViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.PagesViewModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileEditorViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
@@ -100,6 +101,12 @@ val appModule = module {
     factory { ProfileViewModel(
         userRepository = get(),
         booksRepository = get(),
+        globalState = get()
+    ) }
+
+    factory { ProfileEditorViewModel(
+        userRepository = get(),
+        filesRepository = get(),
         globalState = get()
     ) }
 

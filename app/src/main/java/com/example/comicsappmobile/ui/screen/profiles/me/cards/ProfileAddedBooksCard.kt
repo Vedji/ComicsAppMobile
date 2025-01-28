@@ -1,6 +1,7 @@
-package com.example.comicsappmobile.ui.screen.profiles.cards
+package com.example.comicsappmobile.ui.screen.profiles.me.cards
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -34,33 +35,26 @@ import androidx.navigation.NavController
 import com.example.comicsappmobile.navigation.Screen
 import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.components.ImageByID
-import com.example.comicsappmobile.ui.presentation.model.UserFavoriteUiModel
+
 
 @Composable
-fun ProfileFavoriteBookCard(
-    book: BookUiModel,
-    userFavoriteUiModel: UserFavoriteUiModel,
-    navController: NavController
-) {
+fun ProfileAddedBooksCard(book: BookUiModel, navController: NavController) {
+
     Box {
-    OutlinedCard(
-        onClick = {
-            if (userFavoriteUiModel.chapterId > 0)
-                navController.navigate(Screen.BookReader.createRoute(
-                    bookId = book.bookId, chapterId = userFavoriteUiModel.chapterId))
-            else
+        OutlinedCard(
+            onClick = {
                 navController.navigate(Screen.AboutBook.createRoute(book.bookId.toString()))
-        },
-        modifier = Modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.outlinedCardColors().copy(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.secondary,
-            disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            disabledContentColor = MaterialTheme.colorScheme.tertiary
-        ),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-    ) {
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = CardDefaults.outlinedCardColors().copy(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.secondary,
+                disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                disabledContentColor = MaterialTheme.colorScheme.tertiary
+            ),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+        ) {
             Row {
                 Row(
                     modifier = Modifier
@@ -110,30 +104,35 @@ fun ProfileFavoriteBookCard(
                 }
             }
         }
-        /*
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .offset(y = (14).dp)
-                .padding(end = 8.dp)
-                .align(Alignment.BottomEnd),
-            horizontalArrangement = Arrangement.End
-        ) {
-            SmallFloatingActionButton(
-                onClick = {
-                    // TODO: Delete book from favorite list
-                },
-                modifier = Modifier
-                    .size(32.dp),
-                containerColor = MaterialTheme.colorScheme.errorContainer
+        if (book.bookId > 0) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .offset(y = (14).dp)
+                    .padding(end = 8.dp)
+                    .align(Alignment.BottomEnd),
+                horizontalArrangement = Arrangement.End
             ) {
-                Icon(
-                    Icons.Filled.Delete,
-                    contentDescription = "Delete",
-                    modifier = Modifier.size(16.dp)
-                )
+                SmallFloatingActionButton(
+                    onClick = {
+                        navController.navigate(Screen.EditedBookScreen.createRoute(bookId = book.bookId))
+                    },
+                    modifier = Modifier
+                        .size(32.dp)
+                        .border(
+                            BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                            MaterialTheme.shapes.small
+                        ),
+                    containerColor = MaterialTheme.colorScheme.onSecondary,
+                    shape = MaterialTheme.shapes.small
+                ) {
+                    Icon(
+                        Icons.Filled.Edit,
+                        contentDescription = "Edit book",
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
         }
-         */
     }
 }

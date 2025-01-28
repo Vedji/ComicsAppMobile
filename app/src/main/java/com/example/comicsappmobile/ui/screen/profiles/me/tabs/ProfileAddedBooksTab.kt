@@ -1,4 +1,4 @@
-package com.example.comicsappmobile.ui.screen.profiles.tabs
+package com.example.comicsappmobile.ui.screen.profiles.me.tabs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,10 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.comicsappmobile.ui.components.ThemedErrorCard
-import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
-import com.example.comicsappmobile.ui.screen.profiles.cards.ProfileAddedBooksCard
+import com.example.comicsappmobile.ui.screen.profiles.me.cards.ProfileAddedBooksCard
 
 @Composable
 fun ProfileAddedBooksTab(navController: NavController, profileViewModel: ProfileViewModel) {

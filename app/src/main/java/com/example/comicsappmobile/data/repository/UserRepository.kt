@@ -214,4 +214,43 @@ class UserRepository (
             }
         }
     }
+
+    suspend fun responseUpdateInfoAboutUser(
+        newUserTitleImageId: Int,
+        newUserDescription: String,
+    ): UiState<UserUiModel> {
+        Logger.debug("UserRepository -> responseUpdateInfoAboutUser", "Run")
+        val accessToken = RetrofitInstance.accessToken
+        val response = safeApiCall {
+            userApi.uploadInfoAboutUser(
+                token = accessToken ?: "",
+                newUserTitleImageId = newUserTitleImageId,
+                newUserDescription = newUserDescription
+            )
+        }
+        Logger.debug("UserRepository -> responseUpdateInfoAboutUser", "response = '$response'")
+
+        return when (response) {
+            is StateResponseDto.Success -> {
+                Logger.debug("UserRepository -> responseUpdateInfoAboutUser", "data = ${response.data}")
+                val user = (response.data as? UserDto)?: UserDto.createDefaultUser(-4, "Not created")
+                if (user.userId > 0){
+                    globalState.setAuthUser(user)
+                    UiState.Success(data = UserMapper.map(user))
+                }else{ // TODO: Replace to error user
+                    UiState.Success(data = UserMapper.map(globalState.authUser.value))
+                }
+            }
+            is StateResponseDto.Error -> {
+                val data = (response.data as? ErrorDataDto)
+                Logger.debug("return when(responseUpdateInfoAboutUser)", "data = '${response}'")
+                UiState.Error(
+                    data = null,
+                    message = data?.message ?: "UserRepository -> responseUpdateInfoAboutUser",
+                    typeError = data?.typeError ?: "UserRepository -> responseUpdateInfoAboutUser",
+                    statusCode = -1
+                )
+            }
+        }
+    }
 }

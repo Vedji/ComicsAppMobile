@@ -1,4 +1,4 @@
-package com.example.comicsappmobile.ui.screen.profiles.cards
+package com.example.comicsappmobile.ui.screen.profiles.me.cards
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement

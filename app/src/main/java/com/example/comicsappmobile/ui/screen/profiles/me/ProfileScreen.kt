@@ -1,4 +1,4 @@
-package com.example.comicsappmobile.ui.screen.profiles
+package com.example.comicsappmobile.ui.screen.profiles.me
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -44,10 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsappmobile.navigation.Screen
 import com.example.comicsappmobile.ui.components.ThemedErrorCard
-import com.example.comicsappmobile.ui.screen.profiles.tabs.ProfileCommentsTab
-import com.example.comicsappmobile.ui.screen.profiles.cards.ProfileDescriptionCard
-import com.example.comicsappmobile.ui.screen.profiles.tabs.ProfileAddedBooksTab
-import com.example.comicsappmobile.ui.screen.profiles.tabs.ProfileFavoriteBooksTab
+import com.example.comicsappmobile.ui.screen.profiles.me.tabs.ProfileCommentsTab
+import com.example.comicsappmobile.ui.screen.profiles.me.cards.ProfileDescriptionCard
+import com.example.comicsappmobile.ui.screen.profiles.me.tabs.ProfileAddedBooksTab
+import com.example.comicsappmobile.ui.screen.profiles.me.tabs.ProfileFavoriteBooksTab
 import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -92,7 +92,8 @@ fun ProfileScreen(
                             horizontalArrangement = Arrangement.End
                         ) {
                             IconButton(
-                                onClick = { },  // TODO: Add navigate to edit profile screen
+                                onClick = // Navigate to profile editor screen
+                                { navController.navigate(Screen.ProfileEditorScreen.route) },
                             ) {
                                 Icon(
                                     Icons.Default.Edit,

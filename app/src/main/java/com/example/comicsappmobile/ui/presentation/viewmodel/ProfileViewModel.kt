@@ -6,7 +6,6 @@ import com.example.comicsappmobile.data.repository.BooksRepository
 import com.example.comicsappmobile.data.repository.UserRepository
 import com.example.comicsappmobile.di.GlobalState
 import com.example.comicsappmobile.di.RetrofitInstance
-import com.example.comicsappmobile.di.SharedViewModel
 import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.presentation.model.CommentUiModel
 import com.example.comicsappmobile.ui.presentation.model.UserFavoriteUiModel
@@ -42,7 +41,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             delay(200)
             _userLogin.value = UiState.Success(data = UserMapper.map(globalState.authUser.value))
-            loginFromUsername()
+            fetchUserComments()
             loadStarsBooks()
             fetchAddedBooks(userId = _userLogin.value.data?.userId ?: -1)
         }
@@ -65,7 +64,7 @@ class ProfileViewModel(
         }
     }
 
-    private suspend fun loginFromUsername() {
+    private suspend fun fetchUserComments() {
         try {
             _userCommentsList.value = UiState.Loading()
             val response = userRepository.responseFetchUserComments()
@@ -136,6 +135,5 @@ class ProfileViewModel(
         }
         return hasRefreshSuccess
     }
-
 
 }

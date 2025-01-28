@@ -14,22 +14,16 @@ sealed class Screen(val route: String) {
         }
     }
     data object LoginForm: Screen("loginFormScreen")
-
-
     data object FontDisplayExamples: Screen("FontDisplayExamples")
     data object DragAndDropExample: Screen("DragAndDropExample")
-
-
     data object ProfileUserScreen: Screen("ProfileUserScreen")
-
     data object SettingsScreen: Screen("SettingScreen")
-
     data object EditedBookScreen : Screen("EditedBookScreen/{bookId}") {
         fun createRoute(bookId: Int) = "EditedBookScreen/$bookId"
     }
-
     data object ChapterEditorScreen : Screen("ChapterEditorScreen/{bookId}/{chapterId}") {
         fun createRoute(bookId: Int, chapterId: Int) = "ChapterEditorScreen/$bookId/$chapterId"
     }
+    data object ProfileEditorScreen: Screen("ProfileEditorScreen")
 
 }
