@@ -4,6 +4,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import android.content.Context
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.datastore.preferences.core.edit
@@ -44,14 +45,15 @@ data class GlobalState(
         UserDto.createDefaultUser(-1, "Не авторизованный пользователь"))
     val authUser: MutableStateFlow<UserDto> = _authUser
 
-    fun setAuthUser(newAuthUser: UserDto?){
-        _authUser.value = newAuthUser ?: UserDto.createDefaultUser(-1, "Не авторизованный пользователь")
-    }
-
     private val Context.dataStore by preferencesDataStore(name = "appParameters")
 
     private val USER_ACCESS_TOKEN = stringPreferencesKey("user_access_token")
     private val SETTINGS_APP_THEME = intPreferencesKey("user_age")
+
+
+    fun setAuthUser(newAuthUser: UserDto?){
+        _authUser.value = newAuthUser ?: UserDto.createDefaultUser(-1, "Не авторизованный пользователь")
+    }
 
     suspend fun saveUserAccessToken(token: String) {
         Logger.debug("saveUserAccessToken", token)

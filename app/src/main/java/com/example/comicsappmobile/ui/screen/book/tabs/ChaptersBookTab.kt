@@ -28,6 +28,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +56,12 @@ fun ChaptersBookTab(bookViewModel: BookViewModel, navController: NavController) 
     val chaptersUiState by bookViewModel.chaptersUiState.collectAsState()
     var sortByAsc by remember { mutableStateOf(true) }
     val book by bookViewModel.bookUiState.collectAsState()
+    val authUser by bookViewModel.globalState.authUser.collectAsState()
+    val isUserHasPermission = remember {  mutableStateOf(false) }
+    LaunchedEffect(book, authUser) {
+        isUserHasPermission.value = (book.data?.bookAddedBy ?: -2) == authUser.userId
+                || (authUser.permission ?: -1) >= 4
+    }
 
     Box(
         modifier = Modifier
@@ -93,13 +100,7 @@ fun ChaptersBookTab(bookViewModel: BookViewModel, navController: NavController) 
                                 containerColor = MaterialTheme.colorScheme.primary
                             )
                         )
-                        if (( book is UiState.Success &&
-                                    bookViewModel.sharedViewModel.isUserHasPermission(
-                                    addedUserId = book.data?.bookAddedBy ?: -1,
-                                    hasEditor = true,
-                                    hasPublisher = true,
-                                    hasAdmin = true
-                                    ))) {
+                        if (isUserHasPermission.value) {
                             SmallFloatingActionButton(
                                 onClick = {
                                     navController.navigate(
@@ -127,29 +128,34 @@ fun ChaptersBookTab(bookViewModel: BookViewModel, navController: NavController) 
                 item{
                     ThemedStateView(chaptersUiState, {
                         if (chaptersUiState is UiState.Success){
-                            var genres = chaptersUiState.data!! ?: emptyList()
 
-                            if (sortByAsc)
-                                genres = genres.sortedBy { it.chapterNumber }
+                            var genres = chaptersUiState.data!! ?: emptyList()
+                            genres = if (sortByAsc)
+                                genres.sortedBy { it.chapterNumber }
                             else
-                                genres = genres.sortedByDescending { it.chapterNumber }
+                                genres.sortedByDescending { it.chapterNumber }
 
                             for (item in genres){
-                                ChapterCard(item, navController = navController, bookViewModel)
+                                ChapterCard(
+                                    chapter = item,
+                                    navController = navController,
+                                    bookViewModel = bookViewModel,
+                                    isEditedToolsVisibility = isUserHasPermission.value
+                                )
                             }
+
                             if ( chaptersUiState.data!!.isEmpty() ?: false){
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
                                     text = "Эта работа не содержит глав",
-                                    color = MaterialTheme.colorScheme.primary,
                                     style = MaterialTheme.typography.bodyLarge.copy(
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        textAlign = TextAlign.Center
                                     ),
-                                    textAlign = TextAlign.Center
                                 )
                             }
                         }
-
                     },
                         {
                             Column(
@@ -159,16 +165,15 @@ fun ChaptersBookTab(bookViewModel: BookViewModel, navController: NavController) 
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
                                     text = "Загрузка глав ...",
-                                    color = MaterialTheme.colorScheme.primary,
                                     style = MaterialTheme.typography.bodyLarge.copy(
-                                        fontWeight = FontWeight.Bold
-                                    ),
-                                    textAlign = TextAlign.Center
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = TextAlign.Center
+                                    )
                                 )
                                 Spacer(modifier = Modifier.padding(24.dp))
                                 CircularProgressIndicator()
                             }
-
                         }
                     )
                 }
@@ -176,14 +181,17 @@ fun ChaptersBookTab(bookViewModel: BookViewModel, navController: NavController) 
                     Spacer(modifier = Modifier.height(64.dp))
                 }
             }
-
         }
     }
-
 }
 
 @Composable
-fun ChapterCard(chapter: ChapterUiModel, navController: NavController, bookViewModel: BookViewModel) {
+fun ChapterCard(
+    chapter: ChapterUiModel,
+    navController: NavController,
+    bookViewModel: BookViewModel,
+    isEditedToolsVisibility: Boolean = false
+) {
     val isOpenDeleted = remember { mutableStateOf(false) }
     val isOpenDeletedError = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -274,14 +282,7 @@ fun ChapterCard(chapter: ChapterUiModel, navController: NavController, bookViewM
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
-        if ((
-                    bookViewModel.sharedViewModel.isUserHasPermission(
-                        addedUserId = chapter.addedBy,
-                        hasEditor = true,
-                        hasPublisher = true,
-                        hasAdmin = true
-                    ))
-        ) {
+        if (isEditedToolsVisibility) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
