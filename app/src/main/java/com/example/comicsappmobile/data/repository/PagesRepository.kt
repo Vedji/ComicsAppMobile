@@ -1,14 +1,14 @@
 package com.example.comicsappmobile.data.repository
 
 import com.example.comicsappmobile.data.api.PagesApi
-import com.example.comicsappmobile.data.mapper.PageMapper
 import com.example.comicsappmobile.data.dto.StateResponseDto
 import com.example.comicsappmobile.data.dto.entities.PageDto
 import com.example.comicsappmobile.data.dto.entities.metadata.Pagination
 import com.example.comicsappmobile.data.dto.response.data.ErrorDataDto
-import com.example.comicsappmobile.utils.Logger
-import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
+import com.example.comicsappmobile.data.mapper.PageMapper
 import com.example.comicsappmobile.ui.presentation.model.PageUiModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
+import com.example.comicsappmobile.utils.Logger
 
 class PagesRepository (
     private val pagesApi: PagesApi

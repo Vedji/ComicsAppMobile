@@ -2,9 +2,9 @@ package com.example.comicsappmobile.data.repository
 
 import com.example.comicsappmobile.data.dto.StateResponseDto
 import com.example.comicsappmobile.data.dto.entities.metadata.Pagination
-import com.example.comicsappmobile.data.dto.response.data.ErrorDataDto
 import com.example.comicsappmobile.data.dto.response.ExceptionApi
 import com.example.comicsappmobile.data.dto.response.ResponseDto
+import com.example.comicsappmobile.data.dto.response.data.ErrorDataDto
 import com.example.comicsappmobile.utils.Logger
 import retrofit2.HttpException
 import retrofit2.Response

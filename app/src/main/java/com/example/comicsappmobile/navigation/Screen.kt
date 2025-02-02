@@ -1,7 +1,5 @@
 package com.example.comicsappmobile.navigation
 
-import com.example.comicsappmobile.utils.Logger
-
 sealed class Screen(val route: String) {
     data object Main : Screen("main")
     data object AboutBook : Screen("aboutBook/{itemId}/{selectionTab}") {

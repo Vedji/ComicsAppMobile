@@ -1,15 +1,15 @@
 package com.example.comicsappmobile.data.repository
 
 import com.example.comicsappmobile.data.api.BooksApi
-import com.example.comicsappmobile.data.mapper.BookMapper
 import com.example.comicsappmobile.data.dto.StateResponseDto
 import com.example.comicsappmobile.data.dto.entities.BookDto
 import com.example.comicsappmobile.data.dto.entities.metadata.Pagination
 import com.example.comicsappmobile.data.dto.response.data.ErrorDataDto
+import com.example.comicsappmobile.data.mapper.BookMapper
 import com.example.comicsappmobile.di.RetrofitInstance
-import com.example.comicsappmobile.utils.Logger
-import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.ui.presentation.model.BookUiModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
+import com.example.comicsappmobile.utils.Logger
 
 
 class BooksRepository (

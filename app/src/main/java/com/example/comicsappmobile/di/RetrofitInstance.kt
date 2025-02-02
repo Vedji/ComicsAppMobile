@@ -10,9 +10,9 @@ import com.example.comicsappmobile.data.api.FilesApi
 import com.example.comicsappmobile.data.api.GenresApi
 import com.example.comicsappmobile.data.api.PagesApi
 import com.example.comicsappmobile.data.api.UsersApi
-import com.example.comicsappmobile.data.dto.response.data.ErrorDataDto
 import com.example.comicsappmobile.data.dto.response.ExceptionApi
 import com.example.comicsappmobile.data.dto.response.ResponseDto
+import com.example.comicsappmobile.data.dto.response.data.ErrorDataDto
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken

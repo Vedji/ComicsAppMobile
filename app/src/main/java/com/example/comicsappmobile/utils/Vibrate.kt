@@ -5,8 +5,6 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 
 class Vibrate {
 }

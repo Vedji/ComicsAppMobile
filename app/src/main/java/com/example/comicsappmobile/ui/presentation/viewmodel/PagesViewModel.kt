@@ -7,11 +7,11 @@ import com.example.comicsappmobile.data.repository.FavoriteRepository
 import com.example.comicsappmobile.data.repository.PagesRepository
 import com.example.comicsappmobile.di.GlobalState
 import com.example.comicsappmobile.di.SharedViewModel
-import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.presentation.model.ChapterUiModel
 import com.example.comicsappmobile.ui.presentation.model.FavoriteUiModel
 import com.example.comicsappmobile.ui.presentation.model.PageUiModel
+import com.example.comicsappmobile.utils.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

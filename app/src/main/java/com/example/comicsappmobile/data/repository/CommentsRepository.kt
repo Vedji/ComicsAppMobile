@@ -7,9 +7,9 @@ import com.example.comicsappmobile.data.dto.entities.metadata.Pagination
 import com.example.comicsappmobile.data.dto.response.data.ErrorDataDto
 import com.example.comicsappmobile.data.mapper.CommentMapper
 import com.example.comicsappmobile.di.RetrofitInstance
-import com.example.comicsappmobile.utils.Logger
-import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.ui.presentation.model.CommentUiModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
+import com.example.comicsappmobile.utils.Logger
 
 
 class CommentsRepository (

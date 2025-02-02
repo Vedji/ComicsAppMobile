@@ -1,19 +1,13 @@
 package com.example.comicsappmobile.ui.presentation.viewmodel
 
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewModelScope
 import com.example.comicsappmobile.data.dto.entities.user.UserDto
 import com.example.comicsappmobile.data.mapper.UserMapper
 import com.example.comicsappmobile.data.repository.UserRepository
 import com.example.comicsappmobile.di.GlobalState
 import com.example.comicsappmobile.di.RetrofitInstance
-import com.example.comicsappmobile.di.SharedViewModel
 import com.example.comicsappmobile.ui.presentation.model.UserUiModel
-import com.example.comicsappmobile.ui.theme.darkScheme
-import com.example.comicsappmobile.ui.theme.lightScheme
 import com.example.comicsappmobile.utils.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

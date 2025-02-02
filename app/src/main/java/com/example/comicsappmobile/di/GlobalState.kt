@@ -1,13 +1,12 @@
 package com.example.comicsappmobile.di
 
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import android.content.Context
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.comicsappmobile.data.dto.entities.user.UserDto
 import com.example.comicsappmobile.ui.theme.DarkMediumContrastColorScheme

@@ -9,12 +9,12 @@ import com.example.comicsappmobile.data.repository.GenresRepository
 import com.example.comicsappmobile.data.repository.UserRepository
 import com.example.comicsappmobile.di.GlobalState
 import com.example.comicsappmobile.di.SharedViewModel
-import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.presentation.model.ChapterUiModel
 import com.example.comicsappmobile.ui.presentation.model.CommentUiModel
 import com.example.comicsappmobile.ui.presentation.model.FavoriteUiModel
 import com.example.comicsappmobile.ui.presentation.model.GenreUiModel
+import com.example.comicsappmobile.utils.Logger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

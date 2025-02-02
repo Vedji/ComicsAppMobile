@@ -14,9 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.comicsappmobile.ui.components.ThemedStateView
-import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.viewmodel.BookViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
+import com.example.comicsappmobile.utils.Logger
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

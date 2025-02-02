@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.comicsappmobile.BuildConfig
 import com.example.comicsappmobile.data.dto.entities.user.UserDto
-import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.presentation.model.ChapterUiModel
+import com.example.comicsappmobile.utils.Logger
 
 class SharedViewModel : ViewModel() {
 

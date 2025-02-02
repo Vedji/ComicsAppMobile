@@ -33,8 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.comicsappmobile.navigation.Screen
-import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.components.ImageByID
+import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 
 
 @Composable

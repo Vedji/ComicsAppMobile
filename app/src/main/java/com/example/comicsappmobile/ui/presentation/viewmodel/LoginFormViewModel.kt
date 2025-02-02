@@ -5,9 +5,8 @@ import com.example.comicsappmobile.data.repository.UserRepository
 import com.example.comicsappmobile.di.GlobalState
 import com.example.comicsappmobile.di.RetrofitInstance
 import com.example.comicsappmobile.di.SharedViewModel
-import com.example.comicsappmobile.navigation.Screen
-import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.model.UserUiModel
+import com.example.comicsappmobile.utils.Logger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

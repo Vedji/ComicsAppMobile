@@ -1,7 +1,5 @@
 package com.example.comicsappmobile.ui.presentation.model
 
-import com.google.gson.annotations.SerializedName
-
 class PageUiModel(
     val chapterId: Int = -1,
     val pageId: Int = -1,

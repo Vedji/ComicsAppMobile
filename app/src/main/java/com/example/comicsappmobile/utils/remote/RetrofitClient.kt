@@ -3,19 +3,24 @@ package com.example.comicsappmobile.utils.remote
 import com.example.comicsappmobile.BuildConfig
 import com.example.comicsappmobile.data.api.BooksApi
 import com.example.comicsappmobile.data.api.GenresApi
+import com.example.comicsappmobile.data.dto.StateResponseDto
 import com.example.comicsappmobile.data.dto.response.data.ErrorDataDto
 import com.example.comicsappmobile.data.dto.response.data.ListDto
-import com.example.comicsappmobile.data.dto.StateResponseDto
 import com.example.comicsappmobile.utils.Logger
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonDataException
+import com.squareup.moshi.JsonReader
+import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.ToJson
+import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
-import com.squareup.moshi.*
-import com.squareup.moshi.Types
 
 
 class ResponseDtoAdapter<T>(

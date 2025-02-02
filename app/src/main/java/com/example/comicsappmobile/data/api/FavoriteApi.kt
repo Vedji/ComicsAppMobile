@@ -1,7 +1,6 @@
 package com.example.comicsappmobile.data.api
 
 import com.example.comicsappmobile.data.dto.entities.FavoriteDto
-import com.example.comicsappmobile.data.dto.entities.joined.UserFavoriteListDto
 import com.example.comicsappmobile.data.dto.response.ResponseDto
 import retrofit2.Response
 import retrofit2.http.DELETE

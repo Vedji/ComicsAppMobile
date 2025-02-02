@@ -1,7 +1,6 @@
 package com.example.comicsappmobile.ui.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.delay
 
 open class BaseViewModel: ViewModel() {
 

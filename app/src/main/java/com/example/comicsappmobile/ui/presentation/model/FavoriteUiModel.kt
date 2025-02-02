@@ -1,7 +1,5 @@
 package com.example.comicsappmobile.ui.presentation.model
 
-import com.google.gson.annotations.SerializedName
-
 class FavoriteUiModel(
     val bookId: Int = -1,
     val chapterId: Int = -1,

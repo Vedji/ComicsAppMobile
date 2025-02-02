@@ -50,10 +50,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsappmobile.ui.components.ThemedInputField
-import com.example.comicsappmobile.utils.Logger
+import com.example.comicsappmobile.ui.presentation.model.GenreUiModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.CatalogViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
-import com.example.comicsappmobile.ui.presentation.model.GenreUiModel
+import com.example.comicsappmobile.utils.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 
 

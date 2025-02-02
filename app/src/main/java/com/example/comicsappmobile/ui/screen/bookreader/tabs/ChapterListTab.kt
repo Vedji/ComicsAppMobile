@@ -22,10 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsappmobile.ui.components.ThemedErrorCard
-import com.example.comicsappmobile.ui.theme.ComicsAppMobileTheme
+import com.example.comicsappmobile.ui.presentation.model.ChapterUiModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.PagesViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
-import com.example.comicsappmobile.ui.presentation.model.ChapterUiModel
+import com.example.comicsappmobile.ui.theme.ComicsAppMobileTheme
 
 
 @Composable

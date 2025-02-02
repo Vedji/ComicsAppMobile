@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsappmobile.ui.components.ThemedErrorCard
-import com.example.comicsappmobile.ui.screen.profiles.me.cards.ProfileCommentsCard
 import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
+import com.example.comicsappmobile.ui.screen.profiles.me.cards.ProfileCommentsCard
 
 
 @Composable

@@ -1,14 +1,14 @@
 package com.example.comicsappmobile.data.repository
 
 import com.example.comicsappmobile.data.api.GenresApi
-import com.example.comicsappmobile.data.mapper.GenreMapper
 import com.example.comicsappmobile.data.dto.StateResponseDto
 import com.example.comicsappmobile.data.dto.entities.GenreDto
 import com.example.comicsappmobile.data.dto.response.data.ErrorDataDto
+import com.example.comicsappmobile.data.mapper.GenreMapper
 import com.example.comicsappmobile.di.RetrofitInstance
-import com.example.comicsappmobile.utils.Logger
-import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.ui.presentation.model.GenreUiModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
+import com.example.comicsappmobile.utils.Logger
 
 class GenresRepository (
     private val genreApi: GenresApi

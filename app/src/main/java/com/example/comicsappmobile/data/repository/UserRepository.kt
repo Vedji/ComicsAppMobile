@@ -1,27 +1,27 @@
 package com.example.comicsappmobile.data.repository
 
 import com.example.comicsappmobile.data.api.UsersApi
-import com.example.comicsappmobile.data.mapper.BookMapper
-import com.example.comicsappmobile.data.mapper.CommentMapper
-import com.example.comicsappmobile.data.mapper.UserMapper
 import com.example.comicsappmobile.data.dto.StateResponseDto
 import com.example.comicsappmobile.data.dto.entities.BookDto
+import com.example.comicsappmobile.data.dto.entities.joined.UserFavoriteListDto
 import com.example.comicsappmobile.data.dto.entities.metadata.Pagination
 import com.example.comicsappmobile.data.dto.entities.user.LoginUserDto
 import com.example.comicsappmobile.data.dto.entities.user.UserComment
 import com.example.comicsappmobile.data.dto.entities.user.UserDto
-import com.example.comicsappmobile.data.dto.entities.joined.UserFavoriteListDto
 import com.example.comicsappmobile.data.dto.entities.user.UserTokensDto
 import com.example.comicsappmobile.data.dto.response.data.ErrorDataDto
+import com.example.comicsappmobile.data.mapper.BookMapper
+import com.example.comicsappmobile.data.mapper.CommentMapper
+import com.example.comicsappmobile.data.mapper.UserMapper
 import com.example.comicsappmobile.di.GlobalState
 import com.example.comicsappmobile.di.RetrofitInstance
 import com.example.comicsappmobile.di.SharedViewModel
 import com.example.comicsappmobile.ui.presentation.model.BookUiModel
-import com.example.comicsappmobile.utils.Logger
-import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.ui.presentation.model.CommentUiModel
 import com.example.comicsappmobile.ui.presentation.model.UserFavoriteUiModel
 import com.example.comicsappmobile.ui.presentation.model.UserUiModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
+import com.example.comicsappmobile.utils.Logger
 
 //RetrofitInstance.accessToken = accessToken
 
