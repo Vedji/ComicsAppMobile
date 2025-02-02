@@ -24,31 +24,28 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.comicsappmobile.data.mapper.UserMapper
+import com.example.comicsappmobile.navigation.Screen
 import com.example.comicsappmobile.ui.components.ThemedInputField
-import com.example.comicsappmobile.ui.presentation.model.UserUiModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.RegistrationFormViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
-import com.example.comicsappmobile.ui.theme.ComicsAppMobileTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegistrationFormScreen (
-    // navController: NavHostController,
+    navController: NavHostController,
     registrationFormViewModel: RegistrationFormViewModel = koinViewModel()
-){
-    val userLoginV2 = UiState.Success(data = UserUiModel.createDefaultUser(0, "Test"))
+) {
     val authUserState by registrationFormViewModel.userLogin.collectAsState()
     val authUserValue by registrationFormViewModel.globalState.authUser.collectAsState()
 
     LaunchedEffect(authUserValue) {
-        if (authUserValue.userId <= 0){
+        if (authUserValue.userId <= 0) {
             registrationFormViewModel.setUserState(UiState.Error(message = ""))
             return@LaunchedEffect
         }
@@ -56,8 +53,6 @@ fun RegistrationFormScreen (
     }
 
     val coroutineScope = rememberCoroutineScope()
-    val appContext = LocalContext.current.applicationContext
-
     val usernameInput = rememberSaveable { mutableStateOf("") }
     val mailInput = rememberSaveable { mutableStateOf("") }
     val passwordInput = rememberSaveable { mutableStateOf("") }
@@ -65,16 +60,18 @@ fun RegistrationFormScreen (
 
 
 
-    Scaffold{ paddingValues ->
+    Scaffold { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
                 .padding(horizontal = 36.dp)
                 .offset(y = (-128).dp)
-        ){
-            Spacer(modifier = Modifier
-                .height(180.dp))
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .height(180.dp)
+            )
             Card(
                 modifier = Modifier
                     .fillMaxWidth().align(Alignment.CenterHorizontally),
@@ -100,7 +97,7 @@ fun RegistrationFormScreen (
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = when(authUserState){
+                        text = when (authUserState) {
                             is UiState.Error -> { authUserState.message ?: "Неизвестная ошибка" }
                             is UiState.Loading -> { "" }
                             is UiState.Success -> { "Успешная авторизация" }
@@ -113,89 +110,80 @@ fun RegistrationFormScreen (
                         )
                     )
                     ThemedInputField(
-                        textFieldValue =  usernameInput,
+                        textFieldValue = usernameInput,
                         placeholder = "Имя пользователя",
                         modifier = Modifier.height(36.dp)
                     )
                     ThemedInputField(
-                        textFieldValue =  mailInput,
+                        textFieldValue = mailInput,
                         placeholder = "Почта",
                         modifier = Modifier.height(36.dp)
                     )
                     ThemedInputField(
-                        textFieldValue =  passwordInput,
+                        textFieldValue = passwordInput,
                         placeholder = "Пароль",
                         modifier = Modifier.height(36.dp)
                     )
                     ThemedInputField(
-                        textFieldValue =  retryPasswordInput,
+                        textFieldValue = retryPasswordInput,
                         placeholder = "Повторите пароль",
                         modifier = Modifier.height(36.dp)
                     )
                     Button(
                         onClick = {
-                            if (passwordInput.value != retryPasswordInput.value){
+                            if (passwordInput.value != retryPasswordInput.value) {
                                 registrationFormViewModel.setUserState(
                                     UiState.Error(message = "Пароли не совпадают")
                                 )
                                 return@Button
                             }
-                            if (passwordInput.value.isEmpty()){
+                            if (passwordInput.value.isEmpty()) {
                                 registrationFormViewModel.setUserState(
                                     UiState.Error(message = "Пароль не может быть пустым")
                                 )
                                 return@Button
                             }
-                            if (mailInput.value.isEmpty()){
+                            if (mailInput.value.isEmpty()) {
                                 registrationFormViewModel.setUserState(
                                     UiState.Error(message = "Почта не может быть пустой")
                                 )
                                 return@Button
                             }
-                            if (usernameInput.value.isEmpty()){
+                            if (usernameInput.value.isEmpty()) {
                                 registrationFormViewModel.setUserState(
                                     UiState.Error(message = "Имя пользователя не может быть пустым")
                                 )
                                 return@Button
                             }
-                            if (usernameInput.value.length < 3){
+                            if (usernameInput.value.length < 3) {
                                 registrationFormViewModel.setUserState(
                                     UiState.Error(message = "Имя пользователя слишком короткое")
                                 )
                                 return@Button
                             }
                             coroutineScope.launch {
-                                registrationFormViewModel.registration(
+                                val isRegistrationSuccess = registrationFormViewModel.registration(
                                     username = usernameInput.value,
                                     mail = mailInput.value,
                                     password = passwordInput.value
                                 )
-                                // TODO: Add navigate to profile
+                                if (isRegistrationSuccess) {
+                                    navController.navigate(Screen.ProfileUserScreen.route)
+                                }
                             }
-                  },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text( text = "Зарегистрироваться" )
-                    }
-                    TextButton(
-                        onClick = {
-                            // TODO: Add navigation to login form screen
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text( text = "У меня уже есть аккаунт")
+                        Text(text = "Зарегистрироваться")
+                    }
+                    TextButton(
+                        onClick = { navController.navigate(Screen.LoginForm.route) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "У меня уже есть аккаунт")
                     }
                 }
             }
         }
-    }
-}
-
-
-@Preview
-@Composable
-fun Test(){
-    ComicsAppMobileTheme(4) {
-        RegistrationFormScreen()
     }
 }

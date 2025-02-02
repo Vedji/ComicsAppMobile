@@ -21,7 +21,7 @@ class RegistrationFormViewModel(
         _userLogin.value = userData
     }
 
-    suspend fun registration(username: String, mail: String, password: String) {
+    suspend fun registration(username: String, mail: String, password: String): Boolean {
         try {
             _userLogin.value = UiState.Loading()
             val response = userRepository.responseUserRegistration(
@@ -33,12 +33,14 @@ class RegistrationFormViewModel(
                 "LoginFormViewModel -> registration",
                 "User info = '${response.data.toString()}'"
             )
+            return if (_userLogin.value is UiState.Success) (_userLogin.value.data?.userId ?: 0) > 0 else false
         } catch (e: IllegalArgumentException) {
             _userLogin.value = UiState.Error(
                 message = e.localizedMessage,
                 typeError = "Network",
                 statusCode = 500
             )
+            return false
         }
     }
 
