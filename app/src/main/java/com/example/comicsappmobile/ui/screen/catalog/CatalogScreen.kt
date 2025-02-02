@@ -1,7 +1,16 @@
 package com.example.comicsappmobile.ui.screen.catalog
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -9,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Menu
@@ -123,13 +133,48 @@ fun CatalogScreen(
                         }
                     },
                     title = {
-                        Row(
+                        Box(
                             modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End
                         ) {
-                            when (selectedTab) {
-                                0 -> {
+                            AnimatedVisibility(
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                visible = selectedTab == 2,
+                                enter = fadeIn(animationSpec = tween(durationMillis = 350)) + slideInHorizontally(
+                                    animationSpec = tween(durationMillis = 350),
+                                    initialOffsetX = { it }
+                                ),
+                                exit = fadeOut(animationSpec = tween(durationMillis = 350)) + slideOutHorizontally(
+                                    animationSpec = tween(durationMillis = 350),
+                                    targetOffsetX = { it }
+                                )
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text(
+                                        text = "Меню поиска",
+                                        style = MaterialTheme.typography.displayMedium.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    )
+                                }
+                            }
+                            AnimatedVisibility(
+                                visible = selectedTab == 0,
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                enter = fadeIn(animationSpec = tween(durationMillis = 350)) + slideInHorizontally(
+                                    animationSpec = tween(durationMillis = 350),
+                                    initialOffsetX = { it }
+                                ),
+                                exit = fadeOut(animationSpec = tween(durationMillis = 350)) + slideOutHorizontally(
+                                    animationSpec = tween(durationMillis = 350),
+                                    targetOffsetX = { it }
+                                )
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
                                     ThemedSearchBar(
                                         text = textFieldValue,
                                         onTextChange = { textFieldValue = it },
@@ -162,17 +207,6 @@ fun CatalogScreen(
                                         }
                                     }
                                 }
-
-                                2 -> {
-                                    Text(
-                                        text = "Меню поиска",
-                                        modifier = Modifier,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        style = MaterialTheme.typography.displayMedium.copy(
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    )
-                                }
                             }
                         }
                     },
@@ -182,17 +216,20 @@ fun CatalogScreen(
                         scrolledContainerColor = MaterialTheme.colorScheme.background
                     )
                 )
-
             },
             content = { innerPadding ->
-                when (selectedTab) {
-                    0 -> CatalogBooksTab(
-                        navController = navController,
-                        catalogViewModel = catalogViewModel,
-                        innerPadding = innerPadding
+                AnimatedVisibility(
+                    visible = selectedTab == 2,
+                    enter = fadeIn(animationSpec = tween(durationMillis = 350)) + slideInHorizontally(
+                        animationSpec = tween(durationMillis = 350),
+                        initialOffsetX = { it }
+                    ),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 350)) + slideOutHorizontally(
+                        animationSpec = tween(durationMillis = 350),
+                        targetOffsetX = { it }
                     )
-
-                    2 -> CatalogFiltersTab(
+                ) {
+                    CatalogFiltersTab(
                         navController = navController,
                         catalogViewModel = catalogViewModel,
                         innerPadding = innerPadding
@@ -200,12 +237,24 @@ fun CatalogScreen(
                         coroutineScope.launch { scrollBehavior.state.heightOffset = 0f }
                         selectedTab = 0
                     }
-
-                    else -> {
-                        Text(text = "No Realize selectedTab = ${selectedTab}")
-                    }
                 }
-
+                AnimatedVisibility(
+                    visible = selectedTab == 0,
+                    enter = fadeIn(animationSpec = tween(durationMillis = 350)) + slideInHorizontally(
+                        animationSpec = tween(durationMillis = 350),
+                        initialOffsetX = { it }
+                    ),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 350)) + slideOutHorizontally(
+                        animationSpec = tween(durationMillis = 350),
+                        targetOffsetX = { it }
+                    )
+                ) {
+                    CatalogBooksTab(
+                        navController = navController,
+                        catalogViewModel = catalogViewModel,
+                        innerPadding = innerPadding
+                    )
+                }
             }
         )
     }
