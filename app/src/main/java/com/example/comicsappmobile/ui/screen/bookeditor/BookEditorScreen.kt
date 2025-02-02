@@ -58,7 +58,7 @@ fun BookEditorScreen(
     navController: NavHostController,
     bookEditorViewModel: BookEditorViewModel = koinViewModel { parametersOf(bookId) }
 ) {
-    // TODO: Editable ->
+    // Editable ->
     //  + title name
     //  + Genres
     //  + titleImage
@@ -82,6 +82,7 @@ fun BookEditorScreen(
     val bookGenresUiState by bookEditorViewModel.bookGenresUiState.collectAsState()
     val bookChaptersUiState by bookEditorViewModel.bookChaptersUiState.collectAsState()
     val update by bookEditorViewModel.uploading.collectAsState()
+    val uploadingError by bookEditorViewModel.uploadingError.collectAsState()
 
     // From view model
     val bookTitleName: String = if (bookUiState is UiState.Success) bookUiState.data?.rusTitle
@@ -121,8 +122,6 @@ fun BookEditorScreen(
         inputTitleName.value = bookTitleName
         inputDescription.value = baseDescription
         inputDateOfPublication.value = baseDateOfPublication
-        // inputGenres
-        // chapters
     }
     LaunchedEffect(bookGenresUiState) {
         inputGenres.value = fetchedBookGenres
@@ -133,13 +132,16 @@ fun BookEditorScreen(
     val resetButtonClicked = remember { mutableStateOf(false) }
     val approveButtonClicked = remember { mutableStateOf(false) }
     var isLoadingDialog: Boolean by remember { mutableStateOf(false) }
+    var isErrorDialog: Boolean by remember { mutableStateOf(false) }
 
-    if (isLoadingDialog){
+    if (isLoadingDialog) {
         AlertDialog(
             onDismissRequest = { isLoadingDialog = false },
             title = { Text(text = "Идет загрузка подождите") },
-            text = { Box(modifier = Modifier.fillMaxWidth())
-            { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) } },
+            text = {
+                Box(modifier = Modifier.fillMaxWidth())
+                { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
+            },
             backgroundColor = MaterialTheme.colorScheme.primaryContainer,
             confirmButton = { },
             dismissButton = {
@@ -147,23 +149,103 @@ fun BookEditorScreen(
                     onClick = {
                         coroutineScope.cancel()
                         isLoadingDialog = false
-                    }) { Text("Отменить") } }
+                    }) { Text("Отменить") }
+            }
+        )
+    }
+    if (resetButtonClicked.value) {
+        ThemedAlertDialog(
+            titleText = "Сбросить настроенные параметры?",
+            messageText = "",
+            onConfirm = {
+                resetButtonClicked.value = false
+                coroutineScope.launch { bookEditorViewModel.refreshBook() }
+            },
+            onDismiss = { resetButtonClicked.value = false }
+        )
+    }
+    if (approveButtonClicked.value) {
+        ThemedAlertDialog(
+            titleText = "Применить изменения?",
+            messageText = "",
+            onConfirm = {
+                approveButtonClicked.value = false
+                isLoadingDialog = true
+                coroutineScope.launch {
+                    val response = bookEditorViewModel.loadBookAndImage(
+                        context = context,
+                        fileUri = selectedImage.value,
+                        bookName = inputTitleName.value,
+                        bookGenres = inputGenres.value.map { it.genreId },
+                        bookDescription = inputDescription.value,
+                        bookDateOfPublication = inputDateOfPublication.value,
+                        bookChaptersSequence = chapters.value.map { it.chapterId }
+                    )
+                    isLoadingDialog = false
+                    if (response is UiState.Error) isErrorDialog = true
+                    if (response is UiState.Success) {
+                        navController.navigate(
+                            Screen.AboutBook.createRoute(
+                                bookEditorViewModel.getBookId().toString()
+                            )
+                        )
+                    }else{
+                        bookEditorViewModel.refreshBook()
+                    }
+                }
+            },
+            onDismiss = { approveButtonClicked.value = false }
+        )
+    }
+    if (isErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { isErrorDialog = false },
+            title = {
+                Text(
+                    text =
+                    "Ошибка: " +
+                            if (uploadingError is UiState.Error) uploadingError.typeError
+                            else "Unknow"
+                )
+            },
+            text = {
+                Text(
+                    text =
+                    if (uploadingError is UiState.Error) uploadingError.message ?: ""
+                    else ""
+                )
+            },
+            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+            confirmButton = { },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        isErrorDialog = false
+                    }) { Text("Закрыть") }
+            }
         )
     }
 
     Scaffold(
         topBar = {
-            Row (
+            Row(
                 modifier = Modifier.height(64.dp),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 IconButton(onClick = {
                     when (selectedTab.intValue) {
-                        1 -> { selectedTab.intValue = 0 }
+                        1 -> {
+                            selectedTab.intValue = 0
+                        }
+
                         else -> {
-                            if (bookEditorViewModel.getBookId() > 0){
-                                navController.navigate(Screen.AboutBook.createRoute(bookEditorViewModel.getBookId().toString()))
-                            }else{
+                            if (bookEditorViewModel.getBookId() > 0) {
+                                navController.navigate(
+                                    Screen.AboutBook.createRoute(
+                                        bookEditorViewModel.getBookId().toString()
+                                    )
+                                )
+                            } else {
                                 navController.navigate(Screen.Catalog.route)
                             }
                         }
@@ -178,21 +260,29 @@ fun BookEditorScreen(
                         contentDescription = "Moved"
                     )
                 }
-                    Text(
-                        text = when(selectedTab.intValue){
-                            0 -> { "Основная информация" }
-                            1 -> { "Изменение порядка глав" }
-                            else -> { "Неизвестная страница" }
-                        },
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        )
+                Text(
+                    text = when (selectedTab.intValue) {
+                        0 -> {
+                            "Основная информация"
+                        }
+
+                        1 -> {
+                            "Изменение порядка глав"
+                        }
+
+                        else -> {
+                            "Неизвестная страница"
+                        }
+                    },
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold
                     )
+                )
             }
         },
         bottomBar = {
-            if (selectedTab.intValue == 0){
+            if (selectedTab.intValue == 0) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -238,48 +328,7 @@ fun BookEditorScreen(
             }
         }
     ) { paddingValues ->
-        if (resetButtonClicked.value){
-            ThemedAlertDialog(
-                titleText = "Сбросить настроенные параметры?",
-                messageText = "",
-                onConfirm = {
-                    resetButtonClicked.value = false
-                    coroutineScope.launch { bookEditorViewModel.refreshBook() }
-                            },
-                onDismiss = { resetButtonClicked.value = false }
-            )
-        }
-        if (approveButtonClicked.value){
-            ThemedAlertDialog(
-                titleText = "Применить изменения?",
-                messageText = "",
-                onConfirm = {
-                    approveButtonClicked.value = false
-                    isLoadingDialog = true
-                    coroutineScope.launch {
-                        val response = bookEditorViewModel.loadBookAndImage(
-                            context = context,
-                            fileUri = selectedImage.value,
-                            bookName = inputTitleName.value,
-                            bookGenres = inputGenres.value.map { it.genreId },
-                            bookDescription = inputDescription.value,
-                            bookDateOfPublication = inputDateOfPublication.value,
-                            bookChaptersSequence = chapters.value.map { it.chapterId }
-                        )
-                        isLoadingDialog = false
-                        Logger.debug("In screen edit", "book id = ${response.data?.bookId}")
-                        bookEditorViewModel.refreshBook()
-                        navController.navigate(Screen.AboutBook.createRoute(bookEditorViewModel.getBookId().toString()))
-                    }
-
-                },
-                onDismiss = { approveButtonClicked.value = false }
-            )
-        }
-
-
-
-        if (update is UiState.Success){
+        if (update is UiState.Success) {
             when (selectedTab.intValue) {
                 0 -> {
                     EditGeneralsInfoBookTab(
@@ -313,22 +362,13 @@ fun BookEditorScreen(
                     Text(text = "No tab selected")
                 }
             }
-        }else{
+        } else {
             Box(
                 modifier = Modifier.padding(paddingValues).fillMaxSize()
-            ){
+            ) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         }
 
     }
 }
-
-
-// @Preview
-// @Composable
-// fun PreviewBookEditorScreen(){
-//     ComicsAppMobileTheme(3) {
-//         BookEditorScreen()
-//     }
-// }

@@ -32,14 +32,19 @@ class BookEditorViewModel(
     private val _allGenresUiState = MutableStateFlow<UiState<List<GenreUiModel>>>(UiState.Loading())
     val allGenresUiState: StateFlow<UiState<List<GenreUiModel>>> = _allGenresUiState
 
-    private val _bookGenresUiState = MutableStateFlow<UiState<List<GenreUiModel>>>(UiState.Loading())
+    private val _bookGenresUiState =
+        MutableStateFlow<UiState<List<GenreUiModel>>>(UiState.Loading())
     val bookGenresUiState: StateFlow<UiState<List<GenreUiModel>>> = _bookGenresUiState
 
-    private val _bookChaptersUiState = MutableStateFlow<UiState<List<ChapterUiModel>>>(UiState.Loading())
+    private val _bookChaptersUiState =
+        MutableStateFlow<UiState<List<ChapterUiModel>>>(UiState.Loading())
     val bookChaptersUiState: StateFlow<UiState<List<ChapterUiModel>>> = _bookChaptersUiState
 
     private val _uploading = MutableStateFlow<UiState<Boolean>>(UiState.Loading())
     val uploading: StateFlow<UiState<Boolean>> = _uploading
+
+    private val _uploadingError = MutableStateFlow<UiState<Boolean>>(UiState.Loading())
+    val uploadingError: StateFlow<UiState<Boolean>> = _uploadingError
 
     init {
         viewModelScope.launch {
@@ -47,7 +52,7 @@ class BookEditorViewModel(
         }
     }
 
-    suspend fun uploadFile(context: Context, fileUri: Uri): UiState<FileUiModel>{
+    suspend fun uploadFile(context: Context, fileUri: Uri): UiState<FileUiModel> {
         val data = filesRepository.uploadFile(context, fileUri)
         Logger.debug("uploadBook", "in view model = ${data.data.toString()}")
         return data
@@ -61,7 +66,7 @@ class BookEditorViewModel(
         bookDateOfPublication: String?,
         bookTitleImageId: Int?,
         bookChaptersSequence: List<Int>?
-        ): UiState<BookUiModel> {
+    ): UiState<BookUiModel> {
         val response = booksRepository.updateBook(
             bookId = bookId,
             bookName = bookName,
@@ -71,7 +76,14 @@ class BookEditorViewModel(
             bookTitleImageId = bookTitleImageId,
             bookChaptersSequence = bookChaptersSequence
         )
-        if (response is UiState.Success && response.data != null){
+        if (response is UiState.Error) {
+            _uploadingError.value = UiState.Error(
+                statusCode = response.statusCode,
+                typeError = response.typeError,
+                message = response.message
+            )
+        }
+        if (response is UiState.Success && response.data != null) {
             this.bookId = response.data?.bookId ?: this.bookId
             Logger.debug("newBookId", "bookId = ${this.bookId}")
         }
@@ -87,20 +99,24 @@ class BookEditorViewModel(
         bookDescription: String?,
         bookDateOfPublication: String?,
         bookChaptersSequence: List<Int>?
-    ): UiState<BookUiModel>{
+    ): UiState<BookUiModel> {
         _uploading.value = UiState.Loading()
         var image: Int = -1
         if (fileUri == null && bookId <= 0) {
             _uploading.value = UiState.Error()
             return UiState.Error()
         }
-        if (fileUri != null){
+        if (fileUri != null) {
             val fileImage = uploadFile(context, fileUri)
-            if (fileImage is UiState.Success && fileImage.data?.fileID != null){
+            if (fileImage is UiState.Success && fileImage.data?.fileID != null) {
                 image = fileImage.data?.fileID ?: -1
-            } else{
+            } else {
                 _uploading.value = UiState.Error()
-                return UiState.Error()
+                return UiState.Error(
+                    statusCode = fileImage.statusCode,
+                    typeError = fileImage.typeError,
+                    message = fileImage.message
+                )
             }
 
         }
@@ -113,19 +129,20 @@ class BookEditorViewModel(
             bookTitleImageId = image,
             bookChaptersSequence = bookChaptersSequence
         )
-        _uploading.value = UiState.Success(data = if (updatingBook is UiState.Success) true else false)
+        _uploading.value =
+            UiState.Success(data = if (updatingBook is UiState.Success) true else false)
         return if (updatingBook is UiState.Success) updatingBook else UiState.Error()
     }
 
-    suspend fun refreshBook(){
-            loadBook()
-            loadAllGenres()
-            loadGenres()
-            loadChapters()
+    suspend fun refreshBook() {
+        loadBook()
+        loadAllGenres()
+        loadGenres()
+        loadChapters()
         _uploading.value = UiState.Success(data = true)
     }
 
-    fun getBookId(): Int{
+    fun getBookId(): Int {
         return bookId
     }
 
@@ -143,7 +160,7 @@ class BookEditorViewModel(
         }
     }
 
-    private suspend fun loadGenres(){
+    private suspend fun loadGenres() {
         try {
             _bookGenresUiState.value = UiState.Loading()
             val response = genresRepository.getBookGenres(bookId = bookId)
@@ -157,13 +174,13 @@ class BookEditorViewModel(
         }
     }
 
-    private suspend fun loadChapters(){
+    private suspend fun loadChapters() {
         _bookChaptersUiState.value = UiState.Loading()
-        val response = loadWithState{ chaptersRepository.getBookChapters(bookId = bookId) }
+        val response = loadWithState { chaptersRepository.getBookChapters(bookId = bookId) }
         _bookChaptersUiState.value = response
     }
 
-    private suspend fun loadAllGenres(){
+    private suspend fun loadAllGenres() {
         _allGenresUiState.value = UiState.Loading()
         val response = loadWithState { genresRepository.getAllGenres() }
         _allGenresUiState.value = response
