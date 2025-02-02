@@ -98,7 +98,11 @@ fun RegistrationFormScreen (
                     )
                     Text(
                         text = when (authUserState) {
-                            is UiState.Error -> { authUserState.message ?: "Неизвестная ошибка" }
+                            is UiState.Error -> {
+                                if (authUserState.typeError == "ResourceExistsError")
+                                    "Пользователь с таким именем или почтой уже существует"
+                                else
+                                    authUserState.message ?: "Неизвестная ошибка" }
                             is UiState.Loading -> { "" }
                             is UiState.Success -> { "Успешная авторизация" }
                         },
