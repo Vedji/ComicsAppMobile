@@ -44,10 +44,10 @@ import androidx.navigation.NavController
 import com.example.comicsappmobile.navigation.Screen
 import com.example.comicsappmobile.ui.components.ThemedAlertDialog
 import com.example.comicsappmobile.ui.components.ThemedStateView
-import com.example.comicsappmobile.utils.Logger
+import com.example.comicsappmobile.ui.presentation.model.ChapterUiModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.BookViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
-import com.example.comicsappmobile.ui.presentation.model.ChapterUiModel
+import com.example.comicsappmobile.utils.Logger
 import kotlinx.coroutines.launch
 
 

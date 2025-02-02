@@ -13,11 +13,6 @@ import com.example.comicsappmobile.data.repository.GenresRepository
 import com.example.comicsappmobile.data.repository.PagesRepository
 import com.example.comicsappmobile.data.repository.UserRepository
 import com.example.comicsappmobile.ui.presentation.viewmodel.BookEditorViewModel
-import com.example.comicsappmobile.utils.remote.provideBookApiService
-import com.example.comicsappmobile.utils.remote.provideGenresApiService
-import com.example.comicsappmobile.utils.remote.provideMoshi
-import com.example.comicsappmobile.utils.remote.provideOkHttpClient
-import com.example.comicsappmobile.utils.remote.provideRetrofit
 import com.example.comicsappmobile.ui.presentation.viewmodel.BookViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.CatalogViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.ChapterEditorViewModel
@@ -27,6 +22,11 @@ import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileEditorViewMo
 import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.RegistrationFormViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.SettingsViewModel
+import com.example.comicsappmobile.utils.remote.provideBookApiService
+import com.example.comicsappmobile.utils.remote.provideGenresApiService
+import com.example.comicsappmobile.utils.remote.provideMoshi
+import com.example.comicsappmobile.utils.remote.provideOkHttpClient
+import com.example.comicsappmobile.utils.remote.provideRetrofit
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 

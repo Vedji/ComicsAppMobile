@@ -15,14 +15,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.comicsappmobile.ui.screen.profiles.auth.LoginFormScreen
-import com.example.comicsappmobile.ui.screen.catalog.CatalogScreen
 import com.example.comicsappmobile.ui.screen.book.BookScreen
 import com.example.comicsappmobile.ui.screen.bookeditor.BookEditorScreen
 import com.example.comicsappmobile.ui.screen.bookreader.BookReaderScreen
+import com.example.comicsappmobile.ui.screen.catalog.CatalogScreen
 import com.example.comicsappmobile.ui.screen.chaptereditor.ChapterEditorScreen
 import com.example.comicsappmobile.ui.screen.examples.DragAndDropExample
 import com.example.comicsappmobile.ui.screen.examples.FontDisplayExamplesScreen
+import com.example.comicsappmobile.ui.screen.profiles.auth.LoginFormScreen
 import com.example.comicsappmobile.ui.screen.profiles.editor.ProfileEditorScreen
 import com.example.comicsappmobile.ui.screen.profiles.me.ProfileScreen
 import com.example.comicsappmobile.ui.screen.profiles.registration.RegistrationFormScreen

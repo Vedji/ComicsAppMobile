@@ -24,8 +24,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -55,15 +53,14 @@ import androidx.navigation.NavHostController
 import com.example.comicsappmobile.navigation.Screen
 import com.example.comicsappmobile.ui.components.ImageByID
 import com.example.comicsappmobile.ui.components.ThemedErrorCard
-import com.example.comicsappmobile.utils.Logger
-import com.example.comicsappmobile.utils.vibrate
+import com.example.comicsappmobile.ui.presentation.model.PageUiModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.PagesViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
-import com.example.comicsappmobile.ui.presentation.model.PageUiModel
+import com.example.comicsappmobile.utils.Logger
+import com.example.comicsappmobile.utils.vibrate
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
-
 
 
 @Composable

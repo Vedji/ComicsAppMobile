@@ -33,11 +33,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsappmobile.navigation.Screen
+import com.example.comicsappmobile.ui.presentation.model.ChapterUiModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.PagesViewModel
 import com.example.comicsappmobile.ui.screen.bookreader.tabs.ChapterListTab
 import com.example.comicsappmobile.ui.screen.bookreader.tabs.PageViewsTab
 import com.example.comicsappmobile.utils.Logger
-import com.example.comicsappmobile.ui.presentation.viewmodel.PagesViewModel
-import com.example.comicsappmobile.ui.presentation.model.ChapterUiModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 

@@ -1,7 +1,7 @@
 package com.example.comicsappmobile.data.api
 
-import com.example.comicsappmobile.data.dto.response.ResponseDto
 import com.example.comicsappmobile.data.dto.entities.GenreDto
+import com.example.comicsappmobile.data.dto.response.ResponseDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

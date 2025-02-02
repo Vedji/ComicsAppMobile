@@ -5,7 +5,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -20,12 +19,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -44,8 +40,6 @@ import androidx.compose.material3.TabIndicatorScope
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -53,7 +47,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,14 +72,13 @@ import androidx.navigation.NavHostController
 import com.example.comicsappmobile.R
 import com.example.comicsappmobile.navigation.Screen
 import com.example.comicsappmobile.ui.components.ImageByID
+import com.example.comicsappmobile.ui.presentation.viewmodel.BookViewModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.ui.screen.book.tabs.ChaptersBookTab
 import com.example.comicsappmobile.ui.screen.book.tabs.CommentsBookTab
 import com.example.comicsappmobile.ui.screen.book.tabs.DescriptionBookTab
 import com.example.comicsappmobile.utils.Logger
-import com.example.comicsappmobile.ui.presentation.viewmodel.BookViewModel
-import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.utils.vibrate
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf

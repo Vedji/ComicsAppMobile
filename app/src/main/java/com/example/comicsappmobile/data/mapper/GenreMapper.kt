@@ -1,8 +1,8 @@
 package com.example.comicsappmobile.data.mapper
 
 import com.example.comicsappmobile.data.dto.entities.GenreDto
-import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.model.GenreUiModel
+import com.example.comicsappmobile.utils.Logger
 
 
 object GenreMapper{

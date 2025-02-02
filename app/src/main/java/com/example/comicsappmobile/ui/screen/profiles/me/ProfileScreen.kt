@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
@@ -32,6 +31,7 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,11 +44,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsappmobile.navigation.Screen
 import com.example.comicsappmobile.ui.components.ThemedErrorCard
-import com.example.comicsappmobile.ui.screen.profiles.me.tabs.ProfileCommentsTab
+import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
 import com.example.comicsappmobile.ui.screen.profiles.me.cards.ProfileDescriptionCard
 import com.example.comicsappmobile.ui.screen.profiles.me.tabs.ProfileAddedBooksTab
+import com.example.comicsappmobile.ui.screen.profiles.me.tabs.ProfileCommentsTab
 import com.example.comicsappmobile.ui.screen.profiles.me.tabs.ProfileFavoriteBooksTab
-import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
 
 

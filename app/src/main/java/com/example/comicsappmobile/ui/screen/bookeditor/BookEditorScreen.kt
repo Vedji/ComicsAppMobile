@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Home
@@ -19,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -28,6 +30,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,6 +47,7 @@ import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.ui.screen.bookeditor.tabs.EditChaptersSequenceTab
 import com.example.comicsappmobile.ui.screen.bookeditor.tabs.EditGeneralsInfoBookTab
 import com.example.comicsappmobile.utils.Logger
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -128,6 +132,24 @@ fun BookEditorScreen(
     }
     val resetButtonClicked = remember { mutableStateOf(false) }
     val approveButtonClicked = remember { mutableStateOf(false) }
+    var isLoadingDialog: Boolean by remember { mutableStateOf(false) }
+
+    if (isLoadingDialog){
+        AlertDialog(
+            onDismissRequest = { isLoadingDialog = false },
+            title = { Text(text = "Идет загрузка подождите") },
+            text = { Box(modifier = Modifier.fillMaxWidth())
+            { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) } },
+            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+            confirmButton = { },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        coroutineScope.cancel()
+                        isLoadingDialog = false
+                    }) { Text("Отменить") } }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -137,9 +159,7 @@ fun BookEditorScreen(
             ){
                 IconButton(onClick = {
                     when (selectedTab.intValue) {
-                        1 -> {
-                            selectedTab.intValue = 0
-                        }   // Navigate to general book editable
+                        1 -> { selectedTab.intValue = 0 }
                         else -> {
                             if (bookEditorViewModel.getBookId() > 0){
                                 navController.navigate(Screen.AboutBook.createRoute(bookEditorViewModel.getBookId().toString()))
@@ -235,6 +255,7 @@ fun BookEditorScreen(
                 messageText = "",
                 onConfirm = {
                     approveButtonClicked.value = false
+                    isLoadingDialog = true
                     coroutineScope.launch {
                         val response = bookEditorViewModel.loadBookAndImage(
                             context = context,
@@ -245,6 +266,7 @@ fun BookEditorScreen(
                             bookDateOfPublication = inputDateOfPublication.value,
                             bookChaptersSequence = chapters.value.map { it.chapterId }
                         )
+                        isLoadingDialog = false
                         Logger.debug("In screen edit", "book id = ${response.data?.bookId}")
                         bookEditorViewModel.refreshBook()
                         navController.navigate(Screen.AboutBook.createRoute(bookEditorViewModel.getBookId().toString()))

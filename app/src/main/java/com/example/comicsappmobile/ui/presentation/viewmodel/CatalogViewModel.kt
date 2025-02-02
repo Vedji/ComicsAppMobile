@@ -4,9 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.comicsappmobile.data.repository.BooksRepository
 import com.example.comicsappmobile.data.repository.FavoriteRepository
 import com.example.comicsappmobile.data.repository.GenresRepository
-import com.example.comicsappmobile.utils.Logger
 import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.presentation.model.GenreUiModel
+import com.example.comicsappmobile.utils.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

@@ -44,10 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsappmobile.navigation.Screen
 import com.example.comicsappmobile.ui.components.ImageByID
-import com.example.comicsappmobile.utils.Logger
+import com.example.comicsappmobile.ui.presentation.model.BookUiModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.CatalogViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
-import com.example.comicsappmobile.ui.presentation.model.BookUiModel
+import com.example.comicsappmobile.utils.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

@@ -1,9 +1,9 @@
 package com.example.comicsappmobile.data.api
 
 import com.example.comicsappmobile.data.dto.entities.BookDto
+import com.example.comicsappmobile.data.dto.entities.joined.UserFavoriteListDto
 import com.example.comicsappmobile.data.dto.entities.user.LoginUserDto
 import com.example.comicsappmobile.data.dto.entities.user.UserComment
-import com.example.comicsappmobile.data.dto.entities.joined.UserFavoriteListDto
 import com.example.comicsappmobile.data.dto.entities.user.UserDto
 import com.example.comicsappmobile.data.dto.response.ResponseDto
 import retrofit2.Response

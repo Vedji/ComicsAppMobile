@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class ProfileEditorViewModel(
     private val userRepository: UserRepository,
     private val filesRepository: FilesRepository,
-    private val globalState: GlobalState
+    val globalState: GlobalState
 ) : BaseViewModel() {
     private val _userLogin = MutableStateFlow<UiState<UserUiModel>>(UiState.Loading())
     val userLogin: StateFlow<UiState<UserUiModel>> = _userLogin
@@ -28,6 +28,10 @@ class ProfileEditorViewModel(
             delay(200)
             _userLogin.value = UiState.Success(data = UserMapper.map(globalState.authUser.value))
         }
+    }
+
+    fun setUserState(newUserState: UiState<UserUiModel>){
+        _userLogin.value = newUserState
     }
 
     suspend fun uploadFile(context: Context, fileUri: Uri): UiState<FileUiModel>{
@@ -55,7 +59,6 @@ class ProfileEditorViewModel(
     suspend fun uploadUserInfo(context: Context, newUserTitleImageUri: Uri?, newUserDescription: String): Boolean{
         if (_userLogin.value !is UiState.Success)
             return false
-        val description: String = _userLogin.value.data?.userDescription ?: ""
         val imageId: Int = _userLogin.value.data?.userTitleImage ?: 4
         var newImageId: Int = imageId
         _userLogin.value = UiState.Loading()
@@ -63,6 +66,8 @@ class ProfileEditorViewModel(
             val responseUploadFile = uploadFile(context, newUserTitleImageUri)
             if (responseUploadFile !is UiState.Success) return false
             newImageId = if (responseUploadFile is UiState.Success) responseUploadFile.data?.fileID ?: imageId else imageId
+        } else {
+            newImageId = 2
         }
         val responseUploadInfo = responseUserInfo(
             newUserTitleImageId = newImageId,
@@ -71,5 +76,4 @@ class ProfileEditorViewModel(
         _userLogin.value = responseUploadInfo
         return true
     }
-
 }
