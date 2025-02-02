@@ -99,7 +99,9 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier, 
         composable(route = Screen.DragAndDropExample.route){ DragAndDropExample() }
         // Examples end
 
-        composable(route = Screen.SettingsScreen.route){ SettingScreen(navController) }
+        composable(route = Screen.SettingsScreen.route){
+            SettingScreen(navController = navController, drawerState = drawerState)
+        }
 
         composable(
             route = Screen.BookReader.route,
