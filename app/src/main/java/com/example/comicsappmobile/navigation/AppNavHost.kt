@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,7 +31,7 @@ import com.example.comicsappmobile.ui.screen.settings.SettingScreen
 import com.example.comicsappmobile.utils.Logger
 
 @Composable
-fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
+fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier, drawerState: DrawerState) {
 
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
@@ -72,14 +73,17 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
             val itemId: String = backStackEntry.arguments?.getString ("itemId") ?: ""
             val intItemId = itemId.toIntOrNull() ?: -1
             val selectionTab = backStackEntry.arguments?.getInt ("selectionTab") ?: 0
-            BookScreen(navController = navController, bookId = intItemId, selectionTab = selectionTab)
+            BookScreen(
+                navController = navController,
+                bookId = intItemId,
+                selectionTab = selectionTab,
+                drawerState = drawerState
+            )
         }
 
         // Catalog Screen
-        composable(
-            route = Screen.Catalog.route,
-        ) {
-            CatalogScreen(navController)
+        composable( route = Screen.Catalog.route ) {
+            CatalogScreen(navController = navController, drawerState = drawerState)
         }
 
         composable( route = Screen.LoginForm.route,) {

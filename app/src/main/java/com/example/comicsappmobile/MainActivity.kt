@@ -89,7 +89,11 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         topBar = { }
                     ) { innerPadding ->
-                        AppNavHost(navController, Modifier.padding(innerPadding))
+                        AppNavHost(
+                            navController = navController,
+                            modifier = Modifier.padding(innerPadding),
+                            drawerState = drawerState
+                        )
                     }
                 }
             }
