@@ -15,6 +15,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,10 +44,12 @@ import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationFormScreen (
     navController: NavHostController,
-    registrationFormViewModel: RegistrationFormViewModel = koinViewModel()
+    registrationFormViewModel: RegistrationFormViewModel = koinViewModel(),
+    drawerState: DrawerState
 ) {
     val authUserState by registrationFormViewModel.userLogin.collectAsState()
     val authUserValue by registrationFormViewModel.globalState.authUser.collectAsState()
@@ -60,7 +70,28 @@ fun RegistrationFormScreen (
 
 
 
-    Scaffold { paddingValues ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors().copy(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.background
+                ),
+                navigationIcon = {
+                    IconButton(
+                        onClick = { coroutineScope.launch { drawerState.open() } },
+                    ) {
+                        Icon(
+                            Icons.Default.Menu,
+                            "Menu",
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                },
+                title = {  }
+            )
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -74,7 +105,8 @@ fun RegistrationFormScreen (
             )
             Card(
                 modifier = Modifier
-                    .fillMaxWidth().align(Alignment.CenterHorizontally),
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
                 colors = CardDefaults.cardColors().copy(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
                 ),

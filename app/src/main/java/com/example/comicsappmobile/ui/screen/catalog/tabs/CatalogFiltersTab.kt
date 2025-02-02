@@ -80,33 +80,6 @@ fun CatalogFiltersTab(
                 .padding(bottom = 64.dp)
                 .fillMaxWidth()
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(start = 24.dp, end = 24.dp, top = 12.dp, bottom = 12.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = { comeBack() }
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                        contentDescription = "Localized Description",
-                        modifier = Modifier
-                            .size(24.dp),
-                        tint = MaterialTheme.colorScheme.onTertiaryContainer
-                    )
-                }
-                Text(
-                    text = "Меню поиска",
-                    modifier = Modifier,
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.displayMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-            }
             Column(
                 modifier = Modifier
                     .padding(horizontal = 24.dp)

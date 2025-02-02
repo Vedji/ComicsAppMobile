@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,6 +25,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -31,48 +35,37 @@ import com.example.comicsappmobile.R
 import com.example.comicsappmobile.ui.presentation.viewmodel.SettingsViewModel
 import com.example.comicsappmobile.ui.screen.settings.cards.ProfileSettingsCard
 import com.example.comicsappmobile.ui.screen.settings.cards.SetAppThemeCard
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen (
     navController: NavHostController,
-    // profileViewModel: ProfileViewModel = koinViewModel(),
+    drawerState: DrawerState,
     settingsViewModel: SettingsViewModel = koinViewModel()
 ){
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.padding(start = 0.dp),
-                navigationIcon = { },
-                title = {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-
-                        TooltipBox(
-                            positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider() ,
-                            tooltip = { PlainTooltip { Text("Фильтры и сортировка") } },
-                            state = rememberTooltipState()
-                        ) {
-                            IconButton(onClick = { }) { // TODO: open nav
-                                Icon(
-                                    painter = painterResource(R.drawable.baseline_tune_24),
-                                    "",
-                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                )
-                            }
-                        }
-                    }
-                },
-                windowInsets = WindowInsets(0.dp),
                 colors = TopAppBarDefaults.topAppBarColors().copy(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    scrolledContainerColor = MaterialTheme.colorScheme.background
-                )
+                    titleContentColor = MaterialTheme.colorScheme.background
+                ),
+                navigationIcon = {
+                    IconButton(
+                        onClick = { coroutineScope.launch { drawerState.open() } },
+                    ) {
+                        Icon(
+                            Icons.Default.Menu,
+                            "Menu",
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                },
+                title = {  }
             )
         }
     ) {

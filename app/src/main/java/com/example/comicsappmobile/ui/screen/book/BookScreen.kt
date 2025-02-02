@@ -25,9 +25,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.twotone.Favorite
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -39,6 +41,8 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabIndicatorScope
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
@@ -89,7 +93,8 @@ fun BookScreen(
     navController: NavHostController,
     bookId: Int,
     selectionTab: Int = 0,
-    bookViewModel: BookViewModel = koinViewModel { parametersOf(bookId) }
+    bookViewModel: BookViewModel = koinViewModel { parametersOf(bookId) },
+    drawerState: DrawerState
 ) {
 
     val bookInUserFavorite = bookViewModel.bookInFavorite.collectAsState()
@@ -99,10 +104,10 @@ fun BookScreen(
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current.applicationContext
+    val coroutineScope = rememberCoroutineScope()
 
     val screenHeightDp = configuration.screenHeightDp.dp
     val screenHeightFloat = configuration.screenHeightDp.toFloat()
-    val coroutineScope = rememberCoroutineScope()
 
     val scaffoldState = rememberBottomSheetScaffoldState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -119,35 +124,6 @@ fun BookScreen(
         (scaffoldState.bottomSheetState.currentValue.name == "Expanded").toString()
     )
     BottomSheetScaffold(
-        /*
-        sheetSwipeEnabled = false,
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.padding(start = 0.dp),
-                navigationIcon = {
-                    TooltipBox(
-                        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider() ,
-                        tooltip = { PlainTooltip { Text("В каталог") } },
-                        state = rememberTooltipState()
-                    ) {
-                        IconButton(onClick = { navController.navigate(Screen.Catalog.route) }) { // TODO: open nav
-                            Icon(
-                                painter = painterResource(R.drawable.baseline_tune_24),
-                                "",
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        }
-                    }
-                },
-                title = {},
-                windowInsets = WindowInsets(0.dp),
-                colors = TopAppBarDefaults.topAppBarColors().copy(
-                    containerColor = Color.Transparent,
-                    scrolledContainerColor = Color.Transparent
-                )
-            )
-        },
-         */
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         scaffoldState = scaffoldState,
         sheetDragHandle = {
@@ -200,58 +176,45 @@ fun BookScreen(
         },
         sheetPeekHeight = (screenHeightFloat * 0.46).dp,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.background,      // Цвет в верхней части
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.7f), // Полупрозрачный
-                                Color.Transparent  // Полностью прозрачный
-                            )
-                        )
-                    ),
-                horizontalArrangement =
-                if (authUser.userId > 0) Arrangement.SpaceBetween else Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+        TopAppBar(
+            navigationIcon = {
                 IconButton(
                     colors = IconButtonDefaults.iconButtonColors().copy(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
                     onClick = {
-                        navController.navigate(Screen.Catalog.route)
+                        coroutineScope.launch { drawerState.open() }
                     }) {
                     Icon(
-                        imageVector = Icons.Filled.Home,
+                        imageVector = Icons.Filled.Menu,
                         contentDescription = "",
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
-                if (authUser.userId > 0) {
-                    IconButton(
-                        colors = IconButtonDefaults.iconButtonColors().copy(
-                            containerColor = MaterialTheme.colorScheme.surface
-                        ),
-                        onClick = {
-                            navController.navigate(Screen.EditedBookScreen.createRoute(bookId = bookViewModel.bookId))
-                        }) {
-                        Icon(
-                            imageVector = Icons.Filled.Edit,
-                            contentDescription = "",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+            },
+            title = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    if (authUser.userId > 0) {
+                        IconButton(
+                            colors = IconButtonDefaults.iconButtonColors().copy(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            ),
+                            onClick = {
+                                navController.navigate(Screen.EditedBookScreen.createRoute(bookId = bookViewModel.bookId))
+                            }) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             }
-            HorizontalDivider()
-        }
+        )
         ImageByID(
             bookAboutUi.data?.bookTitleImageId ?: -1,
             modifier = Modifier

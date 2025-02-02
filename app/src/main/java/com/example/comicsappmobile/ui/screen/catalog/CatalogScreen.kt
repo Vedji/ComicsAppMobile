@@ -1,7 +1,16 @@
 package com.example.comicsappmobile.ui.screen.catalog
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -9,9 +18,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
@@ -35,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsappmobile.R
@@ -49,7 +65,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CatalogScreen(
     navController: NavHostController,
-    catalogViewModel: CatalogViewModel = koinViewModel()
+    catalogViewModel: CatalogViewModel = koinViewModel(),
+    drawerState: DrawerState
 ) {
 
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
@@ -69,7 +86,7 @@ fun CatalogScreen(
     }
     PullToRefreshBox(
         modifier = Modifier
-            .fillMaxSize().border(1.dp, Color.Red),
+            .fillMaxSize(),
         state = state,
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
@@ -78,77 +95,166 @@ fun CatalogScreen(
             modifier = Modifier
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                if (selectedTab == 0) {
-
-                    TopAppBar(
-                        modifier = Modifier.padding(start = 0.dp),
-                        scrollBehavior = scrollBehavior,
-                        navigationIcon = { },
-                        title = {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                        PaddingValues(
-                                            start = (24 - 12).dp,
-                                            end = 24.dp,
-                                            top = 8.dp
-                                        ),
-                                    ),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-
-                                ThemedSearchBar(
-                                    text = textFieldValue,
-                                    onTextChange = { textFieldValue = it },
-                                    placeholder = "Введите текст",
-                                    modifier = Modifier.width(256.dp),
-                                    onClickSearch = { searchValue ->
-                                        catalogViewModel.setSearch(searchValue)
+                TopAppBar(
+                    modifier = Modifier.padding(start = 0.dp),
+                    scrollBehavior = scrollBehavior,
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {
+                                when (selectedTab) {
+                                    0 -> {
+                                        coroutineScope.launch { drawerState.open() }
                                     }
+
+                                    2 -> {
+                                        coroutineScope.launch {
+                                            scrollBehavior.state.heightOffset = 0f
+                                        }
+                                        selectedTab = 0
+                                    }
+
+                                    else -> {}
+                                }
+                                coroutineScope.launch { scrollBehavior.state.heightOffset = 0f }
+                            }) {
+                            Icon(
+                                imageVector = when (selectedTab) {
+                                    2 -> {
+                                        Icons.AutoMirrored.Filled.KeyboardArrowLeft
+                                    }
+
+                                    else -> {
+                                        Icons.Filled.Menu
+                                    }
+                                },
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    },
+                    title = {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            AnimatedVisibility(
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                visible = selectedTab == 2,
+                                enter = fadeIn(animationSpec = tween(durationMillis = 350)) + slideInHorizontally(
+                                    animationSpec = tween(durationMillis = 350),
+                                    initialOffsetX = { it }
+                                ),
+                                exit = fadeOut(animationSpec = tween(durationMillis = 350)) + slideOutHorizontally(
+                                    animationSpec = tween(durationMillis = 350),
+                                    targetOffsetX = { it }
                                 )
-                                TooltipBox(
-                                    positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(
-                                        spacingBetweenTooltipAndAnchor = (-20).dp
-                                    ) ,
-                                    tooltip = { PlainTooltip { Text("Фильтры и сортировка") } },
-                                    state = rememberTooltipState()
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    IconButton(onClick = { selectedTab = 2 }) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.baseline_tune_24),
-                                            "",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                    Text(
+                                        text = "Меню поиска",
+                                        style = MaterialTheme.typography.displayMedium.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.primary
                                         )
+                                    )
+                                }
+                            }
+                            AnimatedVisibility(
+                                visible = selectedTab == 0,
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                enter = fadeIn(animationSpec = tween(durationMillis = 350)) + slideInHorizontally(
+                                    animationSpec = tween(durationMillis = 350),
+                                    initialOffsetX = { it }
+                                ),
+                                exit = fadeOut(animationSpec = tween(durationMillis = 350)) + slideOutHorizontally(
+                                    animationSpec = tween(durationMillis = 350),
+                                    targetOffsetX = { it }
+                                )
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    ThemedSearchBar(
+                                        text = textFieldValue,
+                                        onTextChange = { textFieldValue = it },
+                                        placeholder = "Введите текст",
+                                        modifier = Modifier.width(256.dp)
+                                            .padding(start = 24.dp, end = 12.dp),
+                                        onClickSearch = { searchValue ->
+                                            catalogViewModel.setSearch(searchValue)
+                                        }
+                                    )
+                                    TooltipBox(
+                                        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(
+                                            spacingBetweenTooltipAndAnchor = (-20).dp
+                                        ),
+                                        tooltip = { PlainTooltip { Text("Фильтры и сортировка") } },
+                                        state = rememberTooltipState()
+                                    ) {
+                                        IconButton(onClick = {
+                                            coroutineScope.launch {
+                                                scrollBehavior.state.heightOffset = 0f
+                                            }
+                                            selectedTab = 2
+                                        }
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.baseline_tune_24),
+                                                "",
+                                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        },
-                        windowInsets = WindowInsets(0.dp),
-                        colors = TopAppBarDefaults.topAppBarColors().copy(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            scrolledContainerColor = MaterialTheme.colorScheme.background
-                        )
+                        }
+                    },
+                    windowInsets = WindowInsets(0.dp),
+                    colors = TopAppBarDefaults.topAppBarColors().copy(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        scrolledContainerColor = MaterialTheme.colorScheme.background
                     )
-                }
+                )
             },
             content = { innerPadding ->
-                when (selectedTab) {
-                    0 -> CatalogBooksTab(navController, catalogViewModel, innerPadding)
-                    2 -> CatalogFiltersTab(
-                        navController,
-                        catalogViewModel,
-                        innerPadding
-                    ){
+                AnimatedVisibility(
+                    visible = selectedTab == 2,
+                    enter = fadeIn(animationSpec = tween(durationMillis = 350)) + slideInHorizontally(
+                        animationSpec = tween(durationMillis = 350),
+                        initialOffsetX = { it }
+                    ),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 350)) + slideOutHorizontally(
+                        animationSpec = tween(durationMillis = 350),
+                        targetOffsetX = { it }
+                    )
+                ) {
+                    CatalogFiltersTab(
+                        navController = navController,
+                        catalogViewModel = catalogViewModel,
+                        innerPadding = innerPadding
+                    ) {
                         coroutineScope.launch { scrollBehavior.state.heightOffset = 0f }
                         selectedTab = 0
                     }
-                    else -> {
-                        Text(text = "No Realize selectedTab = ${selectedTab}")
-                    }
                 }
-
+                AnimatedVisibility(
+                    visible = selectedTab == 0,
+                    enter = fadeIn(animationSpec = tween(durationMillis = 350)) + slideInHorizontally(
+                        animationSpec = tween(durationMillis = 350),
+                        initialOffsetX = { it }
+                    ),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 350)) + slideOutHorizontally(
+                        animationSpec = tween(durationMillis = 350),
+                        targetOffsetX = { it }
+                    )
+                ) {
+                    CatalogBooksTab(
+                        navController = navController,
+                        catalogViewModel = catalogViewModel,
+                        innerPadding = innerPadding
+                    )
+                }
             }
         )
     }
