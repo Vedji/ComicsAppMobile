@@ -120,7 +120,7 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier, 
         }
 
         composable(route = Screen.ProfileUserScreen.route){
-            ProfileScreen(navController = navController)
+            ProfileScreen(navController = navController, drawerState = drawerState)
         }
         composable(route = Screen.ProfileEditorScreen.route){
             ProfileEditorScreen(navController = navController)
