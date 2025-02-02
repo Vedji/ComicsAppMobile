@@ -36,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -66,6 +67,7 @@ import com.example.comicsappmobile.ui.components.ThemedInputField
 import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileEditorViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.utils.Logger
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -142,13 +144,18 @@ fun ProfileEditorScreen(
 
     if (isLoadingDialog){
         AlertDialog(
-            onDismissRequest = { isLoadingDialog = false },
+            onDismissRequest = { },
             title = { Text(text = "Идет загрузка подождите") },
             text = { Box(modifier = Modifier.fillMaxWidth())
                 { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) } },
             backgroundColor = MaterialTheme.colorScheme.primaryContainer,
             confirmButton = { },
-            dismissButton = { }
+            dismissButton = {
+                TextButton(
+                onClick = {
+                    coroutineScope.cancel()
+                    isLoadingDialog = false
+                }) { Text("Отменить") } }
         )
     }
 
