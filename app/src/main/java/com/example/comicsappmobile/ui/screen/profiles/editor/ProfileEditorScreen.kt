@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.twotone.Check
@@ -58,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.comicsappmobile.BuildConfig
+import com.example.comicsappmobile.data.mapper.UserMapper
 import com.example.comicsappmobile.navigation.Screen
 import com.example.comicsappmobile.ui.components.ThemedAlertDialog
 import com.example.comicsappmobile.ui.components.ThemedInputField
@@ -77,8 +79,8 @@ fun ProfileEditorScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val authUser = profileEditorViewModel.userLogin.collectAsState()
-    val authUserFromViewModel = profileEditorViewModel.userLogin.collectAsState()
+    val authUserState = profileEditorViewModel.userLogin.collectAsState()
+    val authUserValue = profileEditorViewModel.globalState.authUser.collectAsState()
 
     var fetchedDescription: String by remember { mutableStateOf("") }
     var fetchedImageId: Int by remember { mutableIntStateOf(-1) }
@@ -88,21 +90,25 @@ fun ProfileEditorScreen(
 
     var isErrorOnUploadDialog: Boolean by remember { mutableStateOf(false) }
     var isUploadingDialog: Boolean by remember { mutableStateOf(false) }
+    var isLoadingDialog: Boolean by remember { mutableStateOf(false) }
 
-    LaunchedEffect(authUser.value) {
-        if (authUser.value is UiState.Success){
-            fetchedDescription = if (authUser.value is UiState.Success) authUser.value.data?.userDescription ?: "" else ""
-            fetchedImageId = if (authUser.value is UiState.Success) authUser.value.data?.userTitleImage ?: -1 else -1
+    LaunchedEffect(authUserState.value) {
+        if (authUserState.value is UiState.Success){
+            fetchedDescription = if (authUserState.value is UiState.Success) authUserState.value.data?.userDescription ?: "" else ""
+            fetchedImageId = if (authUserState.value is UiState.Success) authUserState.value.data?.userTitleImage ?: -1 else -1
             inputDescription.value = fetchedDescription
             selectedImage.value = null
         }
     }
 
     if (isErrorOnUploadDialog){
-        val onClickErrorDialog = { isErrorOnUploadDialog = false }
+        val onClickErrorDialog = {
+            isErrorOnUploadDialog = false
+            profileEditorViewModel.setUserState(UiState.Success(data = UserMapper.map(authUserValue.value)))
+        }
         ThemedAlertDialog(
             titleText = "Ошибка при загрузке ",
-            messageText = "Ошибка при загрузке",
+            messageText = authUserState.value.message ?: "",
             onConfirm = onClickErrorDialog,
             onDismiss = onClickErrorDialog,
             onDismissRequest = onClickErrorDialog
@@ -116,6 +122,7 @@ fun ProfileEditorScreen(
             messageText = "Вы уверены, что хотите обновить данные?",
             onConfirm = {
                 coroutineScope.launch {
+                    isLoadingDialog = true
                     isErrorOnUploadDialog = !profileEditorViewModel.uploadUserInfo(
                         context = context,
                         newUserTitleImageUri = selectedImage.value,
@@ -124,6 +131,7 @@ fun ProfileEditorScreen(
                     if (!isErrorOnUploadDialog){
                         navController.navigate(Screen.ProfileUserScreen.route)
                     }
+                    isLoadingDialog = false
                     onClickUploadDialog()
                 }
             },
@@ -132,6 +140,17 @@ fun ProfileEditorScreen(
         )
     }
 
+    if (isLoadingDialog){
+        AlertDialog(
+            onDismissRequest = { isLoadingDialog = false },
+            title = { Text(text = "Идет загрузка подождите") },
+            text = { Box(modifier = Modifier.fillMaxWidth())
+                { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) } },
+            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+            confirmButton = { },
+            dismissButton = { }
+        )
+    }
 
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
@@ -172,7 +191,7 @@ fun ProfileEditorScreen(
             )
         },
         content = { paddingValues: PaddingValues ->
-            if (authUser.value is UiState.Success && (authUser.value.data?.userId ?: 0) > 0){
+            if (authUserState.value is UiState.Success && (authUserState.value.data?.userId ?: 0) > 0){
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
@@ -304,7 +323,7 @@ fun ProfileEditorScreen(
                     Spacer(modifier = Modifier.height(48.dp))
                 }
             }
-            else if (authUser.value is UiState.Success && (authUser.value.data?.userId ?: 0) <= 0){
+            else if (authUserState.value is UiState.Success && (authUserState.value.data?.userId ?: 0) <= 0){
                 val isOpenAlertNoUser = remember { mutableStateOf(true) }
                 val navigateOpenAlertNoUser = {
                     isOpenAlertNoUser.value = false
@@ -328,7 +347,7 @@ fun ProfileEditorScreen(
             SmallFloatingActionButton(
                 onClick = {
                     isUploadingDialog = true
-                }, // TODO: Add upload edite fields to server
+                },
                 shape = MaterialTheme.shapes.extraLarge,
                 modifier = Modifier
                     .size(48.dp)
