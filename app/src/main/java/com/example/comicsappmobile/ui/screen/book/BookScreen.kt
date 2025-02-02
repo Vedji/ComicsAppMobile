@@ -39,6 +39,8 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabIndicatorScope
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
@@ -200,27 +202,8 @@ fun BookScreen(
         },
         sheetPeekHeight = (screenHeightFloat * 0.46).dp,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.background,      // Цвет в верхней части
-                                MaterialTheme.colorScheme.background.copy(alpha = 0.7f), // Полупрозрачный
-                                Color.Transparent  // Полностью прозрачный
-                            )
-                        )
-                    ),
-                horizontalArrangement =
-                if (authUser.userId > 0) Arrangement.SpaceBetween else Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+        TopAppBar(
+            navigationIcon = {
                 IconButton(
                     colors = IconButtonDefaults.iconButtonColors().copy(
                         containerColor = MaterialTheme.colorScheme.surface
@@ -234,24 +217,30 @@ fun BookScreen(
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
-                if (authUser.userId > 0) {
-                    IconButton(
-                        colors = IconButtonDefaults.iconButtonColors().copy(
-                            containerColor = MaterialTheme.colorScheme.surface
-                        ),
-                        onClick = {
-                            navController.navigate(Screen.EditedBookScreen.createRoute(bookId = bookViewModel.bookId))
-                        }) {
-                        Icon(
-                            imageVector = Icons.Filled.Edit,
-                            contentDescription = "",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+            },
+            title = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    if (authUser.userId > 0) {
+                        IconButton(
+                            colors = IconButtonDefaults.iconButtonColors().copy(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            ),
+                            onClick = {
+                                navController.navigate(Screen.EditedBookScreen.createRoute(bookId = bookViewModel.bookId))
+                            }) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             }
-            HorizontalDivider()
-        }
+        )
         ImageByID(
             bookAboutUi.data?.bookTitleImageId ?: -1,
             modifier = Modifier
