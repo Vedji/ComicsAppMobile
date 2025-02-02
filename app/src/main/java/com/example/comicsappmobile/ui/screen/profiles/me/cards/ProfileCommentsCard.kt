@@ -21,8 +21,8 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,29 +32,34 @@ import androidx.navigation.NavHostController
 import com.example.comicsappmobile.navigation.Screen
 import com.example.comicsappmobile.ui.presentation.model.CommentUiModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
-import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
+import com.example.comicsappmobile.utils.Logger
+import kotlinx.coroutines.delay
 
 @Composable
-fun ProfileCommentsCard(commentUiModel: CommentUiModel, navController: NavHostController, profileViewModel: ProfileViewModel) {
-    val bookTitleName = rememberSaveable() { mutableStateOf("") }
+fun ProfileCommentsCard(
+    commentUiModel: CommentUiModel,
+    navController: NavHostController,
+    profileViewModel: ProfileViewModel,
+) {
+    val bookInfoById by profileViewModel.bookInfoById.collectAsState()
+    var bookTitleName = bookInfoById[commentUiModel.bookId]?.rusTitle ?: "Книга не найдена"
 
-    LaunchedEffect(commentUiModel){
-        val bookId: Int = commentUiModel.bookId
-        val bookToComment =
-            if (bookId > 0)
-                profileViewModel.fetchBookInfoById(bookId)
-            else
-                UiState.Error(message = "Книга не найдена")
-        bookTitleName.value =
-            if (bookToComment is UiState.Success) bookToComment.data?.rusTitle ?: "Пустое имя книги"
-            else "Книга не найдена"
+    LaunchedEffect(Unit) {
+        delay(100)
+        Logger.debug("ProfileCommentsCard", bookInfoById[commentUiModel.bookId].toString() ?: "No")
+        bookTitleName = bookInfoById[commentUiModel.bookId]?.rusTitle ?: "Книга не найдена"
     }
+
     Box {
         OutlinedCard(
-            onClick = {
-                if (commentUiModel.bookId != null && commentUiModel.bookId > 0)
-                    navController.navigate(Screen.AboutBook.createRoute(commentUiModel.bookId.toString(), selectionTab = 2))
-                      },
+            onClick =
+            {
+                if (commentUiModel.bookId > 0){
+                    navController.navigate(
+                        route = Screen.AboutBook.createRoute(commentUiModel.bookId.toString(),
+                            selectionTab = 2))
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             colors = CardDefaults.outlinedCardColors().copy(
@@ -66,7 +71,7 @@ fun ProfileCommentsCard(commentUiModel: CommentUiModel, navController: NavHostCo
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
         ) {
             Text(
-                text = bookTitleName.value,
+                text = bookTitleName,
                 modifier = Modifier.padding(12.dp),
                 style = MaterialTheme.typography.titleLarge.copy(
                     color = MaterialTheme.colorScheme.primary,
