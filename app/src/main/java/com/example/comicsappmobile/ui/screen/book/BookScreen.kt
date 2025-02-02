@@ -40,6 +40,7 @@ import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabIndicatorScope
 import androidx.compose.material3.TabPosition
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
@@ -130,7 +131,21 @@ fun BookScreen(
             SecondaryScrollableTabRow(
                 containerColor = MaterialTheme.colorScheme.surface,
                 selectedTabIndex = state,
-                indicator = { FancyAnimatedIndicatorWithModifier(state) }
+                indicator = {
+                    TabRowDefaults.SecondaryIndicator(
+                        modifier = Modifier.tabIndicatorOffset(
+                            selectedTabIndex = state,
+                            matchContentSize = false
+                        ),
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                },
+                divider = {
+                    HorizontalDivider(
+                        thickness = 3.dp,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
             ) {
                 titles.forEachIndexed { index, title ->
                     Tab(
@@ -197,7 +212,7 @@ fun BookScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ){
-                    if (authUser.userId > 0) {
+                    if (authUser.userId > 0 && authUser.permission > 0) {
                         IconButton(
                             colors = IconButtonDefaults.iconButtonColors().copy(
                                 containerColor = MaterialTheme.colorScheme.surface
@@ -309,7 +324,6 @@ fun BookScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (bookChapters.value is UiState.Success) {
-                        val chapters = bookChapters.value.data ?: emptyList()
                         if (bookChapters.value.data?.any { it.chapterLength > 0 } == true) {
                             val inUserFavorite: Boolean =
                                 bookChapters.value is UiState.Success && bookChapters.value.data?.any { it.chapterLength > 0 } == true && bookInUserFavorite.value is UiState.Success &&
@@ -368,7 +382,7 @@ fun BookScreen(
                         ) {
                             Icon(
                                 imageVector = if (inUserFavorite) Icons.Filled.Favorite else Icons.TwoTone.Favorite,
-                                "Book in favorite",
+                                contentDescription = "Book in favorite",
                                 modifier = Modifier.size(32.dp)
                             )
                         }
@@ -427,9 +441,6 @@ fun TabIndicatorScope.FancyAnimatedIndicatorWithModifier(index: Int) {
                     startAnim.animateTo(
                         newStart,
                         animationSpec =
-                        // Handle directionality here, if we are moving to the right, we
-                        // want the right side of the indicator to move faster, if we are
-                        // moving to the left, we want the left side to move faster.
                         if (startAnim.targetValue < newStart) {
                             spring(dampingRatio = 1f, stiffness = 50f)
                         } else {

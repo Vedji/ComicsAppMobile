@@ -1,6 +1,7 @@
 package com.example.comicsappmobile.ui.screen.book.cards
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -39,7 +40,7 @@ import com.example.comicsappmobile.utils.vibrate
 @Composable
 fun SelfCommentViewCardPage(commentUiModel: CommentUiModel, moveToAddReview: (Int) -> Unit, bookViewModel: BookViewModel) { // TODO: ADD view model in args
     val context = LocalContext.current
-    Box{
+    Box {
         OutlinedCard(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -51,104 +52,118 @@ fun SelfCommentViewCardPage(commentUiModel: CommentUiModel, moveToAddReview: (In
             ),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
         ) {
-                if (commentUiModel.commentId > 0) {
-                    Row(
-                        modifier = Modifier
-                            .padding(12.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Мой отзыв",
-                            style = MaterialTheme.typography.headlineSmall.copy(
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            ),
-                            modifier = Modifier
-                        )
-                        Row(
-                            modifier = Modifier,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                modifier = Modifier
-                                    .wrapContentSize(),
-                                textAlign = TextAlign.Justify,
-                                text = "${commentUiModel.rating ?: 0f}",
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                            )
-                            Icon(
-                                imageVector = Icons.Filled.Star,
-                                contentDescription = "Star",
-                                tint = Color(0xFFFFD700), // Цвет звезды
-                                modifier = Modifier
-                                    .size(18.dp) // Размер звезды
-                            )
-                        }
-                    }
-                    HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outline)
+            if (commentUiModel.commentId > 0) {
+                Row(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text(
-                        text = commentUiModel.comment,
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            textAlign = TextAlign.Justify
+                        text = "Мой отзыв",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         ),
-                        modifier = Modifier.padding(12.dp).wrapContentSize()
-                    )
-                } else {
-                    TextButton(
-                        onClick = { moveToAddReview(1) },
                         modifier = Modifier
+                    )
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Добавить отзыв",
-                            style = MaterialTheme.typography.headlineSmall.copy(
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                textAlign = TextAlign.Center
-                            ),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .wrapContentSize(),
+                            textAlign = TextAlign.Justify,
+                            text = "${commentUiModel.rating ?: 0f}",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Star",
+                            tint = Color(0xFFFFD700), // Цвет звезды
+                            modifier = Modifier
+                                .size(18.dp) // Размер звезды
                         )
                     }
                 }
+                HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outline)
+                Text(
+                    text = commentUiModel.comment,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        textAlign = TextAlign.Justify
+                    ),
+                    modifier = Modifier.padding(12.dp).wrapContentSize()
+                )
+            } else {
+                TextButton(
+                    onClick = { moveToAddReview(1) },
+                    modifier = Modifier
+                ) {
+                    Text(
+                        text = "Добавить отзыв",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            textAlign = TextAlign.Center
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
         }
 
         // Bottom buttons
-        if (commentUiModel.commentId > 0){
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomEnd)
-                .offset(y = (14).dp)
-                .padding(end = 8.dp),
+        if (commentUiModel.commentId > 0) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomEnd)
+                    .offset(y = (14).dp)
+                    .padding(end = 8.dp),
                 horizontalArrangement = Arrangement.End
             ) {
                 SmallFloatingActionButton(
-                    onClick = { moveToAddReview(2)  },
-                    modifier = Modifier.size(32.dp),
+                    onClick = { moveToAddReview(2) },
+                    modifier = Modifier
+                        .size(32.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = MaterialTheme.shapes.small
+                        ),
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
                 ) {
                     Icon(
                         Icons.Filled.Edit,
                         contentDescription = "Edit",
                         modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer)
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 SmallFloatingActionButton(
                     onClick = {
                         vibrate(context.applicationContext)
                         bookViewModel.launchDeleteUserComment()
-                        // TODO: Delete comment
-                        // TODO: Add toast
                     },
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier
+                        .size(32.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = MaterialTheme.shapes.small
+                        ),
                     containerColor = MaterialTheme.colorScheme.errorContainer
-                ) { Icon(
-                    Icons.Filled.Delete,
-                    contentDescription = "Delete",
-                    modifier = Modifier.size(16.dp))
+                ) {
+                    Icon(
+                        Icons.Filled.Delete,
+                        contentDescription = "Delete",
+                        modifier = Modifier.size(16.dp)
+                    )
                 }
             }
         }

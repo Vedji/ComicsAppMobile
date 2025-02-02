@@ -11,8 +11,8 @@ data class UserDto(
 
     @SerializedName("email") val email: String? = null,
     @SerializedName("userDescription") val userDescription: String? = null,
-    @SerializedName("permission") val permission: Int? = null,
-    @SerializedName("createdAt") val createdAt: String? = null
+    @SerializedName("permission") val permission: Int = 0,
+    @SerializedName("createdAt") val createdAt: String? = null,
 ){
 
     companion object {
@@ -50,7 +50,7 @@ data class UserDto(
                 userTitleImage = userDto.userTitleImage,
                 email = userDto.email,
                 userDescription = userDto.userDescription,
-                permission = userDto.permission,
+                permission = userDto.permission ?: 0,
                 createdAt = userDto.createdAt
             )
         }
