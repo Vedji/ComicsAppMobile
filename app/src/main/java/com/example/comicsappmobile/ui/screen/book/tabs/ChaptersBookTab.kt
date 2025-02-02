@@ -253,7 +253,12 @@ fun ChapterCard(
             ) {
                 Row {
                     Text(
-                        text = "Глава ${chapter.chapterTitle}",
+                        text =
+                        "Глава ${chapter.chapterNumber}" +
+                                if (chapter.chapterTitle.isNotEmpty())
+                                    ": ${chapter.chapterTitle}"
+                                else "",
+
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold,

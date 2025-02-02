@@ -56,10 +56,15 @@ class ProfileEditorViewModel(
         }
     }
 
-    suspend fun uploadUserInfo(context: Context, newUserTitleImageUri: Uri?, newUserDescription: String): Boolean{
+    suspend fun uploadUserInfo(
+        context: Context,
+        newUserTitleImageUri: Uri?,
+        newUserDescription: String,
+        isSetDefaultImage: Boolean = false
+    ): Boolean{
         if (_userLogin.value !is UiState.Success)
             return false
-        val imageId: Int = _userLogin.value.data?.userTitleImage ?: 4
+        val imageId: Int = globalState.authUser.value.userTitleImage
         var newImageId: Int = imageId
         _userLogin.value = UiState.Loading()
         if (newUserTitleImageUri != null){
@@ -67,7 +72,7 @@ class ProfileEditorViewModel(
             if (responseUploadFile !is UiState.Success) return false
             newImageId = if (responseUploadFile is UiState.Success) responseUploadFile.data?.fileID ?: imageId else imageId
         } else {
-            newImageId = 2
+            newImageId = if (isSetDefaultImage) 2 else imageId
         }
         val responseUploadInfo = responseUserInfo(
             newUserTitleImageId = newImageId,

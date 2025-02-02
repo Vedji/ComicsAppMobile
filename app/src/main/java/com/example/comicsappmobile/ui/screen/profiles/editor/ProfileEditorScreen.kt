@@ -89,6 +89,7 @@ fun ProfileEditorScreen(
 
     val inputDescription: MutableState<String> = remember { mutableStateOf(fetchedDescription) }
     val selectedImage: MutableState<Uri?> = remember { mutableStateOf<Uri?>(null) }
+    var isSetDefaultImage = remember { mutableStateOf(false) }
 
     var isErrorOnUploadDialog: Boolean by remember { mutableStateOf(false) }
     var isUploadingDialog: Boolean by remember { mutableStateOf(false) }
@@ -128,7 +129,8 @@ fun ProfileEditorScreen(
                     isErrorOnUploadDialog = !profileEditorViewModel.uploadUserInfo(
                         context = context,
                         newUserTitleImageUri = selectedImage.value,
-                        newUserDescription = inputDescription.value
+                        newUserDescription = inputDescription.value,
+                        isSetDefaultImage = isSetDefaultImage.value
                     )
                     if (!isErrorOnUploadDialog){
                         navController.navigate(Screen.ProfileUserScreen.route)
@@ -267,6 +269,7 @@ fun ProfileEditorScreen(
                             IconButton(
                                 onClick = {
                                     selectedImage.value = null
+                                    isSetDefaultImage.value = true
                                     fetchedImageId = -1
                                 }
                             ) {
@@ -276,10 +279,14 @@ fun ProfileEditorScreen(
                                 )
                             }
                             IconButton(
-                                onClick = { selectedImage.value = null }
+                                onClick = {
+                                    isSetDefaultImage.value = false
+                                    selectedImage.value = null
+                                    fetchedImageId = authUserValue.value.userTitleImage
+                                }
                             ) {
                                 Icon(
-                                    if (selectedImage.value == null) Icons.TwoTone.Check else Icons.TwoTone.Refresh,
+                                    if (selectedImage.value == null && !isSetDefaultImage.value) Icons.TwoTone.Check else Icons.TwoTone.Refresh,
                                     "Has been resource updated?"
                                 )
                             }
@@ -318,6 +325,7 @@ fun ProfileEditorScreen(
                             if (selectedImage.value != null)
                                 selectedImage.value
                             else if (fetchedImageId > 20) "${BuildConfig.API_BASE_URL}/api/v1/file/${fetchedImageId}/get"
+                            else if (!isSetDefaultImage.value) "${BuildConfig.API_BASE_URL}/api/v1/file/2/get"
                             else null,
                             contentDescription = "Выбранное изображение",
                             modifier = Modifier
