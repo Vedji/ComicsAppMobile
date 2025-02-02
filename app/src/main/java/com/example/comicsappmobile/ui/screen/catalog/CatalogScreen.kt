@@ -76,7 +76,7 @@ fun CatalogScreen(
     }
     PullToRefreshBox(
         modifier = Modifier
-            .fillMaxSize().border(1.dp, Color.Red),
+            .fillMaxSize(),
         state = state,
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,

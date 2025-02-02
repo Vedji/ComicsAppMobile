@@ -4,12 +4,16 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Home
@@ -18,13 +22,17 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -102,133 +110,63 @@ class MainActivity : ComponentActivity() {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerContent(navController: NavHostController, drawerState: DrawerState, globalState: GlobalState = koinInject()) {
     val authUser = globalState.authUser.collectAsState()
     val scope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
 
-
-    Column(
-        horizontalAlignment = Alignment.Start
-    ) {
-        Text(
-            text = "Comics app mobile",
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.displayLarge.copy(
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Start
-            ),
-            modifier = Modifier.fillMaxWidth().padding(12.dp)
-        )
-        HorizontalDivider(color = MaterialTheme.colorScheme.outline)
-        // Buttons
-        TextButton(
-            onClick =
-            {
-                scope.launch {
-                    navController.navigate(Screen.Catalog.route)
-                    drawerState.close()
-                }
-            },
-            modifier = Modifier.fillMaxWidth().padding(top = 12.dp, start = 12.dp, end = 12.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Home,
-                    contentDescription = "",
-                    modifier = Modifier.padding(end = 12.dp)
-                )
-                Text(
-                    text = "Каталог",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Start
-                    )
-                )
-            }
-        }
-        TextButton(
-            onClick =
-            {
-                scope.launch {
-                    if (authUser.value.userId > 0)
-                        navController.navigate(Screen.ProfileUserScreen.route)
-                    else
-                        navController.navigate(Screen.LoginForm.route)
-                    drawerState.close()
-                }
-            },
-            modifier = Modifier.fillMaxWidth().padding(top = 12.dp, start = 12.dp, end = 12.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    imageVector =
-                    if (authUser.value.userId > 0) Icons.Outlined.AccountCircle
-                    else Icons.Outlined.Lock,
-                    "",
-                    modifier = Modifier.padding(end = 12.dp)
-                )
-                Text(
-                    text = if (authUser.value.userId > 0) "Профиль" else "Авторизироваться",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Start
-                    )
-                )
-            }
-        }
-        TextButton(
-            onClick =
-            {
-                scope.launch {
-                    navController.navigate(Screen.SettingsScreen.route)
-                    drawerState.close()
-                }
-            },
-            modifier = Modifier.fillMaxWidth().padding(top = 12.dp, start = 12.dp, end = 12.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Settings,
-                    "",
-                    modifier = Modifier.padding(end = 12.dp)
-                )
-                Text(
-                    text = "Настройки",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Start
-                    )
-                )
-            }
-        }
-        // TODO: Remove from release
-        if (BuildConfig.DEBUG) {
-            HorizontalDivider(color = Color.Gray)
-            Text(
-                text = "Debug",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Start
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors().copy(
+                    containerColor = Color.Transparent,
+                    titleContentColor = MaterialTheme.colorScheme.background
                 ),
-                modifier = Modifier.fillMaxWidth().padding(start = 12.dp, top = 12.dp)
+                navigationIcon = {
+                    IconButton(
+                        onClick = { coroutineScope.launch { drawerState.close() } },
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                            "Menu",
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                },
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            text = "Comics app mobile",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.displayLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Start
+                            ),
+                            modifier = Modifier.fillMaxWidth().padding(12.dp)
+                        )
+                    }
+                }
             )
-
+        },
+        containerColor = Color.Transparent
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier.padding(paddingValues),
+            horizontalAlignment = Alignment.Start
+        ) {
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+            // Buttons
             TextButton(
                 onClick =
                 {
                     scope.launch {
-                        navController.navigate(Screen.FontDisplayExamples.route)
+                        navController.navigate(Screen.Catalog.route)
                         drawerState.close()
                     }
                 },
@@ -238,12 +176,12 @@ fun DrawerContent(navController: NavHostController, drawerState: DrawerState, gl
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.Info,
-                        "",
+                        imageVector = Icons.Outlined.Home,
+                        contentDescription = "",
                         modifier = Modifier.padding(end = 12.dp)
                     )
                     Text(
-                        text = "Цветовая схема",
+                        text = "Каталог",
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
@@ -252,12 +190,14 @@ fun DrawerContent(navController: NavHostController, drawerState: DrawerState, gl
                     )
                 }
             }
-
             TextButton(
                 onClick =
                 {
                     scope.launch {
-                        navController.navigate(Screen.DragAndDropExample.route)
+                        if (authUser.value.userId > 0)
+                            navController.navigate(Screen.ProfileUserScreen.route)
+                        else
+                            navController.navigate(Screen.LoginForm.route)
                         drawerState.close()
                     }
                 },
@@ -267,12 +207,14 @@ fun DrawerContent(navController: NavHostController, drawerState: DrawerState, gl
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
+                        imageVector =
+                        if (authUser.value.userId > 0) Icons.Outlined.AccountCircle
+                        else Icons.Outlined.Lock,
                         "",
                         modifier = Modifier.padding(end = 12.dp)
                     )
                     Text(
-                        text = "Drag & Drop",
+                        text = if (authUser.value.userId > 0) "Профиль" else "Авторизироваться",
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
@@ -281,12 +223,11 @@ fun DrawerContent(navController: NavHostController, drawerState: DrawerState, gl
                     )
                 }
             }
-
             TextButton(
                 onClick =
                 {
                     scope.launch {
-                        navController.navigate(Screen.EditedBookScreen.createRoute(-1))
+                        navController.navigate(Screen.SettingsScreen.route)
                         drawerState.close()
                     }
                 },
@@ -296,18 +237,121 @@ fun DrawerContent(navController: NavHostController, drawerState: DrawerState, gl
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.Add,
+                        imageVector = Icons.Outlined.Settings,
                         "",
                         modifier = Modifier.padding(end = 12.dp)
                     )
                     Text(
-                        text = "Добавить книгу",
+                        text = "Настройки",
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Start
                         )
                     )
+                }
+            }
+            // TODO: Remove from release
+            if (BuildConfig.DEBUG) {
+                HorizontalDivider(color = Color.Gray)
+                Text(
+                    text = "Debug",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Start
+                    ),
+                    modifier = Modifier.fillMaxWidth().padding(start = 12.dp, top = 12.dp)
+                )
+
+                TextButton(
+                    onClick =
+                    {
+                        scope.launch {
+                            navController.navigate(Screen.FontDisplayExamples.route)
+                            drawerState.close()
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(top = 12.dp, start = 12.dp, end = 12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            "",
+                            modifier = Modifier.padding(end = 12.dp)
+                        )
+                        Text(
+                            text = "Цветовая схема",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Start
+                            )
+                        )
+                    }
+                }
+
+                TextButton(
+                    onClick =
+                    {
+                        scope.launch {
+                            navController.navigate(Screen.DragAndDropExample.route)
+                            drawerState.close()
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(top = 12.dp, start = 12.dp, end = 12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            "",
+                            modifier = Modifier.padding(end = 12.dp)
+                        )
+                        Text(
+                            text = "Drag & Drop",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Start
+                            )
+                        )
+                    }
+                }
+
+                TextButton(
+                    onClick =
+                    {
+                        scope.launch {
+                            navController.navigate(Screen.EditedBookScreen.createRoute(-1))
+                            drawerState.close()
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(top = 12.dp, start = 12.dp, end = 12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            "",
+                            modifier = Modifier.padding(end = 12.dp)
+                        )
+                        Text(
+                            text = "Добавить книгу",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Start
+                            )
+                        )
+                    }
                 }
             }
         }
