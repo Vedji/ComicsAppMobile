@@ -25,6 +25,7 @@ import com.example.comicsappmobile.ui.screen.examples.DragAndDropExample
 import com.example.comicsappmobile.ui.screen.examples.FontDisplayExamplesScreen
 import com.example.comicsappmobile.ui.screen.profiles.editor.ProfileEditorScreen
 import com.example.comicsappmobile.ui.screen.profiles.me.ProfileScreen
+import com.example.comicsappmobile.ui.screen.profiles.registration.RegistrationFormScreen
 import com.example.comicsappmobile.ui.screen.settings.SettingScreen
 import com.example.comicsappmobile.utils.Logger
 
@@ -81,11 +82,14 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
             CatalogScreen(navController)
         }
 
-        composable(
-            route = Screen.LoginForm.route,
-        ) {
+        composable( route = Screen.LoginForm.route,) {
             LoginFormScreen(navController)
         }
+        composable(route = Screen.RegistrationFormScreen.route) {
+            RegistrationFormScreen(navController = navController)
+        }
+
+
         // Examples start
         composable(route = Screen.FontDisplayExamples.route,) { FontDisplayExamplesScreen() }
         composable(route = Screen.DragAndDropExample.route){ DragAndDropExample() }

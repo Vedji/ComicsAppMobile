@@ -253,4 +253,49 @@ class UserRepository (
             }
         }
     }
+
+    suspend fun responseUserRegistration(
+        username: String,
+        password: String,
+        email: String
+    ): UiState<UserUiModel> {
+        Logger.debug("UserRepository -> responseUserRegistration", "Run")
+        val test = safeApiCall {
+            userApi.registrationUser(username = username, password = password, mail = email)
+        }
+        Logger.debug("UserRepository -> responseUserRegistration", "test = '$test'")
+
+        return when (test) {
+            is StateResponseDto.Success -> {
+                Logger.debug("UserRepository -> responseUserRegistration", "data = ${test.data}")
+                val data = (test.data as? LoginUserDto)
+                val user = data?.aboutUser ?: UserDto.createDefaultUser(-4, "Not created")
+                if (data?.tokens is UserTokensDto) {
+                    RetrofitInstance.accessToken = data.tokens.accessToken
+                    RetrofitInstance.refreshToken = data.tokens.refreshToken
+                    globalState.saveUserAccessToken(data.tokens.accessToken ?: "")
+                }
+                globalState.setAuthUser(user)
+                data?.let {
+                    sharedViewModel.updateCurrentAuthorizingUser(it.aboutUser)
+                }
+                Logger.debug(
+                    "StateResponseDto.Success -> responseUserRegistration",
+                    "globalStateUser = ${globalState.authUser.value}"
+                )
+                UiState.Success(data = UserMapper.map(user))
+            }
+
+            is StateResponseDto.Error -> {
+                val data = (test.data as? ErrorDataDto)
+                Logger.debug("return when(test)", "data = '${test}'")
+                UiState.Error(
+                    data = null,
+                    message = data?.message ?: "UserRepository -> responseUserRegistration",
+                    typeError = data?.typeError ?: "UserRepository -> responseUserRegistration",
+                    statusCode = -1
+                )
+            }
+        }
+    }
 }

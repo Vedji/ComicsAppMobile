@@ -57,4 +57,12 @@ interface UsersApi {
         @Field("newUserDescription") newUserDescription: String
     ): Response<ResponseDto<UserDto>>
 
+    @FormUrlEncoded
+    @POST("/api/v2/user/registration")
+    suspend fun registrationUser(
+        @Field("username") username: String,
+        @Field("mail") mail: String,
+        @Field("password") password: String
+    ): Response<ResponseDto<LoginUserDto>>
+
 }

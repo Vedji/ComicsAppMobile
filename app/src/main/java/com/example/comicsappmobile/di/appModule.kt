@@ -25,6 +25,7 @@ import com.example.comicsappmobile.ui.presentation.viewmodel.LoginFormViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.PagesViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileEditorViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.ProfileViewModel
+import com.example.comicsappmobile.ui.presentation.viewmodel.RegistrationFormViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -34,7 +35,7 @@ val appModule = module {
         GlobalState(
             isOpenBottomSheet = true,
             bottomSheetSkipPartiallyExpanded = false,
-            androidContext()
+            androidContext(),
         )
     }
 
@@ -130,6 +131,11 @@ val appModule = module {
         chaptersRepository = get(),
         pagesRepository = get(),
         filesRepository = get(),
+        globalState = get()
+    ) }
+
+    factory { RegistrationFormViewModel(
+        userRepository = get(),
         globalState = get()
     ) }
 
