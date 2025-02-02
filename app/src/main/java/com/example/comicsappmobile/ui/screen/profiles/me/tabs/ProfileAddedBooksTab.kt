@@ -1,6 +1,7 @@
 package com.example.comicsappmobile.ui.screen.profiles.me.tabs
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,11 +38,16 @@ fun ProfileAddedBooksTab(navController: NavController, profileViewModel: Profile
     ) {
         when(addedBook.value){
             is UiState.Loading -> {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) { CircularProgressIndicator() }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp)
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                    )
+                }
             }
             is UiState.Success -> {
                 if (addedBook.value.data.isNullOrEmpty()){

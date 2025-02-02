@@ -60,8 +60,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
-    profileViewModel: ProfileViewModel = koinViewModel(),
-    drawerState: DrawerState
+    drawerState: DrawerState,
+    profileViewModel: ProfileViewModel = koinViewModel()
 ) {
     val authUser by profileViewModel.globalState.authUser.collectAsState()
     var state by remember { mutableIntStateOf(0) }
