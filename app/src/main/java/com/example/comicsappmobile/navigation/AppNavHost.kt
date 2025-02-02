@@ -90,7 +90,7 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier, 
             LoginFormScreen(navController)
         }
         composable(route = Screen.RegistrationFormScreen.route) {
-            RegistrationFormScreen(navController = navController)
+            RegistrationFormScreen(navController = navController, drawerState = drawerState)
         }
 
 
