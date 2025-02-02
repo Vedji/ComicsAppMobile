@@ -116,10 +116,7 @@ fun OthersCommentCard(commentUiModel: CommentUiModel, bookViewModel: BookViewMod
                 }
             }
         }
-        if (
-            bookViewModel.sharedViewModel.isUserHasPermission(
-                addedUserId = commentUiModel.aboutUser.userId, hasHelper = true, hasAdmin = true
-            )) {
+        if (false) {
             Row(
                 Modifier
                     .fillMaxWidth()

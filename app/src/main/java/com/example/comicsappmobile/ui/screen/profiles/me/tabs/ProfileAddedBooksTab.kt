@@ -7,10 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.comicsappmobile.ui.components.ThemedErrorCard
@@ -40,8 +44,25 @@ fun ProfileAddedBooksTab(navController: NavController, profileViewModel: Profile
                 ) { CircularProgressIndicator() }
             }
             is UiState.Success -> {
-                for(book in (addedBook.value.data ?: emptyList())){
-                    ProfileAddedBooksCard(book, navController = navController)
+                if (addedBook.value.data.isNullOrEmpty()){
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ){
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Вы не добавляли книги",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                                textAlign = TextAlign.Center
+                            ),
+                        )
+                    }
+                }else{
+                    for(book in (addedBook.value.data!!)){
+                        ProfileAddedBooksCard(book, navController = navController)
+                    }
                 }
             }
             is UiState.Error -> {

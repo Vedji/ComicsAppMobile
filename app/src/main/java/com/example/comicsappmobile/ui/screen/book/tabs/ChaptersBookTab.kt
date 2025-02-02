@@ -1,5 +1,7 @@
 package com.example.comicsappmobile.ui.screen.book.tabs
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,8 +61,8 @@ fun ChaptersBookTab(bookViewModel: BookViewModel, navController: NavController) 
     val authUser by bookViewModel.globalState.authUser.collectAsState()
     val isUserHasPermission = remember {  mutableStateOf(false) }
     LaunchedEffect(book, authUser) {
-        isUserHasPermission.value = (book.data?.bookAddedBy ?: -2) == authUser.userId
-                || (authUser.permission ?: -1) >= 4
+        isUserHasPermission.value =
+            (book.data?.bookAddedBy ?: -2) == authUser.userId || (authUser.permission ?: -1) >= 4
     }
 
     Box(
@@ -111,7 +113,12 @@ fun ChaptersBookTab(bookViewModel: BookViewModel, navController: NavController) 
                                 },
                                 modifier = Modifier
                                     .size(40.dp)
-                                    .offset(x = (4).dp),
+                                    .offset(x = (4).dp)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.outline,
+                                        shape = MaterialTheme.shapes.medium
+                                    ),
                                 containerColor = MaterialTheme.colorScheme.secondary
 
                                 ) {
@@ -238,6 +245,7 @@ fun ChapterCard(
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 disabledContentColor = MaterialTheme.colorScheme.onSecondaryContainer
             ),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             enabled = hisCardEnabled
         ) {
             Column(
@@ -245,7 +253,12 @@ fun ChapterCard(
             ) {
                 Row {
                     Text(
-                        text = "Глава ${chapter.chapterTitle}",
+                        text =
+                        "Глава ${chapter.chapterNumber}" +
+                                if (chapter.chapterTitle.isNotEmpty())
+                                    ": ${chapter.chapterTitle}"
+                                else "",
+
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold,
@@ -305,7 +318,12 @@ fun ChapterCard(
                         )
                     },
                     modifier = Modifier
-                        .size(32.dp),
+                        .size(32.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = MaterialTheme.shapes.small
+                        ),
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
 
                 ) {
@@ -320,7 +338,12 @@ fun ChapterCard(
                 SmallFloatingActionButton(
                     onClick = { isOpenDeleted.value = true },
                     modifier = Modifier
-                        .size(32.dp),
+                        .size(32.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = MaterialTheme.shapes.small
+                        ),
                     containerColor = MaterialTheme.colorScheme.errorContainer
                 ) {
                     Icon(

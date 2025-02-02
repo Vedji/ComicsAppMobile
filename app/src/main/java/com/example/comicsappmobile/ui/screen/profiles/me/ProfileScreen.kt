@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -62,13 +63,24 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel = koinViewModel(),
     drawerState: DrawerState
 ) {
+    val authUser by profileViewModel.globalState.authUser.collectAsState()
     var state by remember { mutableIntStateOf(0) }
-    val titles =
-        listOf(
-            "Избранное",
-            "Мои Комментарии",
-            "Добавленные тайтлы"
-        )
+    val titles = when(authUser.permission){
+        1, 2, 3, 4 -> {
+            listOf(
+                "Избранное",
+                "Мои Комментарии",
+                "Добавленные тайтлы"
+            )
+        }
+        else -> {
+            listOf(
+                "Избранное",
+                "Мои Комментарии"
+            )
+        }
+    }
+
     val pageScrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
 

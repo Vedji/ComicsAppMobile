@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val userRepository: UserRepository,
     val booksRepository: BooksRepository,
-    private val globalState: GlobalState
+    val globalState: GlobalState
 ) : BaseViewModel() {
 
     private val _userLogin = MutableStateFlow<UiState<UserUiModel>>(UiState.Loading())
