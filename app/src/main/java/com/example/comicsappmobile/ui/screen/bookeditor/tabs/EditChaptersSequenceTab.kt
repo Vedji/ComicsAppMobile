@@ -1,9 +1,13 @@
 package com.example.comicsappmobile.ui.screen.bookeditor.tabs
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,11 +53,13 @@ fun EditChaptersSequenceTab(
     ) {
         items(chapters.value, key = { it.chapterId }) { item ->
             ReorderableItem(reorderableLazyListState, key = item.chapterId) { isDragging ->
-                val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
+                val elevation by animateDpAsState(if (isDragging) (-4).dp else 0.dp)
                 Surface(
                     shadowElevation = elevation,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(horizontal = 8.dp)
                 ) {
                     Row(
@@ -61,7 +68,23 @@ fun EditChaptersSequenceTab(
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = item.chapterTitle)
+                        Column(
+                            modifier = Modifier.fillMaxHeight(),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(
+                                text = item.chapterTitle,
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            )
+                            Text(
+                                text = "Страниц: ${item.chapterLength}",
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            )
+                        }
                         IconButton(
                             modifier = Modifier.draggableHandle(),
                             onClick = {}
