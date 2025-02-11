@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -188,6 +190,8 @@ fun EditChapterGeneral(
                         shadowElevation = elevation,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium)
+                            .background(MaterialTheme.colorScheme.surface)
                             .padding(horizontal = 8.dp)
                     ) {
                         Row(
