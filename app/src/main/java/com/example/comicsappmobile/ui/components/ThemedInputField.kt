@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -72,8 +76,8 @@ fun ThemedInputField(
             ) {
                 Box(
                     modifier = Modifier
-                        .weight(1f)
-                        .padding(end = if (rightIcon != null) 8.dp else 0.dp),
+                        .weight(if (rightIcon != null) 0.9f else 1f)
+                        .padding(end = 0.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     if (textFieldValue.value.isEmpty()) {
@@ -86,11 +90,29 @@ fun ThemedInputField(
                     }
                     innerTextField()
                 }
-
                 rightIcon?.let {
-                    it()
+                    Box(
+                        modifier = Modifier
+                            .weight(0.2f)
+                            .offset(x = (8).dp)
+                    ){
+                        it()
+                    }
                 }
             }
         }
     )
+}
+
+
+class StarVisualTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val transformedText = buildString {
+            repeat(text.length) { append('*') }
+        }
+        return TransformedText(
+            AnnotatedString(transformedText),
+            OffsetMapping.Identity
+        )
+    }
 }

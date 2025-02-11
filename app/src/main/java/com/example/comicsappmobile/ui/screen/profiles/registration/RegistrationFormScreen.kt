@@ -8,36 +8,43 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.twotone.Info
+import androidx.compose.material.icons.twotone.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comicsappmobile.data.mapper.UserMapper
 import com.example.comicsappmobile.navigation.Screen
+import com.example.comicsappmobile.ui.components.StarVisualTransformation
 import com.example.comicsappmobile.ui.components.ThemedInputField
 import com.example.comicsappmobile.ui.presentation.viewmodel.RegistrationFormViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
@@ -155,15 +162,28 @@ fun RegistrationFormScreen (
                         placeholder = "Почта",
                         modifier = Modifier.height(36.dp)
                     )
+                    var isPasswordVisibleFirst by remember { mutableStateOf(false) }
                     ThemedInputField(
                         textFieldValue = passwordInput,
                         placeholder = "Пароль",
-                        modifier = Modifier.height(36.dp)
+                        modifier = Modifier.height(36.dp),
+                        visualTransformation = if (isPasswordVisibleFirst) VisualTransformation.None else StarVisualTransformation(),
+                        rightIcon = {
+                            IconButton(onClick = { isPasswordVisibleFirst = !isPasswordVisibleFirst }) {
+                                Icon(
+                                    imageVector = if (isPasswordVisibleFirst) Icons.TwoTone.Info else Icons.TwoTone.Lock,
+                                    contentDescription = "Toggle Password Visibility",
+                                    modifier = Modifier
+                                        .size(28.dp)
+                                )
+                            }
+                        }
                     )
                     ThemedInputField(
                         textFieldValue = retryPasswordInput,
                         placeholder = "Повторите пароль",
-                        modifier = Modifier.height(36.dp)
+                        modifier = Modifier.height(36.dp),
+                        visualTransformation = StarVisualTransformation()
                     )
                     Button(
                         onClick = {
