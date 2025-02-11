@@ -16,6 +16,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.comicsappmobile.ui.screen.TitleScreen
 import com.example.comicsappmobile.ui.screen.book.BookScreen
 import com.example.comicsappmobile.ui.screen.bookeditor.BookEditorScreen
 import com.example.comicsappmobile.ui.screen.bookreader.BookReaderScreen
@@ -40,7 +41,7 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier, 
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Catalog.route,
+        startDestination = Screen.TitleScreen.route,
         modifier = modifier.fillMaxSize()
     ) {
         // Main screen
@@ -102,6 +103,7 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier, 
         composable(route = Screen.SettingsScreen.route){
             SettingScreen(navController = navController, drawerState = drawerState)
         }
+        composable(route = Screen.TitleScreen.route){ TitleScreen(navController = navController) }
 
         composable(
             route = Screen.BookReader.route,
