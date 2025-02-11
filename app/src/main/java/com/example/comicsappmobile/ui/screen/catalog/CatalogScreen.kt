@@ -1,5 +1,7 @@
 package com.example.comicsappmobile.ui.screen.catalog
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -41,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -76,6 +79,17 @@ fun CatalogScreen(
             selectedTab = 0
         }
     }
+
+    BackHandler(selectedTab == 2) {
+        selectedTab = 0
+    }
+
+    val activity = LocalContext.current as? Activity
+    BackHandler(selectedTab == 0) {
+        activity?.finish()
+    }
+
+
     PullToRefreshBox(
         modifier = Modifier
             .fillMaxSize(),

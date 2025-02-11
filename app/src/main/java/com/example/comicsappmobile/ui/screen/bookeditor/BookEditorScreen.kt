@@ -1,6 +1,7 @@
 package com.example.comicsappmobile.ui.screen.bookeditor
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -46,7 +47,6 @@ import com.example.comicsappmobile.ui.presentation.viewmodel.BookEditorViewModel
 import com.example.comicsappmobile.ui.presentation.viewmodel.UiState
 import com.example.comicsappmobile.ui.screen.bookeditor.tabs.EditChaptersSequenceTab
 import com.example.comicsappmobile.ui.screen.bookeditor.tabs.EditGeneralsInfoBookTab
-import com.example.comicsappmobile.utils.Logger
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -133,6 +133,10 @@ fun BookEditorScreen(
     val approveButtonClicked = remember { mutableStateOf(false) }
     var isLoadingDialog: Boolean by remember { mutableStateOf(false) }
     var isErrorDialog: Boolean by remember { mutableStateOf(false) }
+
+    BackHandler(selectedTab.intValue == 1) {
+        selectedTab.intValue = 0
+    }
 
     if (isLoadingDialog) {
         AlertDialog(

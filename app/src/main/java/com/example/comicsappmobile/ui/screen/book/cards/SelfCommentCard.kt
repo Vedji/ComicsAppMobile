@@ -1,5 +1,11 @@
 package com.example.comicsappmobile.ui.screen.book.cards
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,33 +41,71 @@ fun SelfCommentCard(bookViewModel: BookViewModel) { // TODO: ADD view model in a
         is UiState.Success -> {
             if (commentUiModel.data == null)
                 return
-            when (cardPageIdentify.intValue) {     // TODO: Add view model arg
-                0 -> {
-                    SelfCommentViewCardPage(
-                        commentUiModel.data!!,
-                        moveToAddReview = { cardPageIdentify.intValue = it },
-                        bookViewModel = bookViewModel)
-                }
 
-                1 -> {
-                    SelfCommentAddCardPage(
-                        commentUiModel.data!!,
-                        onCancel = { cardPageIdentify.intValue = it },
-                        bookViewModel = bookViewModel)
-                }
-
-                2 -> {
-                    SelfCommentEditCardPage(
-                        commentUiModel.data!!,
-                        onCancel = { cardPageIdentify.intValue = it },
-                        bookViewModel = bookViewModel
+                    AnimatedVisibility(
+                        modifier = Modifier,
+                        visible = cardPageIdentify.intValue == 0,
+                        enter = expandVertically(
+                            animationSpec = tween(250),
+                            expandFrom = Alignment.Bottom,
+                            clip = false
+                        ) + fadeIn(animationSpec = tween(250)), // Плавное появление
+                        exit = shrinkVertically(
+                            animationSpec = tween(250),
+                            shrinkTowards = Alignment.Bottom,
+                            clip = false
+                        ) + fadeOut(animationSpec = tween(250)) // Исчезновение
+                    ) {
+                        SelfCommentViewCardPage(
+                            commentUiModel.data!!,
+                            moveToAddReview = { cardPageIdentify.intValue = it },
+                            bookViewModel = bookViewModel
                         )
-                }
+                    }
 
-                else -> {
+
+                    AnimatedVisibility(
+                        modifier = Modifier,
+                        visible = cardPageIdentify.intValue == 1,
+                        enter = expandVertically(
+                            animationSpec = tween(250),
+                            expandFrom = Alignment.Bottom,
+                            clip = false
+                        ) + fadeIn(animationSpec = tween(250)), // Плавное появление
+                        exit = shrinkVertically(
+                            animationSpec = tween(250),
+                            shrinkTowards = Alignment.Bottom,
+                            clip = false
+                        ) + fadeOut(animationSpec = tween(250)) // Исчезновение
+                    ) {
+                        SelfCommentAddCardPage(
+                            commentUiModel.data!!,
+                            onCancel = { cardPageIdentify.intValue = it },
+                            bookViewModel = bookViewModel
+                        )
+                    }
+                    AnimatedVisibility(
+                        visible = cardPageIdentify.intValue == 2,
+                        enter = expandVertically(
+                            animationSpec = tween(250),
+                            expandFrom = Alignment.Top,
+                            clip = false
+                        ) + fadeIn(animationSpec = tween(250)),
+                        exit = shrinkVertically(
+                            animationSpec = tween(250),
+                            shrinkTowards = Alignment.Top,
+                            clip = false
+                        ) + fadeOut(animationSpec = tween(250))
+                    ) {
+                        SelfCommentEditCardPage(
+                            commentUiModel.data!!,
+                            onCancel = { cardPageIdentify.intValue = it },
+                            bookViewModel = bookViewModel
+                        )
+                    }
+                if (cardPageIdentify.intValue < 0 || cardPageIdentify.intValue > 2) {
                     ThemedErrorCard(message = "Часть не реализована")
                 }
-            }
         }
         is UiState.Error -> {
             if (commentUiModel.typeError == "AuthError"){

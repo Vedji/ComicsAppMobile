@@ -1,5 +1,6 @@
 package com.example.comicsappmobile.ui.screen.bookreader
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -60,6 +61,11 @@ fun BookReaderScreen(
     val currentSelectedTab = remember { mutableIntStateOf(0) }
 
     val currentPageNumber = remember { mutableIntStateOf(0) }
+
+    BackHandler(currentSelectedTab.intValue == 1) {
+        currentSelectedTab.intValue = 0
+    }
+
     // Pager State
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -127,12 +133,8 @@ fun BookReaderScreen(
         },
         content = {
             when(currentSelectedTab.intValue){
-                0 -> {
-
-                }
-                1 -> {
-
-                }
+                0 -> { }
+                1 -> { }
                 else -> {
                     Text(text = "Сстраницы с номером ${currentSelectedTab.intValue} не определенно")
                 }

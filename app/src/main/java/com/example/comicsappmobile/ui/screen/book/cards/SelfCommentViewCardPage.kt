@@ -2,12 +2,12 @@ package com.example.comicsappmobile.ui.screen.book.cards
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +39,7 @@ import com.example.comicsappmobile.utils.vibrate
 @Composable
 fun SelfCommentViewCardPage(commentUiModel: CommentUiModel, moveToAddReview: (Int) -> Unit, bookViewModel: BookViewModel) { // TODO: ADD view model in args
     val context = LocalContext.current
+
     Box {
         OutlinedCard(
             modifier = Modifier
@@ -99,9 +99,12 @@ fun SelfCommentViewCardPage(commentUiModel: CommentUiModel, moveToAddReview: (In
                     modifier = Modifier.padding(12.dp).wrapContentSize()
                 )
             } else {
-                TextButton(
-                    onClick = { moveToAddReview(1) },
+                Row(
                     modifier = Modifier
+                        .padding(12.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
                         text = "Добавить отзыв",
@@ -109,13 +112,13 @@ fun SelfCommentViewCardPage(commentUiModel: CommentUiModel, moveToAddReview: (In
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             textAlign = TextAlign.Center
                         ),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { moveToAddReview(1) }
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
         }
-
         // Bottom buttons
         if (commentUiModel.commentId > 0) {
             Row(
